@@ -1,0 +1,63 @@
+# === Run metadata (reproducibility) ===
+date: 2026-07-02T14:35:00Z
+environment: sandbox
+git_sha: unknown
+migration_version: banking.0008_psd2_lifecycle
+otp_portal_version: "https://iam.sandbox.otpbanka.hr"
+openapi_version: n/a
+certificate_thumbprint: "sha256:94409ddda7b82dc278dc0fe255a21157e6afce80dfaad05c34d7a49a613c73b6"
+
+# === Test context ===
+tenant: otp-company-no1
+psu: 164.company.no1
+phase: healthcheck|diagnose|provision|accounts|pis-gate
+result: pass
+duration_seconds: n/a
+
+# === Phase results ===
+phases:
+  healthcheck:
+    result: partial
+    notes: "P12 OK; OTP_CLIENT_SECRET još nije postavljen u .env"
+  diagnose:
+    result: pass
+    notes: "TLS + IAM 200 (518ms), API reachable"
+  provision:
+    result: pass
+    notes: "8 tenant-a provisionirano; reset→provision testiran"
+  connect:
+    result: pending
+    notes: "Zahtijeva ručni SCA u OTP sandbox portalu"
+  accounts:
+    result: pass
+    notes: "Simulirani discovery: pending_discovery → active, IBAN popunjen"
+  sync:
+    result: pending
+    notes: "Zahtijeva authorized consent s valjanim access_token"
+  reconciliation:
+    result: pending
+  celery:
+    result: pass
+    notes: "3 beat taska registrirana (sync, stale, expiry)"
+  pis:
+    result: pass
+    notes: "Gate is_pis_ready() nakon streak≥3; API 401 s test consentom (očekivano)"
+
+# === Banking IDs (simulacija) ===
+connection_id: auto
+consent_id: e2e-test-consent
+authorization_id:
+external_account_id: e2e-res-001
+
+# === Outcomes ===
+transactions_imported: 0
+payments_created: 0
+matches_created: 0
+sync_success_streak: 3
+
+# === Debug ===
+bank_api_call_ids: [1, 2]
+error_summary: "OTP_CLIENT_SECRET missing; live SCA not run"
+notes: |
+  Faza 2 (otp-company-no2) i --all: svi tenanti u pending/pending_discovery.
+  PIS gate logika verificirana; stvarni PIS nakon live AIS synca.

@@ -1,0 +1,97 @@
+# ADR Index — racunAI ERP
+
+Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITECTURE_GOVERNANCE.md).
+
+---
+
+## Aktivni ADR-ovi
+
+| ID | Naslov | Tip | Status | Datum | Supersedes |
+|----|--------|-----|--------|-------|------------|
+| [ADR-0007](ADR-0007-pdv-module.md) | PDV modul (Obrazac PDV v11.0) | Business | Accepted | 2026-07-05 | — |
+| [ADR-0008](ADR-0008-submission-events.md) | Generic Submission Event Architecture | Compliance | Accepted (amended) | 2026-07-07 | — |
+| [ADR-0009](ADR-0009-submission-module-v1.md) | Submission modul v1 | Domain | Accepted | 2026-07-07 | — |
+| [ADR-0010](ADR-0010-domain-architecture.md) | Domain Architecture | Domain | Accepted | 2026-07-09 | — |
+| [ADR-0011](ADR-0011-architecture-freeze-v1.0.md) | Architecture Freeze v1.0 | Governance | Accepted | 2026-07-09 | — |
+| [ADR-0012](ADR-0012-sprint-1-retrospective.md) | Sprint 1 Retrospective | Governance | Accepted | 2026-07-09 | — |
+| [ADR-0013](ADR-0013-finance-domain-stabilization.md) | Finance Domain Stabilization (Sprint 2) | Governance | Accepted | 2026-07-09 | — |
+| [ADR-0014](ADR-0014-tax-domain-completion.md) | Tax Domain Completion (Sprint 3) | Governance | Accepted | 2026-07-10 | — |
+
+---
+
+## Rezervirani ADR-ovi (Sprint retrospectives)
+
+| ID | Naslov | Sprint | Status |
+|----|--------|--------|--------|
+| ADR-0015 | Assets & Fiscal Platform Production | Sprint 4 | Planned |
+| ADR-0016+ | Sprint retrospectives + governance backlog | Sprint 5+ | Planned |
+
+---
+
+## Povezani arhitekturni dokumenti (nije ADR)
+
+| Dokument | Opis |
+|----------|------|
+| [banking-v2.md](banking-v2.md) | Banking v2 arhitektura (frozen) |
+| [submission-module-backlog.md](submission-module-backlog.md) | Submission backlog |
+
+---
+
+## Kvartalni review log
+
+| Datum | Bilješka |
+|-------|----------|
+| 2026-07-09 | Architecture Freeze v1.0 — inicijalni P0 dokumenti kreirani |
+| 2026-07-09 | Sprint 1 zatvoren — ADR-0012; scaffolding + import lint + PR template |
+| 2026-07-09 | Sprint 2 zatvoren — ADR-0013; saldakonti, TD-001, North Star ~15% |
+| 2026-07-10 | Sprint 3 zatvoren — ADR-0014; ZP lifecycle, PDV 610+/RC/OSS, North Star ~25% |
+| 2026-10-09 | Sljedeći planirani review (Q4 2026) |
+
+---
+
+## ADR Template
+
+Kopiraj za novi ADR. Numeracija: sljedeći slobodni broj u katalogu.
+
+```markdown
+# ADR-XXXX — [Kratki naslov]
+
+```text
+Status: Proposed | Accepted | Deprecated | Superseded
+Date: YYYY-MM-DD
+Type: Business | Domain | Integration | Infrastructure | Security | Compliance | Performance | Governance
+Supersedes: ADR-XXXX (ili —)
+Related: [linkovi]
+```
+
+## Status
+
+**Proposed** — [jedna rečenica o trenutnom stanju odluke]
+
+## Context
+
+[Problem, ograničenja, zašto sada]
+
+## Decision
+
+[Ključne odluke — tablice i bulleti po potrebi]
+
+## Consequences
+
+### Prednosti
+- …
+
+### Rizici / trade-off
+- …
+
+### Follow-up
+- [ ] …
+```
+
+### Pravila
+
+1. **Status** mora biti ažuran pri mergeu
+2. **Type** mora odgovarati Decision Matrix u [`ARCHITECTURE_GOVERNANCE.md`](ARCHITECTURE_GOVERNANCE.md)
+3. Zamjena starog ADR-a: novi ADR s `Supersedes:` linkom; stari → `Superseded by ADR-XXXX`
+4. Amendment na isti ADR: sekcija `> **Amendment (ADR-XXXX):**` na vrhu povezanog dokumenta
+5. Sprint retrospective ADR-ovi: max 2 stranice, fokus na odluke i lekcije

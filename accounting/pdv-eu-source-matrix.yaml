@@ -1,0 +1,84 @@
+version: 1.2.0
+status: Locked
+owner: Accounting
+last_reviewed: '2026-07-10'
+
+events:
+  - event_id: EU_GOODS_ACQUISITION
+    name: EU stjecanje dobara
+    source: manual_journal_entry
+    example: Automobile Hadžić DE, račun 70025237, 8.000 EUR neto, 0% PDV (isporuka u RH)
+    supplier_ref: DE229674882
+    boxes: [207, 307]
+    accounts:
+      asset: '0373'
+      pretporez: '14022'
+      obveza: '24022'
+    vat_rate: 0.25
+    notes: >
+      Nabava vozila iz EU. Osnovica i PDV obveza u box 207 (II.7): D 0373 (osnovica), K 24022 (PDV).
+      Pretporez u box 307 (III.7): D 14022. Boxovi 610–615 su VIII.1 ispravak DI (faza B).
+
+  - event_id: OSS_ECOMMERCE_SUPPLY
+    name: OSS isporuka e-trgovina EU
+    source: invoice_item
+    example: B2C web shop DE, 100 EUR neto + 19% DE PDV
+    boxes: [215]
+    notes: >
+      InvoiceItem vat_procedure=oss. Strani PDV ne ulazi u box 400 ni 200.
+      Ne mapira se u ZP boxove 101/103 (B2B isključivo).
+
+  - event_id: EU_DISTANCE_SALE
+    name: Prodaja na daljinu unutar EU
+    source: invoice_item
+    boxes: [204]
+    notes: InvoiceItem vat_procedure=eu_distance.
+
+  - event_id: EU_ELECTRONIC_INTERFACE
+    name: Isporuke putem elektroničkog sučelja
+    source: invoice_item
+    boxes: [214]
+    notes: InvoiceItem vat_procedure=eu_electronic.
+
+  - event_id: IOSS_IMPORT
+    name: IOSS uvoz — pretporez u drugoj državi
+    source: expense_or_journal
+    boxes: [308]
+    accounts:
+      pretporez: '14042'
+    notes: >
+      Expense vat_procedure=ioss ili JE D 14042. Isključeno iz box 400.
+      Ne preklapa se sa ZP (EU outbound B2B).
+
+account_ranges:
+  eu_goods_pretporez: '14020-14022'
+  eu_goods_obveza: '24020-24022'
+  eu_services_pretporez: '14030-14032'
+  eu_services_obveza: '24030-24032'
+  ioss_pretporez: '14040-14042'
+
+invariants:
+  - id: I1
+    rule: '207.base >= 0'
+  - id: I2
+    rule: '207.vat == round(207.base * 0.25, 2)'
+  - id: I3
+    rule: '207.vat == 307.vat and 207.base == 307.base'
+  - id: I4
+    rule: '400 unchanged when 207/307 net zero (RC neutral)'
+
+dedup:
+  - rule_id: EU_SUPPLIER_ZERO_VAT_EXCLUDE_303
+    event_id: EU_GOODS_ACQUISITION
+    action: exclude_from_box_303
+    notes: >
+      Račun EU dobavljača s 0% PDV (isporuka u RH) ne smije ulaziti u box 303 kao domaći pretporez.
+  - rule_id: JE_EU_VAT_SKIP_EXPENSE_DUP
+    event_id: EU_GOODS_ACQUISITION
+    action: skip_if_expense_source
+    notes: >
+      Ako isti događaj već proizlazi iz expense modula, preskoči duplikat iz journal entry izvora.
+
+references:
+  - docs/accounting/uvoz-vozila-knjizenje.md
+  - erp/app/expenses/data/manual_supplier_map.py

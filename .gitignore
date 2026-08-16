@@ -1,0 +1,12 @@
+# Banking / PSD2 credentials (local sandbox only)
+banking/*-cert-base64.txt
+banking/postman-variables*.txt
+
+# Binary attachments and filings (keep markdown in repo)
+**/*.pdf
+**/*.eml
+**/*.7z
+**/*.jpg
+**/*.jpeg
+**/*.png
+Hardsoft/
