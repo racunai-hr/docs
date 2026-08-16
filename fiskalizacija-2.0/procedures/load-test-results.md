@@ -18,7 +18,7 @@
 
 ```bash
 # k6 (smoke 1 VU, 1 min)
-k6 run -e MPS_BASE_URL=http://racunai_mps:8000 erp/tests/load/k6_mps_health.js
+k6 run -e MPS_BASE_URL=http://racunai_mps:8000 tests/load/k6_mps_health.js
 
 # Ručno
 docker compose exec django curl -s http://racunai_mps:8000/health
@@ -31,7 +31,7 @@ docker compose exec django curl -s http://racunai_mps:8000/health
 Endpoint: `GET /api/ready/` — provjera PostgreSQL + Celery brokera.
 
 ```bash
-k6 run -e DJANGO_BASE_URL=http://127.0.0.1:8000 erp/tests/load/k6_django_ready.js
+k6 run -e DJANGO_BASE_URL=http://127.0.0.1:8000 tests/load/k6_django_ready.js
 docker compose exec django python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8000/api/ready/').read())"
 ```
 
@@ -40,7 +40,7 @@ docker compose exec django python -c "import urllib.request; print(urllib.reques
 ## AS4 inbound
 
 ```bash
-k6 run -e DJANGO_BASE_URL=http://127.0.0.1:8000 erp/tests/load/k6_as4_inbound.js
+k6 run -e DJANGO_BASE_URL=http://127.0.0.1:8000 tests/load/k6_as4_inbound.js
 ```
 
 Fixture: `tests/load/fixtures/as4_inbound_submit.xml` (PTS invoice u SOAP omotu).
@@ -71,5 +71,5 @@ docker compose exec django env UBL_BENCHMARK_ITERATIONS=1000 \
 ## Ograničenja
 
 - **Namjerno izvan scopea:** flood na CIS/PTS port 8511 — samo runbook scenariji.
-- k6 nije instaliran na hostu u trenutku mjerenja; skripte su spremne u `erp/tests/load/`.
+- k6 nije instaliran na hostu u trenutku mjerenja; skripte su spremne u `tests/load/`.
 - AS4 inbound load ne simulira Domibus push retry/backpressure — za to vidi chaos runbook.

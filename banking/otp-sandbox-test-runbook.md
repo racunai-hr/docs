@@ -11,8 +11,8 @@ Aktivni sandbox TPP: `PSD-SANDBOX-ID166`. Certifikati ID164 se **ne koriste**.
 Portal → generiraj certove → import u IAM → kreiraj Application → preuzmi `ClientCertificate166.zip`:
 
 ```bash
-cd /opt/stacks/racunai.hr/erp
-./scripts/otp_install_sandbox_tpp.sh 166 \
+cd /opt/stacks/racunai.hr
+./api/scripts/otp_install_sandbox_tpp.sh 166 \
   /opt/stacks/racunai.hr/.temp/ClientCertificate166.zip \
   '<client_secret>'
 docker compose restart django celery-worker

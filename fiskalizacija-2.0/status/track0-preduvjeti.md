@@ -56,7 +56,7 @@ Legenda: `[x]` gotovo · `[~]` u tijeku · `[ ]` nije započeto
 
 | # | Zadatak | Status | Napomena |
 |---|---------|--------|----------|
-| 0.10 | A zapis `mps.racunai.hr` (DNS only) | [x] | `65.108.196.92`, proxied=false — [`scripts/cloudflare_dns_upsert.sh`](../../../scripts/cloudflare_dns_upsert.sh) |
+| 0.10 | A zapis `mps.racunai.hr` (DNS only) | [x] | `65.108.196.92`, proxied=false — `scripts/cloudflare_dns_upsert.sh` |
 | 0.11 | A zapis `as4-test.racunai.hr` (DNS only) | [x] | `65.108.196.92`, proxied=false |
 | 0.11b | A zapis `as4.racunai.hr` (produkcija) | [~] | Planirano nakon FINA prod cert |
 | 0.12 | Firewall 443 inbound | [ ] | |
