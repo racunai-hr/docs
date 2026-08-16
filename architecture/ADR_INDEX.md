@@ -35,6 +35,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 |----------|------|
 | [banking-v2.md](banking-v2.md) | Banking v2 arhitektura (frozen) |
 | [submission-module-backlog.md](submission-module-backlog.md) | Submission backlog |
+| [FISCAL_GATEWAY_CANONICAL_API.md](FISCAL_GATEWAY_CANONICAL_API.md) | Kanonski API v1 `racunai-api` ↔ `intermediary` (ADR-0017) |
 
 ---
 
@@ -47,6 +48,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-07-09 | Sprint 2 zatvoren — ADR-0013; saldakonti, TD-001, North Star ~15% |
 | 2026-07-10 | Sprint 3 zatvoren — ADR-0014; ZP lifecycle, PDV 610+/RC/OSS, North Star ~25% |
 | 2026-08-16 | ADR-0017 Accepted — Fiscal Gateway (Model A); 0015/0016 ostaju rezervirani sprint retroi |
+| 2026-08-16 | Kanonski API v1 — [`FISCAL_GATEWAY_CANONICAL_API.md`](FISCAL_GATEWAY_CANONICAL_API.md) |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---

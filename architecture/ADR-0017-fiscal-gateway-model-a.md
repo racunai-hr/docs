@@ -6,12 +6,13 @@ Date: 2026-08-16
 Type: Integration
 Supersedes: —
 Related: ADR-0010-domain-architecture.md, ADR-0011-architecture-freeze-v1.0.md,
-         fiskalizacija-2.0/milestones.md, porezna/zahtjevi/posrednik/README.md
+         FISCAL_GATEWAY_CANONICAL_API.md, fiskalizacija-2.0/milestones.md,
+         porezna/zahtjevi/posrednik/README.md
 ```
 
 ## Status
 
-**Accepted** — `/opt/stacks/racunai.hr/intermediary` je jedinstveni Fiscal Gateway. Trenutno se implementira Model A (vanjski informacijski posrednik; Super je prvi, kroz `SuperAdapter`). Kanonski API između `racunai-api` i `intermediary` ostaje sljedeći korak.
+**Accepted** — `/opt/stacks/racunai.hr/intermediary` je jedinstveni Fiscal Gateway. Trenutno se implementira Model A (vanjski informacijski posrednik; Super je prvi, kroz `SuperAdapter`). Kanonski API v1: [`FISCAL_GATEWAY_CANONICAL_API.md`](FISCAL_GATEWAY_CANONICAL_API.md).
 
 ## Context
 
@@ -124,7 +125,7 @@ Promjena adaptera nije dovoljna za promjenu aktivne adrese zaprimanja.
 
 ### 10. Izvan opsega
 
-Kanonski API između `racunai-api` i `intermediary` je sljedeći korak. Taj ugovor mora poštivati odluke iz ovog ADR-a. Endpointi i OpenAPI ovdje se ne definiraju.
+Kanonski API v1 je specificiran u [`FISCAL_GATEWAY_CANONICAL_API.md`](FISCAL_GATEWAY_CANONICAL_API.md). Taj ugovor mora poštivati odluke iz ovog ADR-a. OpenAPI YAML i implementacija ostaju sljedeći korak.
 
 ## Consequences
 
@@ -147,7 +148,7 @@ M1.7 više ne znači „maknuti Super kao posrednika“. Znači maknuti izravni 
 
 ### Follow-up
 
-- [ ] Kanonski API `racunai-api` ↔ `intermediary`
+- [x] Kanonski API `racunai-api` ↔ `intermediary` — [`FISCAL_GATEWAY_CANONICAL_API.md`](FISCAL_GATEWAY_CANONICAL_API.md)
 - [ ] `SuperAdapter` u `intermediary`; migracija prometa; uklanjanje izravnog `SuperClient` poziva iz API-ja
 - [ ] Konfiguracija i credentiali po `legal_entity / taxpayer_subject + provider`
 - [ ] Evidencija FiskAplikacija potvrde prije aktivacije novog posrednika
