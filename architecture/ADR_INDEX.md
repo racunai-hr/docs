@@ -16,6 +16,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0012](ADR-0012-sprint-1-retrospective.md) | Sprint 1 Retrospective | Governance | Accepted | 2026-07-09 | — |
 | [ADR-0013](ADR-0013-finance-domain-stabilization.md) | Finance Domain Stabilization (Sprint 2) | Governance | Accepted | 2026-07-09 | — |
 | [ADR-0014](ADR-0014-tax-domain-completion.md) | Tax Domain Completion (Sprint 3) | Governance | Accepted | 2026-07-10 | — |
+| [ADR-0017](ADR-0017-fiscal-gateway-model-a.md) | Fiscal Gateway (Model A) | Integration | Accepted | 2026-08-16 | — |
 
 ---
 
@@ -45,6 +46,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-07-09 | Sprint 1 zatvoren — ADR-0012; scaffolding + import lint + PR template |
 | 2026-07-09 | Sprint 2 zatvoren — ADR-0013; saldakonti, TD-001, North Star ~15% |
 | 2026-07-10 | Sprint 3 zatvoren — ADR-0014; ZP lifecycle, PDV 610+/RC/OSS, North Star ~25% |
+| 2026-08-16 | ADR-0017 Accepted — Fiscal Gateway (Model A); 0015/0016 ostaju rezervirani sprint retroi |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---

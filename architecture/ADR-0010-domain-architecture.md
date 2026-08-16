@@ -5,8 +5,10 @@ Status: Accepted
 Date: 2026-07-09
 Type: Domain
 Supersedes: —
-Related: ADR-0011-architecture-freeze-v1.0.md, ADR-0012-sprint-1-retrospective.md, DOMAIN_MAP.md, CAPABILITY_MAP.md, DOMAIN_DEPENDENCY_MAP.md
+Related: ADR-0011-architecture-freeze-v1.0.md, ADR-0012-sprint-1-retrospective.md, ADR-0017-fiscal-gateway-model-a.md, DOMAIN_MAP.md, CAPABILITY_MAP.md, DOMAIN_DEPENDENCY_MAP.md
 ```
+
+> **Amendment (ADR-0017):** Fiskalni integration hub je `/opt/stacks/racunai.hr/intermediary` (Fiscal Gateway), ne Django appovi `fiscal_gateway` / `super_integration`. Ti appovi ostaju prijelazni klijenti do kanonskog API-ja. Detalji: [`ADR-0017-fiscal-gateway-model-a.md`](ADR-0017-fiscal-gateway-model-a.md).
 
 ## Status
 

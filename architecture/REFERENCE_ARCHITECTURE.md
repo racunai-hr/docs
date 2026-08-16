@@ -2,6 +2,8 @@
 
 Pregled cijelog sustava: slojevi, async infrastruktura i vanjski connectori. Domene: [`DOMAIN_MAP.md`](DOMAIN_MAP.md). Principi: [`ARCHITECTURE_PRINCIPLES.md`](ARCHITECTURE_PRINCIPLES.md).
 
+> **Amendment (ADR-0017):** Jedinstveni Fiscal Gateway je `intermediary`. Super je prvi vanjski posrednik (Model A), ne privremeni connector. DIRECT je razdvojen na `fine_star_self` (aktivno, samo Fine Star OIB) i `racunai_direct` (future/disabled za tuđe OIB-ove). Detalji: [`ADR-0017-fiscal-gateway-model-a.md`](ADR-0017-fiscal-gateway-model-a.md).
+
 ---
 
 ## Dijagram
@@ -139,10 +141,10 @@ Event bus je trenutno in-process (nije distributed). Celery taskovi se pokreću 
 | Connector | Tip | Status | App |
 |-----------|-----|--------|-----|
 | OTP | Banking AIS/PIS | implemented (sandbox) | `banking` |
-| SUPER | eRačun | implemented (privremeno) | `super_integration` |
-| DIRECT/AS4 | eRačun | implemented | `fiscal_gateway` |
-| CIS | Fiskalizacija | demo | `fiscal_gateway` |
-| Fiskal Platform | eRačun/Fiskal | in progress | `fiscal_gateway` |
+| SUPER (Model A) | eRačun | implemented — cilj: `SuperAdapter` u `intermediary`; `super_integration` prijelazno | `intermediary` / `super_integration` |
+| `fine_star_self` | eRačun / AS4 | implemented — fail-closed allow-lista Fine Star OIB | `intermediary` / `fiscal_gateway` |
+| `racunai_direct` | eRačun / AS4 | future / disabled za tuđe OIB-ove | `intermediary` |
+| CIS | Fiskalizacija | demo | `fiscal_gateway` → `intermediary` |
 | ePorezna | Tax submission | manual only | backlog |
 
 Detalji: `CONNECTORS.md` (P1).

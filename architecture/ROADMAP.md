@@ -240,7 +240,7 @@ Cursor todos: [`.cursor/plans/sprint_4_assets_fiskalizacija.plan.md`](../../.cur
 | **A3–A5** | Plan amortizacije + JE posting + Celery beat | [ ] |
 | **A6** | `domains/assets` facade + testovi + docs | [ ] |
 | **B1–B2** | M1.6 UI cutover (outbound + inbound produkcija) | [x] |
-| **B3** | M1.7 uklanjanje `super_integration` | [~] |
+| **B3** | M1.7 uklanjanje izravnog Super klijenta iz API-ja ([ADR-0017](ADR-0017-fiscal-gateway-model-a.md); Super ostaje Model A) | [~] |
 | **B4–B6** | M1.8 Track 0 + PTS runbook + produkcijski cutover | [~] |
 | D | ADR-0015 retrospective | [ ] |
 

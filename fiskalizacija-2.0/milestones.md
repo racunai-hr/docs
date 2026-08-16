@@ -10,7 +10,7 @@
 | M1.4 | MPS servis + AMS (Fine Star OIB) | [x] | 0.10, M1.1 |
 | M1.5 | AS4 gateway (Java/Spring) | [x] | 0.11, M1.1 |
 | M1.6 | Integracija racunAI UI (invoices/expenses) | [x] | M1.3–M1.5 |
-| M1.7 | Uklanjanje `super_integration` | [~] | M1.6 — deprecated + rollback flag; app ostaje za povijest |
+| M1.7 | Uklanjanje izravnog Super klijenta iz API-ja | [~] | M1.6 — reinterpretacija [ADR-0017](../architecture/ADR-0017-fiscal-gateway-model-a.md): Super ostaje Model A; maknuti `SuperClient` iz `racunai-api` nakon kanonskog API-ja i `SuperAdaptera` |
 | M1.8 | PTS test (čl. 63.) + produkcija Fine Star | [~] | 0.7–0.8 — cutover migracija 0008; stability window do 2026-08-01 |
 
 **M1.8 napredak:** Runbook A–E izvršen; migracija `0008_fiscal_prod_cutover` aktivira DIRECT prod. **Verified** retci u matrici popunjeni. **Preostaje:** CIS JIR (S003 cert), PU AMS registracija, NKD → FINA prod cert, završetak 30-day window.
