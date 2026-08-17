@@ -51,7 +51,7 @@ Maturity se ažurira pri zatvaranju milestonea ili kvartalnom reviewu.
 Platform ....... L2    (multi-tenant, auth, Celery — bez MFA)
 Core ........... L3    (tenanti, postavke, korisnici)
 Finance ........ L3    (GL, temeljnice, Bilanca/RDG, saldakonti)
-Tax ............ L3    (PDV, PDV-S; ledger I-RA/U-RA L2; vidi docs/tax/FORM_REGISTRY.md)
+Tax ............ L3    (PDV, PDV-S; VAT ledger L2; I-RA/U-RA kontrolni pregledi — ADR-0019; vidi docs/tax/FORM_REGISTRY.md)
 Sales .......... L2    (računi, PDF, eRačun — bez ponuda/otpremnica)
 Purchasing ..... L2    (troškovi, F1, inbound — bez PO/likvidature)
 Integration .... L3    (UBL, AS4, MPS, OTP — fiskalizacija u tijeku)

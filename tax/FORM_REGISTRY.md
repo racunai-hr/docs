@@ -2,11 +2,11 @@
 
 ```text
 Status: Living document (SSOT)
-Last updated: 2026-07-10
-Related: docs/tax/README.md, docs/architecture/DOMAIN_MAP.md
+Last updated: 2026-08-17
+Related: docs/tax/README.md, docs/architecture/DOMAIN_MAP.md, docs/architecture/ADR-0019-tax-classification-engine.md
 ```
 
-**Jedini izvor istine** za sve hrvatske porezne knjige, obrasce za predaju i njihovu zrelost u racunAI-u.
+**Jedini izvor istine** za hrvatske porezne obrasce za predaju, interne kontrolne preglede i njihovu zrelost u racunAI-u.
 
 Ažurirati pri zatvaranju Tax milestonea ili dodavanju novog obrasca — **bez novog ADR-a** (konvencija unutar ADR-0010).
 
@@ -74,17 +74,17 @@ Novi obrazac bez `payload.json` kanona zahtijeva obrazloženje u PR-u i ažurira
 
 ---
 
-## Knjige (evidencije) — nisu obrasci za predaju
+## Kontrolni pregledi — nisu obrasci za predaju
 
-Porezne knjige generiraju se iz poslovnih dokumenata i temeljnica. Ne idu na ePoreznu kao zasebni XML obrasci.
+Interni pregledi izlaznih i ulaznih dokumenata. Generiraju se iz `VATLedgerEntry`. Ne idu na ePoreznu kao zasebni XML obrasci. Od NN 11/2026 nisu zakonski propisane knjige I-RA/U-RA — vidi [`ADR-0019`](../architecture/ADR-0019-tax-classification-engine.md).
 
-| Knjiga | Biz | Maturity | Source | Return model | Canonical Artifact | Napomena |
-|--------|-----|----------|--------|--------------|-------------------|----------|
-| I-RA | P0 | L2 | Invoice, JE | — | — | Izlazni PDV; `VATLedgerEntry.LEDGER_I_RA` |
-| U-RA | P0 | L2 | Expense, JE | — | — | Ulazni PDV; box 303 izvor; `LEDGER_U_RA` |
-| VAT knjiga (agregat) | P0 | L2 | I-RA + U-RA | — | — | `generate_vat_ledger()` → `VATLedgerEntry` |
+| Pregled | Biz | Maturity | Source | Return model | Canonical Artifact | Napomena |
+|---------|-----|----------|--------|--------------|-------------------|----------|
+| I-RA — kontrolni pregled | P0 | L2 | `VATLedgerEntry` (izlazni) | — | — | Interna oznaka `LEDGER_I_RA`; nije službeni obrazac |
+| U-RA — kontrolni pregled | P0 | L2 | `VATLedgerEntry` (ulazni) | — | — | Interna oznaka `LEDGER_U_RA`; nije službeni obrazac |
+| VAT ledger (projekcija) | P0 | L2 | Invoice, Expense, JE | — | — | `generate_vat_ledger()` → `VATLedgerEntry`; kanonski porezni SSOT |
 
-Implementacija: [`accounting/services/vat.py`](../../erp/app/accounting/services/vat.py). Ciljna putanja: `domains/tax/ledger/`.
+Implementacija: [`accounting/services/vat.py`](../../api/app/accounting/services/vat.py). Ciljna putanja: `domains/tax/ledger/`.
 
 ---
 

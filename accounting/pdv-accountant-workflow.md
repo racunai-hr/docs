@@ -11,8 +11,8 @@ Operativni vodič za mjesečni Obrazac PDV u racunAI adminu. Tehnička arhitektu
 ## Mjesečni workflow
 
 ```text
-1. Generiraj PDV knjige
-2. Provjeri knjige (admin / PDV-S export)
+1. Generiraj PDV ledger
+2. Provjeri kontrolne preglede (admin / PDV-S export)
 3. Generiraj draft PDV obrasca
 4. Preuzmi unsigned XML → potpiši (Finin cert / ePorezna)
 5. Predaj na ePoreznu (PDV + PDV-S)
@@ -21,13 +21,13 @@ Operativni vodič za mjesečni Obrazac PDV u racunAI adminu. Tehnička arhitektu
 8. (Opcionalno, Alati) Upload potpisani XML ili Reconciliation
 ```
 
-### Korak 1 — Generiraj PDV knjige
+### Korak 1 — Generiraj PDV ledger
 
-**Admin → Accounting → PDV razdoblja** → odaberi razdoblje → akcija **Generiraj PDV knjige**.
+**Admin → Accounting → PDV razdoblja** → odaberi razdoblje → akcija **Generiraj PDV knjige** (admin labela; to je ledger, ne zakonska knjiga — vidi [`ADR-0019`](../architecture/ADR-0019-tax-classification-engine.md)).
 
-Knjige se grade iz:
-- izlaznih računa (I-RA) → boxovi 201 / 202 / 203 prema stopi,
-- ulaznih troškova (U-RA) → box 303,
+Ledger se gradi iz:
+- izlaznih računa → boxovi 201 / 202 / 203 prema stopi (I-RA kontrolni pregled),
+- ulaznih troškova → box 303 (U-RA kontrolni pregled),
 - stavki temeljnice (konto 1400, 24001*).
 
 Ručne korekcije (`is_manual=True`) ostaju pri ponovnom generiranju.
@@ -39,9 +39,9 @@ docker compose exec django python manage.py generate_vat_ledger \
   --tenant finestar --year 2026 --month 4 --replace
 ```
 
-### Korak 2 — Provjeri knjige
+### Korak 2 — Provjeri kontrolne preglede
 
-- Pregledaj **PDV knjige** (inline na razdoblju ili VATLedgerEntry admin).
+- Pregledaj **PDV ledger** (inline na razdoblju ili VATLedgerEntry admin) i I-RA/U-RA kontrolne preglede.
 - Export **PDV-S XLSX** za ručnu provjeru (legacy; obrazac PDV ne ovisi o XLSX-u).
 - Sažetak **PDV za uplatu** (Podatak400) prikazan u listi razdoblja.
 
@@ -50,7 +50,7 @@ docker compose exec django python manage.py generate_vat_ledger \
 Akcija **Generiraj draft PDV obrasca**.
 
 ERP:
-1. Agregira knjige po boxovima,
+1. Agregira ledger po boxovima,
 2. gradi `PdvPayload`,
 3. renderira unsigned XML,
 4. validira protiv XSD sheme,

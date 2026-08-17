@@ -128,7 +128,7 @@ erDiagram
 | base_amount, vat_amount | DecimalField | Osnovica i PDV |
 | source_type | CharField | invoice / expense / journal |
 
-**Veze:** generira se iz `generate_vat_ledger()` → agregira se u `build_pdv_payload()`. Append-only unutar razdoblja.
+**Veze:** danas se generira iz `generate_vat_ledger()` → agregira se u `build_pdv_payload()`. Append-only unutar razdoblja. Kanonski je obnovljiva porezna projekcija (ADR-0019); potrošači (PDV, ZP, PDV-S, I-RA/U-RA kontrolni pregledi) ne klasificiraju izvorni dokument ponovo.
 
 ### 8. VATReturn (`accounting.VATReturn`)
 

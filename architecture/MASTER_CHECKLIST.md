@@ -50,7 +50,7 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | 15 | PDV obrazac (v11.0 pipeline) | [x] | Frozen arch ADR-0007; CI regresija |
 | 16 | PDV boxovi 610+ (EU, reverse charge, OSS) | [x] | 610–615, 207/307, 209/210, 204/214/215/308 — `PDV_MAPPING_VERSION = 7`; vidi [`ADR-0014`](ADR-0014-tax-domain-completion.md) |
 | 17 | PDV-S | [~] | Aggregate/render/parse; ePorezna manual only |
-| 18 | I-RA / U-RA (knjige PDV) | [~] | `generate_vat_ledger`; vidi [`FORM_REGISTRY.md`](../tax/FORM_REGISTRY.md) |
+| 18 | PDV evidencije izlaznih i ulaznih dokumenata — interni kontrolni pregledi | [~] | `generate_vat_ledger`; I-RA/U-RA nisu zakonske knjige — [`ADR-0019`](ADR-0019-tax-classification-engine.md), [`FORM_REGISTRY.md`](../tax/FORM_REGISTRY.md) |
 | 19 | ZP | [~] | L2 Gen/Parse/Manual Sub + admin + `verify_zp_period` — [`ZP_ARCHITECTURE.md`](../tax/ZP_ARCHITECTURE.md); G2B v2 backlog |
 | 20 | JOPPD | [ ] | Planned candidate v1.5 — potvrda nakon Sprint 3 gate; [`FORM_REGISTRY.md`](../tax/FORM_REGISTRY.md) |
 | 21 | Submission audit (SubmissionEvent) | [x] | ADR-0009 frozen |
