@@ -11,7 +11,7 @@ Related: ADR-0010-domain-architecture.md, ADR-0011-architecture-freeze-v1.0.md,
          ADR-0018-django-eracun-traffic-migration.md
 ```
 
-> **Amendment (ADR-0018):** `SuperAdapter` je implementiran i staging-verificiran. Migracija Django eRačun prometa nije dio ovog ADR-a; uređuje je [`ADR-0018-django-eracun-traffic-migration.md`](ADR-0018-django-eracun-traffic-migration.md). Odluke u §Decision ostaju neizmijenjene.
+> **Amendment (ADR-0018):** `SuperAdapter` je implementiran i staging-verificiran. Migracija Django eRačun prometa nije dio ovog ADR-a; uređuje je [`ADR-0018-django-eracun-traffic-migration.md`](ADR-0018-django-eracun-traffic-migration.md) (**Accepted**). Odluke u §Decision ostaju neizmijenjene. Prihvaćanje ADR-0018 ne odobrava Django implementaciju.
 
 ## Status
 

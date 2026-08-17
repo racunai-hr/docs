@@ -1,7 +1,7 @@
 # ADR-0018 — Django eRačun Traffic Migration to Fiscal Gateway
 
 ```text
-Status: Proposed
+Status: Accepted
 Date: 2026-08-17
 Type: Integration
 Supersedes: —
@@ -10,7 +10,7 @@ Related: ADR-0017-fiscal-gateway-model-a.md, FISCAL_GATEWAY_CANONICAL_API.md
 
 ## Status
 
-**Proposed** — Django više ne smije slati novi eRačun promet izravno na Super. Ovaj ADR zaključava cutover, vlasništvo dokumenta i rollback. Ne mijenja ADR-0017. Implementacija čeka zasebno prihvaćanje.
+**Accepted** — Django više ne smije slati novi eRačun promet izravno na Super. Ovaj ADR zaključava cutover, vlasništvo dokumenta i rollback. Ne mijenja ADR-0017. Prihvaćanje ne odobrava Django implementaciju; prvi outbound slice čeka zaseban impl. plan.
 
 ## Context
 
@@ -36,6 +36,8 @@ Django ne bira gateway booleanom. Za svaki `taxpayer_oib` postoji **outbound rou
 | `SUSPENDED` | Novi izlazni dokumenti se ne šalju; čeka operatera |
 | `RETIRED` | Izlazni legacy put za taj OIB je ugašen |
 
+Nedostajuća `outbound_route` je fail-safe `LEGACY`.
+
 Obavezna polja rute, najmanje:
 
 - `taxpayer_oib`
@@ -59,7 +61,7 @@ Obavezna polja rute, najmanje:
 
 - provider konfiguriran
 - credential dostupan
-- capability `outbound_send` postoji
+- capability `outbound_send` postoji (`GET /v1/providers/{provider}/capabilities`)
 - readiness je u redu
 - OIB je ovlašten za taj način
 
@@ -75,22 +77,37 @@ Vlasnik transporta **nije** trenutak kreiranja nacrta.
 | Nacrt bez ijednog provider pokušaja | Smije uzeti gateway rutu nakon aktivacije |
 | Nakon prvog dispatch claima | Ruta se više ne mijenja |
 
-Na dokumentu se trajno čuva:
+`gateway_document_id` **jest** kanonski `document_id` koji izdaje racunAI. Nije drugi identitet.
 
-- `transport_owner` — `LEGACY_SUPER_CLIENT` ili `FISCAL_GATEWAY`
+Na dokumentu se trajno čuva, i to **atomski u istoj transakciji** prvog dispatch claima kad je vlasnik gateway:
+
+- `transport_owner = FISCAL_GATEWAY`
 - `routing_generation`
-- `bound_provider`
-- `gateway_document_id` — kad je vlasnik gateway
+- `bound_provider = super`
+- kanonski `document_id`
+- send `Idempotency-Key`
+
+Zabranjeno je stanje u kojem dokument ima gateway UUID, a još nema zaključanog vlasnika ili `routing_generation`.
+
+Outbound send ima svoj trajni idempotency ključ. Svaki payment ili druga zasebna naredba ima svoj stabilni command id / idempotency ključ. Svi koriste isti `document_id` i isti `transport_owner`. Query/poll ne stvara novi send ključ niti novi attempt.
+
+```text
+document_id
+├── send_idempotency_key
+├── payment_1_idempotency_key
+├── payment_2_idempotency_key
+└── status queries
+```
 
 ### 4. Atomarni routing pod konkurencijom
 
 Prije bilo kojeg mrežnog poziva Django mora:
 
 1. Zaključati dokument za dispatch
-2. Pročitati trenutni `outbound_route` za OIB
-3. Upisati `transport_owner` i `routing_generation`
+2. Pročitati trenutni `outbound_route` za OIB (nedostajuća = `LEGACY`)
+3. U **jednoj** transakciji upisati cijeli skup iz §3 (`transport_owner`, `routing_generation`, `bound_provider`, `document_id`, send `Idempotency-Key`)
 4. Commitati
-5. Tek tada ići na mrežu
+5. Tek tada ići na `/v1`
 6. Kasniji zadaci čitaju zapis dokumenta, ne trenutni OIB flag
 
 Dva workera ne smiju isti dokument podijeliti između `SuperClienta` i gatewaya.
@@ -103,7 +120,9 @@ Django tada:
 
 - ne šalje isti dokument kroz `SuperClient`
 - ne otvara novi `document_id`
-- razrješava prethodni pokušaj istim `document_id` i istim `Idempotency-Key` kroz gateway upit
+- razrješava prethodni **send** pokušaj istim `document_id` i istim send `Idempotency-Key` kroz gateway upit (`GET /v1/outbound/documents/{document_id}`)
+
+Send ključ se ne koristi za payment. Payment razrješava vlastitim command idempotency ključem, istim `document_id` i istim `transport_owner`.
 
 To je ista invarijanta kao ADR-0017 §4 i kanonski ugovor, primijenjena na Django hop.
 
@@ -125,17 +144,21 @@ Novi dokumenti smiju se vratiti na `LEGACY` samo ako **nema** gateway pokušaja 
 
 ### 7. Discovery ostaje kanonski ugovor
 
-Ovaj ADR ne izmišlja `GET /v1/providers`. Django smije aktivirati rutu samo prema već specificiranom kanonskom ugovoru. Točan oblik discovery poziva mora biti naveden **prije** implementacije, kao dopuna kanonskog API-ja ako ugovor to još ne pokriva.
+Ovaj ADR ne izmišlja `GET /v1/providers`. Readiness za `ACTIVE` koristi već specificirani `GET /v1/providers/{provider}/capabilities` (`outbound_send`) plus operativnu potvrdu credentiala. Nema nove discovery rute ni dopune kanonskog ugovora za ovaj korak.
 
 ### 8. Životni ciklus po smjeru
 
 | Smjer | Tko vodi dok je dokument legacy | Prvi impl. slice ovog ADR-a |
 |-------|----------------------------------|-----------------------------|
-| Izlaz: slanje, poll, plaćanje | `SuperClient` | **Da** — novi izlazni dokumenti |
+| Izlaz: slanje, poll, plaćanje | `SuperClient` | **Da** — samo OIB-ovi čiji je trenutni izlaz `SuperClient` / `outbound_provider=super` |
 | Ulaz: pull, UBL, workflow | stari put | Ne — kasniji slice |
 | Pravno odbijanje (e-reporting reject) | stari put | Ne — kasniji slice |
 
+Django `DIRECT` / `fine_star_self` ostaje na postojećem putu do kasnijeg slicea. `racunai_direct` za tuđe OIB-ove ostaje izvan opsega.
+
 Dokument ostaje na putu na kojem je prvi put preuzet. Miješanje polla, plaćanja ili rejecta između `SuperClienta` i gatewaya za isti dokument nije dopušteno.
+
+Kad je `transport_owner = FISCAL_GATEWAY`, kasniji poll i payment idu samo na `/v1`, nikad na `SuperClient`. To je pravilo vlasništva, ne dijeljenja send idempotency ključa.
 
 ### 9. Gašenje `SuperClienta`
 
@@ -161,6 +184,7 @@ Ovaj ADR ne implementira:
 - Super sandbox ni webhook
 - public `/v1` na Traefiku
 - `racunai_direct` za tuđe OIB-ove
+- prvi Django outbound slice (čeka zaseban impl. plan)
 
 ## Consequences
 
@@ -175,14 +199,14 @@ Ovaj ADR ne implementira:
 
 - `READY` i `SUSPENDED` zahtijevaju operativni postupak; boolean cutover bio bi brži i opasniji
 - Nacrti mogu čekati dok ruta nije `ACTIVE` ili vraćena na `LEGACY` pod uvjetima §6
-- Discovery mora biti dopunjen u kanonskom ugovoru prije koda
 - `SuperClient` ostaje u API-ju dok svi smjerovi nisu migrirani
+- Prihvaćanje ovog ADR-a ne pokreće Django kod
 
 ### Follow-up
 
-- [ ] Prihvatiti ovaj ADR prije Django implementacije
-- [ ] Specificirati discovery / readiness poziv u kanonskom ugovoru (bez izmišljanja `GET /v1/providers`)
-- [ ] Implementirati `outbound_route` + stamp na dokumentu + atomarni claim
-- [ ] Prvi slice: novi izlazni dokumenti kroz `/v1`
-- [ ] Kasniji sliceovi: ulaz i pravno odbijanje
+- [x] Prihvatiti ovaj ADR prije Django implementacije
+- [x] Discovery / readiness — postojeći `GET /v1/providers/{provider}/capabilities`; nema `GET /v1/providers`
+- [ ] Implementirati `outbound_route` + atomarni stamp iz §3/§4 + claim
+- [ ] Prvi slice: novi izlazni dokumenti kroz `/v1` za postojeći Django `SUPER` put
+- [ ] Kasniji sliceovi: Django `DIRECT` / `fine_star_self`, ulaz i pravno odbijanje
 - [ ] Ukloniti `SuperClient` tek po §9
