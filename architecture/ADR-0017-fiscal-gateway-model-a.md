@@ -7,8 +7,11 @@ Type: Integration
 Supersedes: —
 Related: ADR-0010-domain-architecture.md, ADR-0011-architecture-freeze-v1.0.md,
          FISCAL_GATEWAY_CANONICAL_API.md, fiskalizacija-2.0/milestones.md,
-         porezna/zahtjevi/posrednik/README.md
+         porezna/zahtjevi/posrednik/README.md,
+         ADR-0018-django-eracun-traffic-migration.md
 ```
+
+> **Amendment (ADR-0018):** `SuperAdapter` je implementiran i staging-verificiran. Migracija Django eRačun prometa nije dio ovog ADR-a; uređuje je [`ADR-0018-django-eracun-traffic-migration.md`](ADR-0018-django-eracun-traffic-migration.md). Odluke u §Decision ostaju neizmijenjene.
 
 ## Status
 
@@ -149,6 +152,7 @@ M1.7 više ne znači „maknuti Super kao posrednika“. Znači maknuti izravni 
 ### Follow-up
 
 - [x] Kanonski API `racunai-api` ↔ `intermediary` — [`FISCAL_GATEWAY_CANONICAL_API.md`](FISCAL_GATEWAY_CANONICAL_API.md)
-- [ ] `SuperAdapter` u `intermediary`; migracija prometa; uklanjanje izravnog `SuperClient` poziva iz API-ja
+- [x] `SuperAdapter` u `intermediary` — implementiran i staging-verificiran
+- [ ] Migracija Django eRačun prometa i uklanjanje izravnog `SuperClient` poziva — [`ADR-0018-django-eracun-traffic-migration.md`](ADR-0018-django-eracun-traffic-migration.md)
 - [ ] Konfiguracija i credentiali po `legal_entity / taxpayer_subject + provider`
 - [ ] Evidencija FiskAplikacija potvrde prije aktivacije novog posrednika

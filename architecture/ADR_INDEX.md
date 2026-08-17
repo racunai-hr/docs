@@ -17,6 +17,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0013](ADR-0013-finance-domain-stabilization.md) | Finance Domain Stabilization (Sprint 2) | Governance | Accepted | 2026-07-09 | — |
 | [ADR-0014](ADR-0014-tax-domain-completion.md) | Tax Domain Completion (Sprint 3) | Governance | Accepted | 2026-07-10 | — |
 | [ADR-0017](ADR-0017-fiscal-gateway-model-a.md) | Fiscal Gateway (Model A) | Integration | Accepted | 2026-08-16 | — |
+| [ADR-0018](ADR-0018-django-eracun-traffic-migration.md) | Django eRačun Traffic Migration to Fiscal Gateway | Integration | Proposed | 2026-08-17 | — |
 
 ---
 
@@ -35,7 +36,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 |----------|------|
 | [banking-v2.md](banking-v2.md) | Banking v2 arhitektura (frozen) |
 | [submission-module-backlog.md](submission-module-backlog.md) | Submission backlog |
-| [FISCAL_GATEWAY_CANONICAL_API.md](FISCAL_GATEWAY_CANONICAL_API.md) | Kanonski API v1 `racunai-api` ↔ `intermediary` (ADR-0017) |
+| [FISCAL_GATEWAY_CANONICAL_API.md](FISCAL_GATEWAY_CANONICAL_API.md) | Kanonski API v1 `racunai-api` ↔ `intermediary` (ADR-0017; cutover Django prometa: ADR-0018) |
 
 ---
 
@@ -49,6 +50,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-07-10 | Sprint 3 zatvoren — ADR-0014; ZP lifecycle, PDV 610+/RC/OSS, North Star ~25% |
 | 2026-08-16 | ADR-0017 Accepted — Fiscal Gateway (Model A); 0015/0016 ostaju rezervirani sprint retroi |
 | 2026-08-16 | Kanonski API v1 — [`FISCAL_GATEWAY_CANONICAL_API.md`](FISCAL_GATEWAY_CANONICAL_API.md) |
+| 2026-08-17 | ADR-0018 Proposed — Django eRačun traffic migration; ADR-0017 editorial follow-up (`SuperAdapter` odvojen od migracije prometa) |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---
