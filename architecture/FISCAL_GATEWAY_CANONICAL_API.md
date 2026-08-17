@@ -6,8 +6,10 @@ Ugovor između `racunai-api` i `intermediary`. Invarijante: [`ADR-0017-fiscal-ga
 Status: Accepted (spec v1)
 Date: 2026-08-16
 Type: Integration contract
-Related: ADR-0017
+Related: ADR-0017, ADR-0018
 ```
+
+> **Amendment (2026-08-17, ADR-0018):** zaseban outbound provider configuration/readiness resurs. `inbound-binding` ostaje samo adresa zaprimanja. `POST /v1/outbound/documents` ne smije zahtijevati FiskAplikacija `ACTIVE` inbound binding. Nema `GET /v1/providers` liste. Django `outbound_route` nije dio ovog ugovora.
 
 Ovo je ljudski čitljiva specifikacija i skica strojnog ugovora. Nije OpenAPI YAML, nije implementacija, nije shema baze.
 
@@ -151,9 +153,9 @@ Scopeovi:
 
 | Scope | Namjena |
 |-------|---------|
-| `gateway.read` | GET dokumenti, evidence, capabilities, binding, reconciliation |
+| `gateway.read` | GET dokumenti, evidence, capabilities, inbound-binding, outbound-provider, reconciliation |
 | `gateway.write` | slanje, naplata, workflow, e-reporting, lookup, pokretanje reconciliationa |
-| `gateway.admin` | binding, FiskAplikacija potvrda, credentiali |
+| `gateway.admin` | inbound-binding, FiskAplikacija potvrda, outbound-provider, credentiali |
 
 Svaki zahtjev nosi `X-Request-Id`. Audit bilježi `iss`/`sub`, operaciju, `taxpayer_oib` i `X-Request-Id`.
 
@@ -172,7 +174,7 @@ Usporedba potpisa je constant-time. Isti `event_id` i isti `X-Racunai-Webhook-Id
 
 ### 5.3 Credentiali posrednika
 
-Write-only na binding resursu. GET nikad ne vraća tajne.
+Write-only na `inbound-binding` i na `outbound-provider`. GET nikad ne vraća tajne. Isti `credential_ref` smije se dijeliti između ulaza i izlaza; statusi ostaju neovisni.
 
 ---
 
@@ -200,6 +202,23 @@ Aktivacija je fail-closed: bez potpune evidencije binding ostaje `PENDING_CONFIR
 
 Dokument ostaje trajno na `bound_provider` s kojeg je zaprimljen ili poslan. Stari adapter ostaje za status, audit i reconciliation.
 
+Ovaj resurs **nije** izlazna routing odluka ([ADR-0018 §2](ADR-0018-django-eracun-traffic-migration.md)). `BINDING_NOT_ACTIVE` vrijedi za ulazne naredbe i za aktivaciju zaprimanja. Ne smije biti preduvjet `POST /v1/outbound/documents`.
+
+### 6.1 Outbound provider configuration
+
+Jedan outbound provider zapis po `taxpayer_oib`. Nije inbound binding i nije Django `outbound_route`.
+
+| Status | Značenje |
+|--------|----------|
+| `DISABLED` | namjerno ugašen; izlazne naredbe se ne šalju posredniku |
+| `CONFIGURED` | provider + `credential_ref` spremljeni; tajne nisu u GET-u |
+
+`PUT /v1/taxpayers/{oib}/outbound-provider` sprema `provider` i write-only `credential_ref`. `GET` vraća `provider`, `status` i outbound readiness, bez tajni.
+
+`POST /v1/outbound/documents` i `POST .../payments` koriste ovaj zapis za `bound_provider` i credential. Nedostaje zapis, `DISABLED` ili nedostupan credential: `PROVIDER_NOT_CONFIGURED`. Gateway tada **ne** zove posrednika. To nije `AMBIGUOUS_PROVIDER_RESULT` i ne zahtijeva GET-petlju kao nakon timeouta.
+
+Outbound dokument ne zahtijeva inbound `binding_id`. `bound_provider` dolazi iz ovog zapisa.
+
 ---
 
 ## 7. Idempotentnost
@@ -210,7 +229,7 @@ Dokument ostaje trajno na `bound_provider` s kojeg je zaprimljen ili poslan. Sta
 - prijava naplate
 - e-reporting odbijanje
 - `workflow-status` ako ima vanjski učinak
-- `PUT` bindinga i FiskAplikacija potvrda
+- `PUT` inbound-bindinga, outbound-providera i FiskAplikacija potvrda
 - pokretanje reconciliationa
 
 Pravilo:
@@ -244,12 +263,15 @@ Gateway ne šalje ništa posredniku dok `attempt_id` nije zapisan. Timeout prema
 | `INVALID_UBL` | 400 | ne |
 | `UNAUTHORIZED_SUBJECT` | 403 | ne |
 | `BINDING_NOT_ACTIVE` | 409 | ne |
+| `PROVIDER_NOT_CONFIGURED` | 409 | ne |
 | `CAPABILITY_NOT_SUPPORTED` | 409 | ne |
 | `IDEMPOTENCY_CONFLICT` | 409 | ne |
 | `DOCUMENT_NOT_FOUND` | 404 | ne |
 | `PROVIDER_UNAVAILABLE` | 503 | da |
 | `AMBIGUOUS_PROVIDER_RESULT` | 409 | ne |
 | `REQUIRES_REVIEW` | 409 | ne |
+
+`BINDING_NOT_ACTIVE` vrijedi samo za inbound / FiskAplikacija. `PROVIDER_NOT_CONFIGURED` je lokalni blok **prije** HTTP-a prema posredniku (nema outbound-providera ili credentiala). Smije se vratiti kao HTTP 409 ili kao `202` s `processing.reason=PROVIDER_NOT_CONFIGURED`. Nije `AMBIGUOUS_PROVIDER_RESULT` i ne mapira se u Django `sent`.
 
 `AMBIGUOUS_PROVIDER_RESULT` i `REQUIRES_REVIEW` ostavljaju dokument na `UNKNOWN` osi; klijent ne smije pretpostaviti uspjeh.
 
@@ -261,10 +283,12 @@ Sve naredbe (`POST`/`PUT`) zahtijevaju `Idempotency-Key` osim ako je u tablici n
 
 | Metoda | Put | Scope | Namjena |
 |--------|-----|-------|---------|
-| `GET` | `/v1/providers/{provider}/capabilities` | read | adapter ne smije oglasiti što posrednik ne radi |
-| `GET` | `/v1/taxpayers/{oib}/inbound-binding` | read | trenutni i povijesni binding; bez tajni |
-| `PUT` | `/v1/taxpayers/{oib}/inbound-binding` | admin | predloži provider + credentiali → `PENDING_CONFIRMATION` |
-| `POST` | `/v1/taxpayers/{oib}/inbound-binding/fiskaplikacija-confirmation` | admin | evidentiraj potvrdu; fail-closed aktivacija |
+| `GET` | `/v1/providers/{provider}/capabilities` | read | adapter ne smije oglasiti što posrednik ne radi; opcionalno `?taxpayer_oib=` |
+| `GET` | `/v1/taxpayers/{oib}/inbound-binding` | read | trenutni i povijesni inbound binding; bez tajni |
+| `PUT` | `/v1/taxpayers/{oib}/inbound-binding` | admin | predloži inbound provider + credentiali → `PENDING_CONFIRMATION` |
+| `POST` | `/v1/taxpayers/{oib}/inbound-binding/fiskaplikacija-confirmation` | admin | evidentiraj potvrdu; fail-closed aktivacija zaprimanja |
+| `GET` | `/v1/taxpayers/{oib}/outbound-provider` | read | outbound provider + readiness; bez tajni |
+| `PUT` | `/v1/taxpayers/{oib}/outbound-provider` | admin | spremi outbound provider + `credential_ref` |
 | `POST` | `/v1/participants/lookup` | write | shema + identifier + vrsta dokumenta/usluge |
 | `POST` | `/v1/outbound/documents` | write | predaj UBL |
 | `GET` | `/v1/outbound/documents/{document_id}` | read | osi statusa + `provider_refs` |
@@ -282,6 +306,8 @@ Sve naredbe (`POST`/`PUT`) zahtijevaju `Idempotency-Key` osim ako je u tablici n
 
 ### 9.1 Capabilities
 
+Nema `GET /v1/providers` liste. Readiness po OIB-u: `GET /v1/providers/{provider}/capabilities?taxpayer_oib=`.
+
 ```json
 {
   "provider": "super",
@@ -293,6 +319,43 @@ Sve naredbe (`POST`/`PUT`) zahtijevaju `Idempotency-Key` osim ako je u tablici n
     "inbound_e_reporting_rejection": true,
     "inbound_workflow_status": true,
     "participant_lookup": true
+  },
+  "outbound_readiness": {
+    "configured": true,
+    "credential_available": true
+  },
+  "inbound_readiness": {
+    "active_binding": false
+  }
+}
+```
+
+Bez `taxpayer_oib` polja readiness ostaju `false`. Django `READY` (ADR-0018) smije ovisiti samo o `supports.outbound_send` i `outbound_readiness`. `inbound_readiness.active_binding` je informativno i **nije** uvjet izlaznog slanja.
+
+### 9.1a Outbound provider
+
+```http
+PUT /v1/taxpayers/36619131370/outbound-provider
+Idempotency-Key: 0198f0a2-ob-0001
+```
+
+```json
+{
+  "provider": "super",
+  "credential_ref": "super-finestar"
+}
+```
+
+GET odgovor (bez tajne):
+
+```json
+{
+  "taxpayer_oib": "36619131370",
+  "provider": "super",
+  "status": "CONFIGURED",
+  "outbound_readiness": {
+    "configured": true,
+    "credential_available": true
   }
 }
 ```
@@ -327,6 +390,8 @@ X-Request-Id: 0198f0a2-req-0001
   "ubl": "<Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\">...</Invoice>"
 }
 ```
+
+Preduvjet: outbound-provider `CONFIGURED` i dostupan credential. Inbound FiskAplikacija binding **nije** preduvjet. HTTP `202` s `exchange_status=QUEUED` ili `SUBMITTING` nije dokaz vanjske predaje.
 
 Odgovor `202`:
 

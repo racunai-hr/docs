@@ -206,6 +206,7 @@ Ovaj ADR ne implementira:
 
 - [x] Prihvatiti ovaj ADR prije Django implementacije
 - [x] Discovery / readiness — postojeći `GET /v1/providers/{provider}/capabilities`; nema `GET /v1/providers`
+- [x] Kanonski ugovor: zaseban `outbound-provider` / `outbound_readiness` — [`FISCAL_GATEWAY_CANONICAL_API.md`](FISCAL_GATEWAY_CANONICAL_API.md) §6.1 / §9.1
 - [ ] Implementirati `outbound_route` + atomarni stamp iz §3/§4 + claim
 - [ ] Prvi slice: novi izlazni dokumenti kroz `/v1` za postojeći Django `SUPER` put
 - [ ] Kasniji sliceovi: Django `DIRECT` / `fine_star_self`, ulaz i pravno odbijanje
