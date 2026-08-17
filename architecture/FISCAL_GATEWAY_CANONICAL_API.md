@@ -9,7 +9,7 @@ Type: Integration contract
 Related: ADR-0017, ADR-0018
 ```
 
-> **Amendment (2026-08-17, ADR-0018):** zaseban outbound provider configuration/readiness resurs. `inbound-binding` ostaje samo adresa zaprimanja. `POST /v1/outbound/documents` ne smije zahtijevati FiskAplikacija `ACTIVE` inbound binding. Nema `GET /v1/providers` liste. Django `outbound_route` nije dio ovog ugovora.
+> **Amendment (2026-08-17, ADR-0018):** zaseban verzionirani outbound-provider. `inbound-binding` ostaje samo adresa zaprimanja. Dokument stampan na `outbound_provider_config_id` / generaciju / `provider_account_key`; dispatch ne čita trenutačni OIB config. Nema `GET /v1/providers` liste. Django `outbound_route` nije dio ovog ugovora.
 
 Ovo je ljudski čitljiva specifikacija i skica strojnog ugovora. Nije OpenAPI YAML, nije implementacija, nije shema baze.
 
@@ -206,18 +206,30 @@ Ovaj resurs **nije** izlazna routing odluka ([ADR-0018 §2](ADR-0018-django-erac
 
 ### 6.1 Outbound provider configuration
 
-Jedan outbound provider zapis po `taxpayer_oib`. Nije inbound binding i nije Django `outbound_route`.
+Nije inbound binding i nije Django `outbound_route`. Konfiguracija je **verzionirana**: svaki PUT koji mijenja provider, credential ili status stvara novu generaciju. Stara postaje `SUPERSEDED`. Povijesni redovi se ne prepisuju.
 
 | Status | Značenje |
 |--------|----------|
-| `DISABLED` | namjerno ugašen; izlazne naredbe se ne šalju posredniku |
-| `CONFIGURED` | provider + `credential_ref` spremljeni; tajne nisu u GET-u |
+| `CONFIGURED` | aktualna; `credential_ref` spremljen; tajne nisu u GET-u |
+| `DISABLED` | aktualna, namjerno ugašena; blokira nove dokumente i neposlane attemptove te generacije |
+| `SUPERSEDED` | povijesna; dokumenti ostaju vezani uz nju |
 
-`PUT /v1/taxpayers/{oib}/outbound-provider` sprema `provider` i write-only `credential_ref`. `GET` vraća `provider`, `status` i outbound readiness, bez tajni.
+Invarijante: unique `(taxpayer_oib, generation)`; najviše jedna aktualna (`CONFIGURED` ili `DISABLED`) po OIB-u; `generation` monotono raste; `CONFIGURED` zahtijeva neprazan `credential_ref`.
 
-`POST /v1/outbound/documents` i `POST .../payments` koriste ovaj zapis za `bound_provider` i credential. Nedostaje zapis, `DISABLED` ili nedostupan credential: `PROVIDER_NOT_CONFIGURED`. Gateway tada **ne** zove posrednika. To nije `AMBIGUOUS_PROVIDER_RESULT` i ne zahtijeva GET-petlju kao nakon timeouta.
+`GET` vraća aktualnu konfiguraciju: `id`, `generation`, `provider`, `status`, `provider_account_key`, `outbound_readiness`, `change_reason`. Nikad `credential_ref`, password ni resolver payload (ni u erroru, eventu, ni idempotency bodyju).
 
-Outbound dokument ne zahtijeva inbound `binding_id`. `bound_provider` dolazi iz ovog zapisa.
+`POST /v1/outbound/documents` stampan na dokumentu:
+
+- `outbound_provider_config_id`
+- `outbound_provider_generation`
+- `bound_provider`
+- `provider_account_key` (npr. Super `company_guid`; nije tajna)
+
+Inbound `binding_id` nije potreban. Dispatch, payment, status poll i reconciliation koriste **samo** stampanu generaciju. Promjena aktualnog OIB configa, credentiala ili inbound bindinga ne smije promijeniti provider account već stampanog dokumenta.
+
+Nema aktualne `CONFIGURED` + `ready` konfiguracije: `409 PROVIDER_NOT_CONFIGURED` **prije** persista dokumenta/attempta. Taj 409 **ne** rezervira send `Idempotency-Key`. Nakon ispravnog PUT-a klijent smije ponoviti isti ključ. Ako su dokument ili attempt već stvoreni, ključ je trajno vezan.
+
+`DISABLED` ne preusmjerava postojeće dokumente. Pending attempt ostaje na svojoj generaciji; dispatch vraća `BLOCKED_PROVIDER_DISABLED` i ne zove posrednika. Ako tajna stampane generacije više nije dostupna: `BLOCKED_CREDENTIAL_UNAVAILABLE`. Nema fallbacka na inbound binding.
 
 ---
 
@@ -239,6 +251,8 @@ Pravilo:
 Kanonski hash payloada: stabilan redoslijed JSON ključeva, bez nebitnih razlika (whitespace, redoslijed objekata).
 
 Timeout ili nepoznat rezultat: klijent radi `GET` po `document_id`, `payment_id`, `reconciliation_id` ili `Idempotency-Key`. Ne šalje novi POST s novim ključem.
+
+`PROVIDER_NOT_CONFIGURED` prije persista dokumenta ne sprema se pod send `Idempotency-Key`.
 
 Gateway ne šalje ništa posredniku dok `attempt_id` nije zapisan. Timeout prema posredniku nikad ne pokreće slijepo ponovno slanje UBL-a ([ADR-0017 §4](ADR-0017-fiscal-gateway-model-a.md)).
 
@@ -271,7 +285,7 @@ Gateway ne šalje ništa posredniku dok `attempt_id` nije zapisan. Timeout prema
 | `AMBIGUOUS_PROVIDER_RESULT` | 409 | ne |
 | `REQUIRES_REVIEW` | 409 | ne |
 
-`BINDING_NOT_ACTIVE` vrijedi samo za inbound / FiskAplikacija. `PROVIDER_NOT_CONFIGURED` je lokalni blok **prije** HTTP-a prema posredniku (nema outbound-providera ili credentiala). Smije se vratiti kao HTTP 409 ili kao `202` s `processing.reason=PROVIDER_NOT_CONFIGURED`. Nije `AMBIGUOUS_PROVIDER_RESULT` i ne mapira se u Django `sent`.
+`BINDING_NOT_ACTIVE` vrijedi samo za inbound / FiskAplikacija. `PROVIDER_NOT_CONFIGURED` je lokalni blok **prije** persista i HTTP-a prema posredniku. Nije `AMBIGUOUS_PROVIDER_RESULT` i ne mapira se u Django `sent`. Nakon persista, blok stampane generacije ide u `processing.reason`: `BLOCKED_PROVIDER_DISABLED` ili `BLOCKED_CREDENTIAL_UNAVAILABLE`.
 
 `AMBIGUOUS_PROVIDER_RESULT` i `REQUIRES_REVIEW` ostavljaju dokument na `UNKNOWN` osi; klijent ne smije pretpostaviti uspjeh.
 
@@ -287,8 +301,8 @@ Sve naredbe (`POST`/`PUT`) zahtijevaju `Idempotency-Key` osim ako je u tablici n
 | `GET` | `/v1/taxpayers/{oib}/inbound-binding` | read | trenutni i povijesni inbound binding; bez tajni |
 | `PUT` | `/v1/taxpayers/{oib}/inbound-binding` | admin | predloži inbound provider + credentiali → `PENDING_CONFIRMATION` |
 | `POST` | `/v1/taxpayers/{oib}/inbound-binding/fiskaplikacija-confirmation` | admin | evidentiraj potvrdu; fail-closed aktivacija zaprimanja |
-| `GET` | `/v1/taxpayers/{oib}/outbound-provider` | read | outbound provider + readiness; bez tajni |
-| `PUT` | `/v1/taxpayers/{oib}/outbound-provider` | admin | spremi outbound provider + `credential_ref` |
+| `GET` | `/v1/taxpayers/{oib}/outbound-provider` | read | aktualna outbound konfiguracija + readiness; bez tajni |
+| `PUT` | `/v1/taxpayers/{oib}/outbound-provider` | admin | nova generacija (`CONFIGURED` ili `DISABLED`) |
 | `POST` | `/v1/participants/lookup` | write | shema + identifier + vrsta dokumenta/usluge |
 | `POST` | `/v1/outbound/documents` | write | predaj UBL |
 | `GET` | `/v1/outbound/documents/{document_id}` | read | osi statusa + `provider_refs` |
@@ -322,7 +336,9 @@ Nema `GET /v1/providers` liste. Readiness po OIB-u: `GET /v1/providers/{provider
   },
   "outbound_readiness": {
     "configured": true,
-    "credential_available": true
+    "credential_available": true,
+    "provider_account_resolved": true,
+    "ready": true
   },
   "inbound_readiness": {
     "active_binding": false
@@ -330,7 +346,7 @@ Nema `GET /v1/providers` liste. Readiness po OIB-u: `GET /v1/providers/{provider
 }
 ```
 
-Bez `taxpayer_oib` polja readiness ostaju `false`. Django `READY` (ADR-0018) smije ovisiti samo o `supports.outbound_send` i `outbound_readiness`. `inbound_readiness.active_binding` je informativno i **nije** uvjet izlaznog slanja.
+Bez `taxpayer_oib` polja readiness ostaju `false`. `ready` je true samo kad su `configured`, `credential_available` i `provider_account_resolved` istodobno true. Django `READY` (ADR-0018) smije ovisiti samo o `supports.outbound_send` i `outbound_readiness.ready`. `inbound_readiness.active_binding` je informativno i **nije** uvjet izlaznog slanja.
 
 ### 9.1a Outbound provider
 
@@ -342,7 +358,18 @@ Idempotency-Key: 0198f0a2-ob-0001
 ```json
 {
   "provider": "super",
-  "credential_ref": "super-finestar"
+  "credential_ref": "super-fine-star-stage",
+  "status": "CONFIGURED",
+  "change_reason": "Initial staging configuration"
+}
+```
+
+Disable:
+
+```json
+{
+  "status": "DISABLED",
+  "change_reason": "Credential rotation"
 }
 ```
 
@@ -350,12 +377,18 @@ GET odgovor (bez tajne):
 
 ```json
 {
+  "id": "0198f0a2-cfg-0001",
   "taxpayer_oib": "36619131370",
   "provider": "super",
+  "generation": 1,
   "status": "CONFIGURED",
+  "provider_account_key": "company-guid-a",
+  "change_reason": "Initial staging configuration",
   "outbound_readiness": {
     "configured": true,
-    "credential_available": true
+    "credential_available": true,
+    "provider_account_resolved": true,
+    "ready": true
   }
 }
 ```
@@ -391,7 +424,7 @@ X-Request-Id: 0198f0a2-req-0001
 }
 ```
 
-Preduvjet: outbound-provider `CONFIGURED` i dostupan credential. Inbound FiskAplikacija binding **nije** preduvjet. HTTP `202` s `exchange_status=QUEUED` ili `SUBMITTING` nije dokaz vanjske predaje.
+Preduvjet: aktualni outbound-provider `CONFIGURED` i `outbound_readiness.ready`. Inbound FiskAplikacija binding **nije** preduvjet. Dokument se stampan na tu generaciju. HTTP `202` s `exchange_status=QUEUED` ili `SUBMITTING` nije dokaz vanjske predaje.
 
 Odgovor `202`:
 

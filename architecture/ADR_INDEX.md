@@ -53,6 +53,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-17 | ADR-0018 Proposed — Django eRačun traffic migration; ADR-0017 editorial follow-up (`SuperAdapter` odvojen od migracije prometa) |
 | 2026-08-17 | ADR-0018 Accepted — cutover/vlasništvo/rollback; prvi Django outbound slice i dalje čeka zaseban impl. plan |
 | 2026-08-17 | Kanonski API — outbound-provider odvojen od inbound-bindinga (ADR-0018 §2); Slice 0 intermediary čeka ovaj ugovor |
+| 2026-08-17 | Kanonski API — verzionirani outbound-provider, document stamp, DISABLED, 409 ne rezervira send ključ |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---
