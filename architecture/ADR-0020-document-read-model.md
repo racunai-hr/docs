@@ -284,8 +284,8 @@ Buduće operativne akcije zovu postojeće domain servise. Read model se ne pretv
 
 ### Follow-up
 
-- [ ] Implementacija assembler + API (čeka izričiti GO)
-- [ ] Amendment `DOMAIN_MAP.md` / `DOMAIN_DEPENDENCY_MAP.md`: Reporting smije read-only čitati Sales, Purchasing, Banking, Integration
+- [x] Implementacija assembler + API
+- [x] Amendment `DOMAIN_MAP.md` / `DOMAIN_DEPENDENCY_MAP.md`: Reporting smije read-only čitati Sales, Purchasing, Banking, Integration
 - [ ] Poseban Tax ADR: document-level membership u verziji `VATReturn` / payload snapshot
 - [ ] Ako se doda financijski fingerprint dokumenta, kontrola „ažurirano nakon knjiženja” može postati mismatch
 

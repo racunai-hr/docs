@@ -33,7 +33,7 @@ Maturity se ažurira pri zatvaranju milestonea ili kvartalnom reviewu.
 | **Purchasing** | L2 | `domains/purchasing/` (+ `ai/`) | `expenses` | Importira Core, MDM, Integration |
 | **Integration** | L3 | `domains/integration/` | `integrations`, `fiscal_gateway`, `super_integration`, `ubl` | Importira Core; ne Finance/Tax direktno |
 | **Banking** | L3 | `domains/banking/` | `banking`, `payments` | Importira Core, Finance (eventi) |
-| **Reporting** | L2 | `domains/reporting/` (+ `ai/`) | `accounting/services/reports.py`, `dashboard` | Importira Finance, Tax (read-only) |
+| **Reporting** | L2 | `domains/reporting/` (+ `ai/`) | `accounting/services/reports.py`, `dashboard`, `domains/reporting/documents/` | Read-only: Finance, Tax, Sales, Purchasing, Banking, Integration, DMS |
 | **Assets** | L3 | `domains/assets/` | `accounting` (FixedAsset) | Importira Finance, Purchasing |
 | **Workflow** | L1 | `domains/workflow/` | `accounting/services/submission/` | Importira Core, Tax |
 | **Compliance** | L2 | cross-cutting (ne app) | audit u `accounts`, `SubmissionEvent` | Cross-cutting — ne importira domene |
@@ -104,7 +104,7 @@ erp/erp/app/
 2. **Core** importira samo Platform
 3. **Poslovne domene** importiraju Core + MDM; međusobno samo preko eventa ili shared helpers
 4. **Compliance** je cross-cutting — audit hookovi, ne direktni importi
-5. **Reporting** read-only pristup Finance/Tax podacima
-6. **Zabranjeno:** kružne ovisnosti, Tax → Sales, Reporting → Finance (obrnuti tok)
+5. **Reporting** smije **čitati** Finance, Tax, Sales, Purchasing, Banking, Integration, DMS (ADR-0020)
+6. **Zabranjeno:** kružne ovisnosti, Tax → Sales, Reporting **write** u Finance (obrnuti write tok)
 
 Detalji: [`DOMAIN_DEPENDENCY_MAP.md`](DOMAIN_DEPENDENCY_MAP.md).

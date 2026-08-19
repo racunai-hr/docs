@@ -2,7 +2,7 @@
 
 Dozvoljene ovisnosti između domena. Developer view: [`DOMAIN_MAP.md`](DOMAIN_MAP.md).
 
-**Zabranjeno:** kružne ovisnosti, Tax → Sales, Reporting → Finance (obrnuti tok).
+**Zabranjeno:** kružne ovisnosti, Tax → Sales, Reporting write u Finance (obrnuti write tok). Reporting smije **čitati** Sales/Purchasing/Finance/Banking/Tax/Integration (ADR-0020).
 
 ---
 
@@ -52,8 +52,7 @@ flowchart TD
 | Sales | Finance | event | `InvoiceIssued` → posting |
 | Purchasing | Finance | event | `ExpenseApproved` → posting |
 | Finance | Tax | direktni import | VATLedgerEntry generiranje |
-| Tax | Reporting | direktni import | PDV agregati za izvještaje |
-| Finance | Reporting | direktni import | GL podaci za Bilanca/RDG |
+| Reporting | Finance, Tax, Sales, Purchasing, Banking, Integration | read-only import | Document read model (ADR-0020); GL/PDV izvještaji |
 | Sales | Integration | direktni import | eRačun outbound |
 | Purchasing | Integration | direktni import | inbound AS4 → expense |
 | Tax | Integration | direktni import | submission, fiskalizacija |
@@ -76,7 +75,7 @@ flowchart TD
 |----|-------|--------|
 | Tax | Sales | Tax ne smije znati za prodajne dokumente — koristi VATLedger |
 | Tax | HR (direktni import) | JOPPD builder prima DTO; ne ORM model |
-| Reporting | Finance (obrnuti tok) | Reporting je read-only consumer |
+| Reporting | Finance (write) | Reporting je read-only consumer; čitanje je dozvoljeno (ADR-0020) |
 | Finance | Sales (direktni import) | Side effects preko eventa, ne direktnog importa |
 | Finance | Purchasing (direktni import) | Side effects preko eventa |
 | bilo koja | bilo koja (kružna) | Sprječava spaghetti arhitekturu |
