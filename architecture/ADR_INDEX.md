@@ -21,6 +21,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0019](ADR-0019-tax-classification-engine.md) | Jedinstveni porezni filter i PDV evidencijski sloj | Business | Proposed | 2026-08-17 | — |
 | [ADR-0020](ADR-0020-document-read-model.md) | Jedinstveni read model ulaznih i izlaznih računa | Domain | Proposed | 2026-08-19 | — |
 | [ADR-0021](ADR-0021-banking-operational-ui-api.md) | Banking Operational UI and API Contract | Domain | Proposed | 2026-08-19 | — |
+| [ADR-0022](ADR-0022-partner-management-mdm-api.md) | Partner Management & MDM API v1 | Domain | Proposed | 2026-08-19 | — |
 
 ---
 
@@ -60,6 +61,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-17 | ADR-0019 Proposed — jedinstveni porezni filter; I-RA/U-RA interni kontrolni pregledi; 0015/0016 ostaju rezervirani sprint retroi |
 | 2026-08-19 | ADR-0020 Proposed — jedinstveni read model ulaznih/izlaznih računa; 0015/0016 ostaju rezervirani sprint retroi |
 | 2026-08-19 | ADR-0021 Proposed — Banking Operational UI and API Contract; 0015/0016 ostaju rezervirani sprint retroi |
+| 2026-08-19 | ADR-0022 Proposed — Partner Management & MDM API v1 (composite UI; MDM-only partners API); 0015/0016 ostaju rezervirani sprint retroi |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---
