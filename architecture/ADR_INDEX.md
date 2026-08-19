@@ -19,6 +19,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0017](ADR-0017-fiscal-gateway-model-a.md) | Fiscal Gateway (Model A) | Integration | Accepted | 2026-08-16 | — |
 | [ADR-0018](ADR-0018-django-eracun-traffic-migration.md) | Django eRačun Traffic Migration to Fiscal Gateway | Integration | Accepted | 2026-08-17 | — |
 | [ADR-0019](ADR-0019-tax-classification-engine.md) | Jedinstveni porezni filter i PDV evidencijski sloj | Business | Proposed | 2026-08-17 | — |
+| [ADR-0020](ADR-0020-document-read-model.md) | Jedinstveni read model ulaznih i izlaznih računa | Domain | Proposed | 2026-08-19 | — |
 
 ---
 
@@ -56,6 +57,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-17 | Kanonski API — outbound-provider odvojen od inbound-bindinga (ADR-0018 §2); Slice 0 intermediary čeka ovaj ugovor |
 | 2026-08-17 | Kanonski API — verzionirani outbound-provider, document stamp, DISABLED, 409 ne rezervira send ključ |
 | 2026-08-17 | ADR-0019 Proposed — jedinstveni porezni filter; I-RA/U-RA interni kontrolni pregledi; 0015/0016 ostaju rezervirani sprint retroi |
+| 2026-08-19 | ADR-0020 Proposed — jedinstveni read model ulaznih/izlaznih računa; 0015/0016 ostaju rezervirani sprint retroi |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---
