@@ -139,7 +139,7 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | # | Zahtjev | Status | Napomena |
 |---|---------|--------|----------|
 | 53 | Multi-tenant izolacija | [x] | `TenantMixin`, scoped manageri, middleware |
-| 54 | API-first (OpenAPI) | [~] | Minimalan REST (auth + fiscal inbound) |
+| 54 | API-first (OpenAPI) | [~] | DRF OpenAPI contract za auth, documents i banking; fiscal/intermediary imaju zasebne ugovore; ostale domene ulaze postupno. |
 | 55 | Test coverage (unit + integration) | [~] | PDV + banking CI; nema global coverage gate |
 | 56 | Observability (logging, health) | [~] | `/api/ready/`; nema Sentry/Prometheus |
 | 57 | Security (HSTS, Turnstile, secrets) | [~] | Secure cookies; nema MFA |
