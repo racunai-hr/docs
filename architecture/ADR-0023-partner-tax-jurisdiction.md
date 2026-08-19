@@ -1,7 +1,7 @@
 # ADR-0023 — Partner Geographic Jurisdiction (HR / EU / NON_EU)
 
 ```text
-Status: Proposed
+Status: Accepted
 Date: 2026-08-19
 Type: Domain
 Supersedes: —
@@ -10,7 +10,7 @@ Related: ADR-0013-finance-domain-stabilization.md, ADR-0019-tax-classification-e
 
 ## Status
 
-**Proposed** — geografska jurisdikcija partnera (`country_code` → `HR` | `EU` | `NON_EU`), odvajanje od PDV registracije (`vat_number`), write SSOT za državu, normalizacija prije unique i migracijska pravila su zaključani. Status ostaje Proposed dok Decision/Acceptance ne prođu review. Implementacija (API/app) je **zaseban** korak nakon Accepted + eksplicitnog GO.
+**Accepted** — geografska jurisdikcija partnera (`country_code` → `HR` | `EU` | `NON_EU`), odvajanje od PDV registracije (`vat_number`), write SSOT za državu, normalizacija prije unique i migracijska pravila su zaključani. Implementacija (API/app) slijedi eksplicitni GO uz ovaj Acceptance.
 
 Ovaj ADR **ne** superseda ADR-0022 (Partner Management ostaje). **Ne** mijenja ADR-0019 snapshot semantiku. **Ne** refaktorira Tax/PDV engine u istom sliceu.
 
@@ -186,9 +186,9 @@ Kartica: labele OIB / VAT ID / Tax ID ovisno o `jurisdiction` — ne tvrdi „OI
 
 ### Follow-up
 
-- [ ] Nakon Acceptance → ADR status **Accepted**
-- [ ] API: `country_code` migracija, katalog, normalize, uniques, filter, OpenAPI (zaseban GO)
-- [ ] App: jurisdiction filteri + forme/labele (zaseban GO)
+- [x] Nakon Acceptance → ADR status **Accepted**
+- [x] API: `country_code` migracija, katalog, normalize, uniques, filter, OpenAPI (GO)
+- [x] App: jurisdiction filteri + forme/labele (GO)
 - [ ] Tax: `is_eu_customer` / `is_eu_supplier` na `country_code`
 - [ ] VIES (izvan ovog ADR-a)
 - [ ] Ukloniti legacy `country` write/path kad više nije potreban
