@@ -75,7 +75,7 @@ Sidebar: **jedna** stavka Bankarstvo → `/t/{slug}/bankarstvo`. Podnavigacija (
 |-------|----------|
 | **Izvod** | Uvezeni bankovni dokument (`BankStatement`) za račun i razdoblje (CAMT ili AIS sintetika) |
 | **Transakcija** | Stavka unutar izvoda (`BankTransaction`) |
-| **Usklađivanje** | Veza stavke s `Payment` ili `JournalEntry` (`match_status`) — **nije** isto što knjiženje ili zatvaranje saldakonta |
+| **Usklađivanje** | Veza stavke s `Payment` ili `JournalEntry` (`match_status`) — **nije** generičko knjiženje/zatvaranje saldakonta. Eksplicitni write `reconcile-open-item` (ADR-0025) smije delegirati Finance settlement pa match na JE; CAMT/suggest ne smiju. |
 
 ## 4. Opseg v1
 

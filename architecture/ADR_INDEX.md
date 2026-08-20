@@ -23,6 +23,8 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0021](ADR-0021-banking-operational-ui-api.md) | Banking Operational UI and API Contract | Domain | Proposed | 2026-08-19 | — |
 | [ADR-0022](ADR-0022-partner-management-mdm-api.md) | Partner Management & MDM API v1 | Domain | Accepted | 2026-08-19 | — |
 | [ADR-0023](ADR-0023-partner-tax-jurisdiction.md) | Partner Geographic Jurisdiction (HR / EU / NON_EU) | Domain | Accepted | 2026-08-19 | — |
+| [ADR-0024](ADR-0024-deposit-kaucija.md) | Kaucija/Depozit (given deposit v1) | Domain | Accepted | 2026-08-20 | — |
+| [ADR-0025](ADR-0025-bank-reconcile-open-item.md) | Explicit bank reconcile to open SubledgerItem | Domain | Accepted (Amended) | 2026-08-20 | — |
 
 ---
 
@@ -66,6 +68,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-19 | ADR-0022 Accepted — Finance HTTP putanje, default lista active, UI picker enforcement, `partner_iban_conflict`; implementacija zasebno |
 | 2026-08-19 | ADR-0023 Proposed — Partner Geographic Jurisdiction (HR/EU/NON_EU); jurisdikcija ≠ PDV registracija; 0015/0016 ostaju rezervirani sprint retroi |
 | 2026-08-19 | ADR-0023 Accepted — country_code SSOT, HR/EU/NON_EU, VAT ≠ jurisdikcija; implementacija uz GO |
+| 2026-08-20 | ADR-0024 Accepted — Kaucija/Depozit (given v1); 1152/1020/1000; full return + reverse; 0015/0016 rezervirani |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---
