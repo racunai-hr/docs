@@ -25,6 +25,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0023](ADR-0023-partner-tax-jurisdiction.md) | Partner Geographic Jurisdiction (HR / EU / NON_EU) | Domain | Accepted | 2026-08-19 | — |
 | [ADR-0024](ADR-0024-deposit-kaucija.md) | Kaucija/Depozit (given deposit v1) | Domain | Accepted | 2026-08-20 | — |
 | [ADR-0025](ADR-0025-bank-reconcile-open-item.md) | Explicit bank reconcile to open SubledgerItem | Domain | Accepted (Amended) | 2026-08-20 | — |
+| [ADR-0026](ADR-0026-private-funds-claim.md) | Private funds / paid on behalf of company | Domain | Accepted | 2026-08-20 | — |
 
 ---
 
@@ -69,6 +70,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-19 | ADR-0023 Proposed — Partner Geographic Jurisdiction (HR/EU/NON_EU); jurisdikcija ≠ PDV registracija; 0015/0016 ostaju rezervirani sprint retroi |
 | 2026-08-19 | ADR-0023 Accepted — country_code SSOT, HR/EU/NON_EU, VAT ≠ jurisdikcija; implementacija uz GO |
 | 2026-08-20 | ADR-0024 Accepted — Kaucija/Depozit (given v1); 1152/1020/1000; full return + reverse; 0015/0016 rezervirani |
+| 2026-08-20 | ADR-0025 Amended — SaM 9.9k nije budući BankTx; ADR-0026 Accepted — PrivateFundsClaim; CoA 2309 + Partner; OIB Ante 11528564544 |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---

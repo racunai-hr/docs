@@ -6,7 +6,7 @@ Date: 2026-08-20
 Amended: 2026-08-20 — partial Invoice/Expense; Deposit full-only; JE marker by BankTx; Expense paid on AP close
 Type: Domain
 Supersedes: —
-Related: ADR-0013-finance-domain-stabilization.md, ADR-0021-banking-operational-ui-api.md, ADR-0024-deposit-kaucija.md, DATA_ARCHITECTURE.md, DOMAIN_MAP.md
+Related: ADR-0013-finance-domain-stabilization.md, ADR-0021-banking-operational-ui-api.md, ADR-0024-deposit-kaucija.md, ADR-0026-private-funds-claim.md, DATA_ARCHITECTURE.md, DOMAIN_MAP.md
 ```
 
 ## Status
@@ -95,6 +95,7 @@ Partial Deposit return, N:M, FX, auto-return, reverse-through-unmatch, received 
 
 - SaM kaucija full return (v1)
 - SaM T-2026-0011: 33 000 → approve → AP open → BankTx #39 23 100 → AP partial 9 900, Expense approved
-- Drugi BankTx 9 900 → AP closed, Expense paid
+- **Generički:** kasniji BankTx za cijeli preostali `open_amount` → AP closed + Expense `paid` (ista txn)
+- **SaM stvarno stanje:** nakon BankTx #39 ostaje `partial` 9 900; preostalih 9 900 **nije** Fine Star BankTx i **ne** zatvara se kroz ADR-0025 — vidi ADR-0026 (privatna sredstva)
 - Race: AP 1000, dva BankTx po 600 paralelno → jedna alokacija 600, open 400; drugi 422/409
 - Idempotency, rollback-before-match
