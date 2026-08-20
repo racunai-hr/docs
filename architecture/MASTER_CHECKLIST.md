@@ -76,7 +76,7 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | 23 | Expenses (troškovi, F1 import) | [x] | Full lifecycle, PDF attachments |
 | 24 | eRačun inbound (AS4 → expense) | [~] | AS4 push + admin timeline; prod cutover migracija 0008 |
 | 25 | PO / likvidatura | [ ] | Faza 2 |
-| 26 | OCR ulaznih računa | [ ] | Faza 2 (Purchasing AI) |
+| 26 | OCR ulaznih računa | [~] | Faza 2 (Purchasing AI) — upload → review → Expense(draft) |
 
 ---
 

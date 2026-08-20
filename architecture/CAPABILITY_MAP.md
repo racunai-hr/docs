@@ -34,7 +34,7 @@ AI nije zasebna domena — implementira se po domenama (ADR-0010):
 |---------------|--------|----------------|--------|
 | Auto-PDV pravila, klasifikacija | Tax | `domains/tax/ai/` | stub |
 | Auto-kontiranje, provjera knjiženja | Finance | `domains/finance/ai/` | stub |
-| OCR ulaznih računa | Purchasing | `domains/purchasing/ai/` | stub |
+| OCR ulaznih računa | Purchasing | `domains/purchasing/ai/` | v1 review draft |
 | Prepoznavanje partnera | Sales | `domains/sales/ai/` | stub |
 | AI asistent za računovođe | Reporting | `domains/reporting/ai/` | stub |
 
