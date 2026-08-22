@@ -38,7 +38,7 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | 10 | GL / Chart of accounts (RRIF) | [x] | RRIF template + tenant `ChartOfAccounts` |
 | 11 | Journal entries & auto-posting | [x] | `JournalEntry`, `PostingRule`, `post()`/`reverse()` |
 | 12 | Balance sheet / RDG / trial balance | [x] | XLSX export, testovi |
-| 13 | Saldakonti (otvorene stavke, aging) | [x] | `SubledgerItem` backend + partner API; tenant UI = `/dokumenti` KPI + views ([`ADR-0020`](ADR-0020-document-read-model.md), [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md)) |
+| 13 | Saldakonti (otvorene stavke, aging) | [x] | `SubledgerItem` backend + partner API; tenant UI = `/dokumenti` KPI + views; Faza 3a operativni workflow [x] ([`ADR-0020`](ADR-0020-document-read-model.md), [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md)) |
 | 14 | Početno stanje import | [ ] | Odgođeno — čeka računovodstvenu dokumentaciju (issue #1) |
 
 ---
@@ -97,9 +97,9 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 
 | # | Modul | Status | Napomena |
 |---|-------|--------|----------|
-| 33 | Reporting & dashboard | [~] | Bilanca/RDG [x]; Documents read model SPA [x]; Faza 3a workflow pending; dashboard scaffold |
+| 33 | Reporting & dashboard | [~] | Bilanca/RDG [x]; Documents read model SPA [x]; Documents/Partner/Banking operativni workflow [x] (Faza 3a); dashboard scaffold |
 | 34 | Assets (dugotrajna imovina) | [~] | Aktivacija, linearna amortizacija, `domains/assets` facade L3 |
-| 35 | Banking & reconciliation | [~] | CAMT import; operational SPA; `reconcile-open-item` (ADR-0025); OTP sandbox |
+| 35 | Banking & reconciliation | [~] | CAMT import; operational SPA; `reconcile-open-item` (ADR-0025); Faza 3a reconcile deep-link + povratak [x]; OTP sandbox |
 | 36 | Workflow (odobravanja) | [~] | Expense status; nema generičkog BPM |
 | 37 | DMS | [~] | Expense attachments only |
 | 38 | CRM | [ ] | Faza 2 |
@@ -157,6 +157,6 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | [~] Djelomično | 28 |
 | [ ] Nije započeto | 14 |
 
-**North Star KPI (trenutno):** ~35% — knjige, saldakont backend, ZP/PDV, Documents/Banking/Partner operativni SPA; Faza 3a workflow, opening balance, G2B i puni fiskalizacijski cutover još nedostaju. Vidi [`NORTH_STAR.md`](NORTH_STAR.md).
+**North Star KPI (trenutno):** ~35% — knjige, saldakont backend, ZP/PDV, Documents/Banking/Partner operativni SPA + Faza 3a workflow; opening balance, G2B i puni fiskalizacijski cutover još nedostaju. Vidi [`NORTH_STAR.md`](NORTH_STAR.md).
 
-Ažurirano: **2026-08-22** (living docs reconcile — Korak A)
+Ažurirano: **2026-08-22** (Faza 3a dokumentacijsko zatvaranje — Korak A)

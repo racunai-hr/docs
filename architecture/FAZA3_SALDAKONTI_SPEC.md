@@ -1,12 +1,14 @@
 # Faza 3 — Finance operativni workflow (spec diff, rev. 2)
 
 ```text
-Status: Proposed (gate dokument — bez implementacije)
+Status: Implemented / Accepted (Faza 3a)
 Date: 2026-08-22
+Accepted: 2026-08-22 — app develop @ 9d088df (62/62 lokalnih testova)
 Revised: 2026-08-22 — odustaje od vraćanja modula „Saldakonti"; Documents ostaje jedini tenant-wide operativni ekran (ADR-0020)
 Type: Product + API contract
 Related: ADR-0013, ADR-0020, ADR-0021, ADR-0022, ADR-0025
 Supersedes: rev. 1 FAZA3_SALDAKONTI_SPEC (nav + /saldakonti/* rute) — odbijeno
+Faza 3b: opcionalni backlog (aging widget) — nije otvorena
 ```
 
 ## 0. Revizija odluke
@@ -232,21 +234,21 @@ To je jedini prihvatljivi „API diff" u Reporting domeni — ne Finance write.
 
 ### Funkcionalno
 
-- [ ] Glavni nav: samo **Dokumenti** (ne Saldakonti)
-- [ ] `/saldakonti?...` redirecta na smislen `/dokumenti?...`
-- [ ] Svi hardcoded `/saldakonti` linkovi u appu ažurirani
-- [ ] Documents subnav ili dropdown pokriva otvorena potraživanja/obveze/djelomično/dospjelo
-- [ ] Document detail: CTA za bank close kad subledger otvoren
-- [ ] Partner saldakonto: link na dokument + CTA bank close
-- [ ] Banking reconcile: deep link + povratak nakon uspjeha
-- [ ] `nav.test.ts` i dalje: `not.toContain('saldakonti')`
+- [x] Glavni nav: samo **Dokumenti** (ne Saldakonti)
+- [x] `/saldakonti?...` redirecta na smislen `/dokumenti?...`
+- [x] Svi hardcoded `/saldakonti` linkovi u appu ažurirani
+- [x] Documents subnav ili dropdown pokriva otvorena potraživanja/obveze/djelomično/dospjelo
+- [x] Document detail: CTA za bank close kad subledger otvoren
+- [x] Partner saldakonto: link na dokument + CTA bank close
+- [x] Banking reconcile: deep link + povratak nakon uspjeha
+- [x] `nav.test.ts` i dalje: `not.toContain('saldakonti')`
 
 ### Arhitekturno
 
-- [ ] Nema novih Django modela
-- [ ] Nema novog SSOT-a
-- [ ] Documents ostaje read-model; write samo kroz Banking/Finance postojeće putanje
-- [ ] Tax/Submission netaknut
+- [x] Nema novih Django modela
+- [x] Nema novog SSOT-a
+- [x] Documents ostaje read-model; write samo kroz Banking/Finance postojeće putanje
+- [x] Tax/Submission netaknut
 
 ---
 
@@ -276,6 +278,18 @@ To je konzistentno s odlukom „sve u Documents" + partner kartica.
 
 ## 10. Gate
 
-**PASS rev. 2** = prihvaćamo da se **ne vraća** modul Saldakonti; Faza 3 je **Documents + Partner + Banking workflow**, ne novi nav.
+**PASS rev. 2** (2026-08-22) = prihvaćamo da se **ne vraća** modul Saldakonti; Faza 3 je **Documents + Partner + Banking workflow**, ne novi nav.
 
-Nakon PASS → Korak A (living docs) ažurira ROADMAP/DATA_ARCHITECTURE prema ovom targetu.
+**Faza 3a Implemented / Accepted** (2026-08-22) — `racunai-hr/app:develop` @ `9d088df`:
+
+| Slice | SHA | Opis |
+|-------|-----|------|
+| 1 | `93543b6` | Legacy `/saldakonti` URL cleanup + redirect |
+| 2 | `b15ec56` | Documents operativni subnav (`SYSTEM_VIEWS`) |
+| 3 | `6beec23` + `22e9680` | Document detail banking CTA (izlazni + ulazni) |
+| 4 | `b27d487` | Banking reconcile deep-link + post-reconcile povratak |
+| Partner | `9d088df` | Partner saldakonto dokument link + „Zatvori bankom" |
+
+Acceptance: **62/62** lokalnih testova (9 datoteka); GitHub status checkovi nisu dostupni za ovaj repo.
+
+**Faza 3b** (aging widget + `GET /api/finance/subledger/aging/`) ostaje opcionalni backlog — nije otvorena.

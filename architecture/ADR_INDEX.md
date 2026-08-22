@@ -45,7 +45,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [banking-v2.md](banking-v2.md) | Banking v2 arhitektura (frozen) |
 | [submission-module-backlog.md](submission-module-backlog.md) | Submission backlog |
 | [FISCAL_GATEWAY_CANONICAL_API.md](FISCAL_GATEWAY_CANONICAL_API.md) | Kanonski API v1 `racunai-api` ↔ `intermediary` (ADR-0017; cutover Django prometa: ADR-0018) |
-| [FAZA3_SALDAKONTI_SPEC.md](FAZA3_SALDAKONTI_SPEC.md) | Faza 3 operativni Finance workflow — Documents-centric (rev. 2 PASS); bez modula `/saldakonti` |
+| [FAZA3_SALDAKONTI_SPEC.md](FAZA3_SALDAKONTI_SPEC.md) | Faza 3 operativni Finance workflow — Documents-centric; Faza 3a Implemented (app `9d088df`); bez modula `/saldakonti` |
 
 ---
 
@@ -73,6 +73,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-20 | ADR-0024 Accepted — Kaucija/Depozit (given v1); 1152/1020/1000; full return + reverse; 0015/0016 rezervirani |
 | 2026-08-20 | ADR-0025 Amended — SaM 9.9k nije budući BankTx; ADR-0026 Accepted — PrivateFundsClaim; CoA 2309 + Partner; OIB Ante 11528564544 |
 | 2026-08-22 | Living docs reconcile (Korak A) — North Star ~35%; FAZA3 spec rev. 2 PASS (Documents + Partner + Banking workflow) |
+| 2026-08-22 | Faza 3a Implemented / Accepted — app `develop` @ `9d088df`; legacy URL, operativni subnav, banking CTA, reconcile deep-link; 62/62 testova; Faza 3b (aging) ostaje opcionalni backlog |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---
