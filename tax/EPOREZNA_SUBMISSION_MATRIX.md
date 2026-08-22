@@ -3,7 +3,7 @@
 ```text
 Status: SSOT — inicijalni paket završen (plan v3, 2026-07-10)
 Package: 9ec6958 (sadržaj) + 8d1b010 (cross-linkovi)
-Last updated: 2026-07-10
+Last updated: 2026-08-22
 Related: FORM_REGISTRY.md, ADR-0009, pdv-extensions-roadmap.md §3
 ```
 
@@ -83,8 +83,8 @@ Sažetak po obrascu. Detalji implementacije u ERP-u: [`FORM_REGISTRY.md`](FORM_R
 |---------|----------------|-------------|-----|-----|--------|--------|-----------|----------------|----------|-----|----------|---------|--------|
 | **PDV** | Mjesečna/kvartalna prijava PDV-a | Obveznik PDV-a | ✅ | ✅ | ✅ | Confirmed | SOAP | FINA poslovni certifikat | UUID | P0 | L3 | ✅ | Manual |
 | **PDV-ispravak** | Ispravak predanog PDV-a | Obveznik PDV-a | ✅ | ✅ | ✅ | Confirmed | SOAP | FINA poslovni certifikat | UUID | P0 | L3 | ✅ | Manual |
-| **PDV-S** | Zbirna prijava isporuka u EU (VIES) | Obveznik PDV-a | ✅ | Partial | ✅ | Partial | SOAP | FINA poslovni certifikat | UUID | P0 | L2 | ✅ | Manual |
-| **ZP** | Prijava usluga prema EU (reverse charge kontekst) | Obveznik PDV-a | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P0 | L0 | Planned | Planned |
+| **PDV-S** | Prijava stjecanja dobara i primljenih usluga iz EU | Obveznik PDV-a | ✅ | Partial | ✅ | Partial | SOAP | FINA poslovni certifikat | UUID | P0 | L2 | ✅ | Manual |
+| **ZP** | Zbirna prijava isporuka dobara i usluga EU obveznicima | Obveznik PDV-a | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P0 | L2 | ✅ | Manual |
 | **JOPPD** | Jedinacna prijava poreza i doprinosa | Poslodavac | ✅ | ✅ | ✅ | Confirmed | SOAP | FINA poslovni certifikat | broj zaprimanja | P0 | L0 | Planned | Planned |
 | **PDV-K** | Godišnja/kvartalna PDV-K evidencija | Obveznik PDV-a | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P1 | L0 | Planned | Planned |
 | **OSS** | One Stop Shop (e-trgovina EU) | Obveznik | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P1 | L0 | Planned | Planned |
@@ -104,7 +104,7 @@ Sažetak po obrascu. Detalji implementacije u ERP-u: [`FORM_REGISTRY.md`](FORM_R
 
 - **PDV / PDV-ispravak / JOPPD G2B:** potvrđeno G2B vodičem i shemama u [`ePorezna_Schemas.zip`](https://e-porezna.porezna-uprava.hr/Upute/G2B/ePorezna_Schemas.zip) (vidi [`docs/porezna/upute/2026/README.md`](../porezna/upute/2026/README.md)).
 - **PDV-S G2B = Partial:** XSD i korisničke upute postoje; puni G2B flow nije implementiran u racunAI.
-- **ZP:** XSD gate Sprint 3 — vidi [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md), [`SPRINT_3_ZP_XSD_GATE.md`](../architecture/SPRINT_3_ZP_XSD_GATE.md).
+- **ZP:** L2 (Gen XML ✅, Submit Manual) — Sprint 3 lifecycle; vidi [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md), [`ADR-0014`](../architecture/ADR-0014-tax-domain-completion.md). G2B kanal ostaje TBD.
 - Inicijalno: Transport / Auth / Response = `TBD` ili `Research` osim gdje G2B Guide eksplicitno potvrđuje.
 
 ---
@@ -118,7 +118,7 @@ Isti redoslijed redaka kao §3.
 | PDV | G2B Guide, XSD package | v11.0 | Monthly / Quarterly | Zakon o PDV-u | XML+XAdES | UUID | Manual |
 | PDV-ispravak | G2B Guide, XSD package | v11.0 | On demand | Zakon o PDV-u | XML+XAdES | UUID | Manual |
 | PDV-S | G2B Guide, XSD package | TBD | Quarterly | Zakon o PDV-u | XML+XAdES | UUID | Manual |
-| ZP | XSD package, Research | TBD | Quarterly | Zakon o PDV-u | XML+XAdES | TBD | Planned |
+| ZP | XSD package, Research | TBD | Quarterly | Zakon o PDV-u | XML+XAdES | TBD | Manual |
 | JOPPD | G2B Guide, XSD package | TBD | Monthly | OPZ | XML+XAdES | broj zaprimanja | Planned |
 | PDV-K | XSD package, Research | TBD | Annual / Quarterly | Zakon o PDV-u | XML+XAdES | TBD | Planned |
 | OSS | XSD package, Research | TBD | Quarterly | Zakon o PDV-u | XML+XAdES | TBD | Planned |
@@ -144,8 +144,8 @@ Isti redoslijed redaka kao §3.
 |---------|-------------|
 | **PDV** | Prijava poreza na dodanu vrijednost za obračunsko razdoblje (mjesečno ili kvartalno). |
 | **PDV-ispravak** | Ispravak već predane PDV prijave za isto razdoblje. |
-| **PDV-S** | Zbirna prijava isporuka dobara u druge države članice EU (VIES kontekst). |
-| **ZP** | Prijava usluga obavljenih poreznim obveznicima u druge države članice EU. |
+| **PDV-S** | Prijava za stjecanje dobara i primljene usluge iz drugih država članica EU (HR ← EU). VIES je usporedni sustav, ne identitet obrasca. |
+| **ZP** | Zbirna prijava isporuka dobara i obavljenih usluga u druge države članice EU poreznim obveznicima (HR → EU). |
 | **JOPPD** | Jedinacna prijava poreza na dohodak i prireza te doprinosa za mirovinsko i zdravstveno osiguranje. |
 | **PDV-K** | Godišnja (ili kvartalna) prijava PDV-a — posebna evidencija uz redovnu PDV prijavu. |
 | **OSS** | Prijava PDV-a u okviru posebnog postupka za e-trgovinu (One Stop Shop). |
@@ -171,14 +171,14 @@ Interna arhitektura i mapiranje modela. **§B nije normativ** — opisuje kako r
 |------------|-----------------|----------------------|----------|
 | PDV | Mjesečni PDV pipeline | `VATReturn`, `VATLedgerEntry` | Frozen ADR-0007 |
 | PDV-ispravak | Nova verzija + supersede | `VATReturn` + `SubmissionService.supersede()` | Isti payload kanon |
-| PDV-S | Inbound EU ledger | `PDVSReturn`, agregat iz VAT knjige | Manual ePorezna |
-| ZP | Outbound EU usluge | `ZPReturn` (TBD), box 101/103 u PDV | Sprint 3 — [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md) |
+| PDV-S | Inbound EU ledger (stjecanja i primljene usluge) | `PDVSReturn`, agregat iz VAT knjige | Manual ePorezna |
+| ZP | Outbound EU isporuke (dobra i usluge) | `ZPReturn`, agregat iz VAT knjige | Sprint 3 ✅ — [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md) |
 | JOPPD | Cross-domain builder | `JOPPDReturn` (TBD), `joppd_builder/` | HR `Employee` samo izvor |
 | PDV-K | Odvojen obrazac od PDV | `PDVKReturn` (planirano) | vidi [`pdv-extensions-roadmap.md`](../accounting/pdv-extensions-roadmap.md) §2 |
 | OSS | Proširenje PDV konteksta | Planirano u PDV 610+ / zaseban modul | e-trgovina |
 | Preknjiženja | Finance JE workflow | Nije `tax_forms/` obrazac | Cross-cutting Finance + Tax |
 
-**Razlika PDV-S vs ZP u racunAI:** PDV-S = **inbound** (stjecanje/isporuke u EU, VIES); ZP = **outbound usluge** prema EU s utjecajem na PDV boxove 101/103.
+**Razlika PDV-S vs ZP u racunAI:** PDV-S = **inbound** (HR ← EU: stjecanja dobara i primljene usluge); ZP = **outbound** (HR → EU porezni obveznik: isporuke dobara i obavljene usluge). VIES je usporedni sustav, ne identitet obrasca.
 
 ---
 
@@ -222,8 +222,8 @@ Horizontalne sposobnosti ERP-a — neovisno o pojedinom obrascu.
 
 | Capability | Status | Napomena |
 |------------|--------|----------|
-| Generate XML | ✅ | PDV, PDV-ispravak, PDV-S |
-| XSD Validation | ✅ | PDV pipeline + PDV-S |
+| Generate XML | ✅ | PDV, PDV-ispravak, PDV-S, ZP |
+| XSD Validation | ✅ | PDV pipeline + PDV-S + ZP |
 | Import Signed XML | ✅ | `import_signed_vat_return` |
 | Submission Audit | ✅ | `SubmissionService` + `payload_hash` (ADR-0009) |
 | Manual Portal Submit | ✅ | Admin workflow + UUID unos |
@@ -253,6 +253,7 @@ Planirane sposobnosti izvan trenutnog v1 scopea (ne commitment datuma):
 
 | Datum | Promjena | Izvor |
 |-------|----------|-------|
+| 2026-08-22 | PDV-S/ZP semantika: PDV-S = stjecanja (HR ← EU), ZP = zbirna prijava isporuka (HR → EU); ZP maturity L2 / Gen XML ✅ / Submit Manual | Pravilnik o PDV-u (NN 79/2013); A-FAQ-4355; ADR-0014 |
 | 2026-07-10 | Dokumentacijski paket završen (matrica + registry + cross-linkovi) | commits 9ec6958, 8d1b010 |
 | 2026-07 | Inicijalna matrica (Tier 1 + Tier 2 + glossary) | plan v3 |
 
@@ -267,3 +268,4 @@ Planirane sposobnosti izvan trenutnog v1 scopea (ne commitment datuma):
 - [`pdv-extensions-roadmap.md`](../accounting/pdv-extensions-roadmap.md) — ePorezna v2 §3
 - [`REFERENCE_ARCHITECTURE.md`](../architecture/REFERENCE_ARCHITECTURE.md) — connector status
 - [`docs/porezna/upute/2026/README.md`](../porezna/upute/2026/README.md) — lokalni mirror PU uputa i shema
+- Pravilnik o PDV-u, [NN 79/2013](https://narodne-novine.nn.hr/clanci/sluzbeni/2013_06_79_1633.html) — razgraničenje ZP vs PDV-S

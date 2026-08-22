@@ -38,10 +38,27 @@ Vizualni pregled — detalji u [`FORM_REGISTRY.md`](FORM_REGISTRY.md) i [`EPOREZ
 
 | Prioritet | Obrasci | Zrelost (sažetak) |
 |-----------|---------|-------------------|
-| **P0** ★★★ | PDV, PDV-ispravak, PDV-S, ZP, JOPPD | PDV L3 · PDV-S L2 · ZP/JOPPD L0 |
+| **P0** ★★★ | PDV, PDV-ispravak, PDV-S, ZP, JOPPD | PDV L3 · PDV-S L2 · ZP L2 · JOPPD L0 |
 | **P1** ★★ | PD, OSS, PDV-K | L0 |
 | **P2** ★ | PPO, PZ 42/63, PD-IPO, DONH, DOH, INO-DOH, EPOM, PPN, OPZ-STAT-1 | L0 |
 | **P3** | Preknjiženja, ostalo | L0 |
+
+---
+
+## Porezi i obrasci — navigation contract
+
+```text
+Pregled
+PDV
+EU poslovanje
+Porez na dobit
+JOPPD i primici
+Ostali porezi i naknade
+Predaje i potvrde
+Porezni kalendar
+```
+
+Djelatnost nije Tax navigacijski koncept. Vertikalni proizvodi predaju računovodstvene činjenice; Tax domena iz kanonskih računovodstvenih izvora određuje porezni rezultat.
 
 ---
 

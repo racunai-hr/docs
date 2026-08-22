@@ -2,7 +2,7 @@
 
 ```text
 Status: Living document (SSOT)
-Last updated: 2026-08-17
+Last updated: 2026-08-22
 Related: docs/tax/README.md, docs/architecture/DOMAIN_MAP.md, docs/architecture/ADR-0019-tax-classification-engine.md
 ```
 
@@ -16,7 +16,7 @@ Ažurirati pri zatvaranju Tax milestonea ili dodavanju novog obrasca — **bez n
 
 | Dokument | Uloga |
 |----------|-------|
-| [`README.md`](README.md) | Pregled domene + infrastructure freeze |
+| [`README.md`](README.md) | Pregled domene + infrastructure freeze + navigation contract |
 | [`FORM_REGISTRY.md`](FORM_REGISTRY.md) | SSOT obrazaca + maturity (ovaj dokument) |
 | [`EPOREZNA_SUBMISSION_MATRIX.md`](EPOREZNA_SUBMISSION_MATRIX.md) | Kanali predaje (XSD/G2B/Portal) — **inicijalni paket završen** (plan v3) |
 | [`FORM_IMPLEMENTATION_CONVENTION.md`](FORM_IMPLEMENTATION_CONVENTION.md) | Layout `tax_forms/<form>/` |
@@ -94,7 +94,7 @@ Implementacija: [`accounting/services/vat.py`](../../api/app/accounting/services
 |---------|----------|-----|-----|---------|--------|--------------|-------------------|-----|-------|-----|----------|
 | **PDV** | L3 | ✅ | ✅ | XSD+G2B+Portal | VATLedger | `VATReturn` | `payload.json` | ✅ | ✅ | Manual | Frozen ADR-0007; [`pdv-obrazac-architecture.md`](../accounting/pdv-obrazac-architecture.md) |
 | **PDV-ispravak** | L3 | ✅ | ✅ | XSD+G2B+Portal | VATLedger | `VATReturn` | `payload.json` | ✅ | ✅ | Manual | Nova verzija + `SubmissionService.supersede()` |
-| **PDV-S** | L2 | ✅ | Partial | XSD+G2B+Portal | VATLedger | `PDVSReturn` | `payload.json` | ✅ | ✅ | Manual | Inbound EU ledger |
+| **PDV-S** | L2 | ✅ | Partial | XSD+G2B+Portal | VATLedger | `PDVSReturn` | `payload.json` | ✅ | ✅ | Manual | Stjecanja dobara i primljene usluge iz EU |
 | **ZP** | L2 | ✅ | TBD | XSD+Portal | VATLedger | `ZPReturn` | `payload.json` | ✅ | ✅ | Manual | Sprint 3 ✅ — [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md), [`ADR-0014`](../architecture/ADR-0014-tax-domain-completion.md) |
 | **JOPPD** | L0 | ✅ | ✅ | XSD+G2B+Portal | Builder | `JOPPDReturn` (TBD) | `payload.json` | Planned | — | Planned | Planned candidate v1.5 |
 
@@ -118,6 +118,8 @@ Implementacija: [`accounting/services/vat.py`](../../api/app/accounting/services
 ---
 
 ## Obrasci — P2 (ovisno o djelatnosti)
+
+P2 je prioritet implementacije prema djelatnosti klijenta, ne Tax navigacijski koncept — djelatnost nije stavka menija Porezi i obrasci (vidi [`README.md`](README.md) § navigation contract).
 
 | Obrazac | Maturity | XSD | G2B | Channel | Source | Return model | Canonical Artifact | Gen | Sub | Napomena |
 |---------|----------|-----|-----|---------|--------|--------------|-------------------|-----|-----|----------|
