@@ -94,7 +94,9 @@ Lagani anchor za Obrazac PDV-S:
 | Polje | Svrha |
 |-------|-------|
 | `vat_period` | Jedinstveno po razdoblju |
-| `version` | Rezervirano za buduće XML verzioniranje (default 1) |
+| `version` | Rezervirano za buduće XML verzioniranje (default 1) — **nije** broj predaje |
+
+Ispravci za isti `YYYY-MM` idu kao `SubmissionEvent` lanac (`submission_no` 2+ = ispravak), ne kao novi `PDVSReturn` red. Svaki event **smrzava** `payload_hash` žive knjige u trenutku predaje; stari hash ostaje na starom eventu. `VATPeriod.status` ostaje `open`. UI prikazuje **Predaja #n** / **Ispravak #n**, ne `PDVSReturn.version`. `GET .../xml/` je cjeloviti obrazac iz trenutne knjige (sljedeća predaja), ne arhiva stare.
 
 ### SubmissionEvent (append-only audit)
 
