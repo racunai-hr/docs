@@ -5,12 +5,14 @@ Status: Proposed
 Date: 2026-08-19
 Type: Domain
 Supersedes: —
-Related: ADR-0010-domain-architecture.md, ADR-0008-submission-events.md, ADR-0009-submission-module-v1.md, ADR-0013-finance-domain-stabilization.md, ADR-0017-fiscal-gateway-model-a.md, ADR-0019-tax-classification-engine.md, DATA_ARCHITECTURE.md
+Related: ADR-0010-domain-architecture.md, ADR-0008-submission-events.md, ADR-0009-submission-module-v1.md, ADR-0013-finance-domain-stabilization.md, ADR-0017-fiscal-gateway-model-a.md, ADR-0019-tax-classification-engine.md, DATA_ARCHITECTURE.md, FAZA3_SALDAKONTI_SPEC.md
 ```
 
 ## Status
 
 **Proposed** — izvori istine, DTO semantika, konzistentnost presjeka, sigurnost i granice projekcije su zaključani. Status ostaje Proposed dok implementacija ne prođe acceptance matricu. Ovaj ADR **ne** mijenja write-putanje Sales/Purchasing/Finance/Tax/Banking i **ne** uvodi document-level snapshot u `VATReturn`.
+
+**Operativni UI (2026-08):** tenant-wide pregled = SPA `/dokumenti` (ne zasebni modul Saldakonti). Partner dubina = `/partneri/{id}/saldakonto`. Vidi [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md) rev. 2.
 
 Broj **0015 nije korišten**: ADR-0015 ostaje rezerviran za Sprint 4 retro (*Assets & Fiscal Platform Production*). ADR-0016+ ostaju sprint retroi.
 

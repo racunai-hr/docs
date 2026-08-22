@@ -14,8 +14,8 @@ Product view: što kupac vidi. Developer view: [`DOMAIN_MAP.md`](DOMAIN_MAP.md).
 | **Purchasing** (nabava, troškovi) | Purchasing | L2 | OCR ulaznih računa (plan) | 1–2 |
 | **Banking** (banke, plaćanja) | Banking | L3 | auto-zatvaranje izvoda (plan) | 1 |
 | **Integration** (eRačun, fiskalizacija) | Integration | L3 | — | 1 |
-| **Reporting** (izvještaji, Bilanca/RDG) | Reporting | L2 | AI asistent za računovođe (plan) | 1 |
-| **Assets** (dugotrajna imovina) | Assets | L1 | — | 1 |
+| **Reporting** (izvještaji, Bilanca/RDG, Documents read model) | Reporting | L2 | AI asistent za računovođe (plan) | 1 | [`ADR-0020`](ADR-0020-document-read-model.md) |
+| **Assets** (dugotrajna imovina) | Assets | L3 | — | 1 |
 | **Inventory** (zalihe) | Inventory | L0 | — | 2 |
 | **CRM** (kupci, prodaja) | CRM | L0 | — | 2 |
 | **Workflow** (odobravanja) | Workflow | L1 | — | 2 |

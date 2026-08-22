@@ -21,6 +21,12 @@ erDiagram
     Partner ||--o{ Expense : supplier
 
     Invoice ||--o{ InvoiceItem : contains
+    Tenant ||--o{ SubledgerItem : owns
+    Partner ||--o{ SubledgerItem : partner
+    SubledgerItem ||--o{ SubledgerAllocation : allocations
+    SubledgerItem }o--|| JournalEntry : obligation_je
+    SubledgerAllocation }o--|| JournalEntry : settlement_je
+
     Invoice ||--o{ Payment : "related_invoice"
     Invoice ||--o| JournalEntry : "source (GFK)"
 
@@ -40,6 +46,9 @@ erDiagram
     BankStatement ||--o{ BankTransaction : contains
     BankTransaction }o--o| Payment : "matched_payment"
     BankTransaction }o--o| JournalEntry : "matched_journal_entry"
+
+    Deposit }o--o| SubledgerItem : source_gfk
+    PrivateFundsClaim }o--o| SubledgerItem : source_gfk
 
     FixedAsset }o--o| Expense : "origin purchase"
     FixedAsset }o--o| JournalEntry : "activation entry"
@@ -148,11 +157,42 @@ erDiagram
 |-------|-----|------|
 | transaction_date | DateField | Datum transakcije |
 | amount | DecimalField | Iznos |
-| match_status | Choice | unmatched / matched / ignored |
-| matched_payment | FK → Payment | Usklađeno plaćanje |
-| matched_journal_entry | FK → JournalEntry | Usklađena temeljnica |
+| transaction_type | Choice | debit / credit |
+| match_status | Choice | unmatched / suggested / matched |
+| matched_payment | FK → Payment | Legacy/suggest put (1:1) |
+| matched_journal_entry | FK → JournalEntry | Primarni reconcile put (1:1) |
 
-**Veze:** `BankStatement` (parent), `PaymentOrder` (PIS). Matching preko `match_transaction_to_journal_entry()`.
+**Veze:** `BankStatement` (parent), `PaymentOrder` (PIS).
+
+**Matching (dva puta):**
+
+1. **Legacy/suggest:** `match_transaction()` → `matched_payment` ili `matched_journal_entry` bez zatvaranja saldakonta.
+2. **Eksplicitni reconcile (ADR-0025):** `POST .../reconcile-open-item/` → Finance `settle_open_item_from_bank()` → `SubledgerAllocation` + smanjenje `SubledgerItem.open_amount` → `matched_journal_entry` na settlement JE.
+
+`unmatch` briše samo bank FK; **ne** stornira JE ni otvara saldakont ([`ADR-0025`](ADR-0025-bank-reconcile-open-item.md)).
+
+### 9b. SubledgerItem (`accounting.SubledgerItem`)
+
+| Polje | Tip | Opis |
+|-------|-----|------|
+| partner | FK → Partner | Kupac/dobavljač |
+| direction | Choice | receivable / payable |
+| source | GenericFK | Invoice, Expense, Deposit, PrivateFundsClaim |
+| journal_entry | FK → JournalEntry | Temeljnica koja je otvorila stavku |
+| original_amount | DecimalField | Početni iznos obveze/potraživanja |
+| open_amount | DecimalField | **SSOT** za neplaćeni saldo |
+| status | Choice | open / partial / closed / cancelled |
+| due_date | DateField | Dospijeće (aging) |
+
+**Veze:** `SubledgerAllocation` (1:N settlementa). Kreiranje: `post_document` hooks ([`ADR-0013`](ADR-0013-finance-domain-stabilization.md)). Alokacija: `allocate_payment()` / bank reconcile.
+
+### 9c. SubledgerAllocation (`accounting.SubledgerAllocation`)
+
+| Polje | Tip | Opis |
+|-------|-----|------|
+| subledger_item | FK → SubledgerItem | Otvorena stavka |
+| journal_entry | FK → JournalEntry | Settlement temeljnica (unique per JE) |
+| amount | DecimalField | Primijenjeni iznos |
 
 ### 10. FixedAsset (`accounting.FixedAsset`)
 
@@ -218,6 +258,21 @@ class TenantMixin(models.Model):
 ```
 
 Nema globalnih upita na poslovne podatke bez eksplicitnog `all_objects` managera.
+
+---
+
+## Operativni UI — granice (2026-08)
+
+Read model i SSOT nisu isto. SPA slojevi:
+
+| Ekran | API | SSOT za „otvoreno" | Napomena |
+|-------|-----|-------------------|----------|
+| `/dokumenti` | `GET /api/documents/` | `SubledgerItem` (provenance u DTO) | Tenant-wide operativni hub — [`ADR-0020`](ADR-0020-document-read-model.md) |
+| `/partneri/{id}/saldakonto` | `GET /api/finance/partners/{id}/subledger/` | `SubledgerItem` | Partner-centric dubina — [`ADR-0022`](ADR-0022-partner-management-mdm-api.md) |
+| `/bankarstvo/uskladivanje` | Banking reconcile write | `SubledgerAllocation` + `BankTransaction.match` | Jedini write za bankovno zatvaranje — [`ADR-0025`](ADR-0025-bank-reconcile-open-item.md) |
+| `/saldakonti` (legacy URL) | — | — | Redirect na `/dokumenti` — **nema** zasebnog modula u nav ([`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md) rev. 2) |
+
+`Invoice.status=paid` / `Expense.status=paid` **nisu** SSOT za plaćanje. Operativni badge i kontrole koriste saldakont provenance ([`ADR-0020`](ADR-0020-document-read-model.md) §7–8).
 
 ---
 

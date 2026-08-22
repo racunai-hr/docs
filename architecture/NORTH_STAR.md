@@ -39,7 +39,9 @@ Najvažniji pokazatelj uspjeha — ne broj modula, nego stvarna mogućnost vođe
 
 Svaki sprint povećava ovaj postotak. Sprint retrospectives (ADR) bilježe koji blockeri su uklonjeni.
 
-**Trenutno (Sprint 3 zatvoren):** ~25% — vidi [`ADR-0014`](ADR-0014-tax-domain-completion.md).
+**Trenutno (2026-08-22):** ~35% — Sprint 3 zatvoren ([`ADR-0014`](ADR-0014-tax-domain-completion.md)); od tada isporučeni operativni slojevi Documents read model ([`ADR-0020`](ADR-0020-document-read-model.md)), Banking UI + reconcile ([`ADR-0021`](ADR-0021-banking-operational-ui-api.md), [`ADR-0025`](ADR-0025-bank-reconcile-open-item.md)), Partner MDM ([`ADR-0022`](ADR-0022-partner-management-mdm-api.md)), kaucije i privatna sredstva ([`ADR-0024`](ADR-0024-deposit-kaucija.md), [`ADR-0026`](ADR-0026-private-funds-claim.md)).
+
+**Do v1.5 (40%):** Faza 3a operativni workflow ([`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md) rev. 2), početno stanje import, G2B ePorezna, puni fiskalizacijski produkcijski cutover.
 
 Detalji faza: [`ROADMAP.md`](ROADMAP.md).
 

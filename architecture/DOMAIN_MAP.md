@@ -45,7 +45,7 @@ Maturity se ažurira pri zatvaranju milestonea ili kvartalnom reviewu.
 
 ---
 
-## Početno stanje (2026-07-09)
+## Početno stanje (2026-07-09) — povijesni snapshot
 
 ```
 Platform ....... L2    (multi-tenant, auth, Celery — bez MFA)
@@ -66,6 +66,30 @@ CRM ............ L0
 Inventory ...... L0
 HR ............. L0
 ```
+
+## Trenutno stanje (2026-08-22)
+
+```
+Platform ....... L2
+Core ........... L3
+Finance ........ L3    (SubledgerItem SSOT; partner subledger API; kaucije + privatna sredstva)
+Tax ............ L3    (PDV L3, ZP/PDV-S L2; Tax UI = admin + placeholder SPA)
+Sales .......... L2
+Purchasing ..... L2    (OCR review draft)
+Integration .... L3    (Fiscal Gateway Model A — ADR-0017/0018)
+Reporting ...... L2    (Documents read model SPA — ADR-0020; Bilanca/RDG)
+Assets ......... L3    (aktivacija + amortizacija — Sprint 4 djelomično)
+Banking ........ L3    (operational read API + SPA; reconcile-open-item — ADR-0021/0025)
+Compliance ..... L2
+MDM ............ L3    (Partner MDM API + SPA — ADR-0022/0023)
+Workflow ....... L1
+DMS ............ L0    (Expense attachments only)
+CRM ............ L0
+Inventory ...... L0
+HR ............. L0
+```
+
+**Operativni UI (rev. 2):** tenant-wide = `/dokumenti`; partner = `/partneri/{id}/saldakonto`; bank close = `/bankarstvo/uskladivanje`. Vidi [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md).
 
 ---
 

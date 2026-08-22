@@ -17,7 +17,7 @@ Poslovni plan po fazama. North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md). Check
 | v3.0 (Faza 3) | 90%                           | Enterprise — plaće, proizvodnja, veći timovi         |
 
 
-**Trenutno:** ~25% (Sprint 3 zatvoren) — vidi [`ADR-0014`](ADR-0014-tax-domain-completion.md).
+**Trenutno:** ~35% (2026-08-22) — vidi [`NORTH_STAR.md`](NORTH_STAR.md). Sprint 3 zatvoren; od tada isporučeni operativni slojevi (Documents, Banking, Partner MDM). Sljedeći korak: Faza 3a workflow ([`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md) rev. 2).
 
 Svaki sprint povećava ovaj postotak. Sprint retrospectives (ADR) bilježe uklonjene blockere.
 
@@ -162,20 +162,37 @@ AI capabilities po domeni (ADR-0010):
 
 Struktura se više ne mijenja. Sljedeći korak je isporuka, ne dizajn.
 
-### Finalni redoslijed izvršavanja
+### Trenutni fokus (2026-08-22)
+
+```
+Sprint 1–3  ✅  (ADR-0012 … ADR-0014)
+Post-Sprint operativni sloj  ✅  (ADR-0020 … ADR-0026 — Documents, Banking, Partner, kaucije)
+Sprint 4    [~]  (Assets + fiskalizacija produkcija — ADR-0015)
+Faza 3a     [ ]  (Documents-centric operativni workflow — FAZA3 spec rev. 2; bez novog /saldakonti modula)
+Sprint 5    [ ]  (Workflow, DMS light, OCR — ADR-0016)
+```
+
+**Aktivno:** dovršetak Sprint 4 (amortizacija, M1.6–M1.8 fiskalizacija) + priprema Faze 3a implementacije (nakon living docs reconcile).
+
+**Ne aktivno:** novi arhitekturni moduli, Tax/Submission refaktor, G2B ePorezna automatizacija.
+
+### Povijesni redoslijed izvršavanja
 
 ```
 1. P0 dokumenti          (Sprint 1) ✅
 2. domains/ + shared/    (Sprint 1) ✅
 3. GitHub milestones     (Sprint 1 završetak) ✅
-4. Implementacija        (Sprint 2–5) ← Sprint 2 ✅ · Sprint 3 ✅ · Sprint 4 ← aktivno
+4. Sprint 2–3            (Finance saldakont backend, Tax ZP/PDV) ✅
+5. Operativni SPA sloj   (Documents, Banking, Partner) ✅ — ADR-0020–0026
+6. Sprint 4              (Assets + fiskalizacija) [~]
+7. Faza 3a workflow      (Documents + Partner + Banking povezivanje) ← sljedeći implementation gate
 ```
-
-
 
 ### To-do
 
-**Aktivno:** Sprint 4 — amortizacija, M1.6–M1.8 fiskalizacija produkcija → ADR-0015. Cursor plan: [`.cursor/plans/sprint_4_assets_fiskalizacija.plan.md`](../../.cursor/plans/sprint_4_assets_fiskalizacija.plan.md)
+**Sljedeći implementation gate:** Faza 3a — [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md) §9 (Documents subnav, legacy URL mapiranje, banking CTA). **Bez** novih Finance read endpointa u 3a.
+
+**Sprint 4 (djelomično):** amortizacija, M1.6–M1.8 fiskalizacija produkcija → ADR-0015 (plan: [`.cursor/plans/sprint_4_assets_fiskalizacija.plan.md`](../../.cursor/plans/sprint_4_assets_fiskalizacija.plan.md))
 
 **Sprint 3 (završeno):** [`SPRINT_3_ZP_XSD_GATE.md`](SPRINT_3_ZP_XSD_GATE.md) · [`ADR-0014`](ADR-0014-tax-domain-completion.md) · Cursor plan (completed): [`.cursor/plans/sprint_3_zp_next.plan.md`](../../.cursor/plans/sprint_3_zp_next.plan.md)
 
@@ -221,7 +238,7 @@ Struktura se više ne mijenja. Sljedeći korak je isporuka, ne dizajn.
 
 **North Star nakon Sprint 3:** ~25% ([`ADR-0014`](ADR-0014-tax-domain-completion.md))
 
-**Git:** ZP core commitan (`26784fa`); Sprint 3 completion (ops + PDV proširenja + ADR-0014) — **commit/PR pending** u working tree.
+**North Star nakon operativnog sloja (2026-08):** ~35% — Documents read model UI, Banking operational API/UI, explicit bank reconcile (ADR-0025), Partner MDM SPA, kaucije/privatna sredstva. Operativni workflow još nije zaokružen (Faza 3a).
 
 **Preostalo (backlog, izvan Sprint 3 scopea):**
 
@@ -248,6 +265,19 @@ Cursor todos: [`.cursor/plans/sprint_4_assets_fiskalizacija.plan.md`](../../.cur
 
 #### Sprint 5 (backlog)
 
-- [ ] **Sprint 5** — Workflow, DMS light, OCR, operativni frontend shell → ADR-0016
+- [ ] **Sprint 5** — Workflow, DMS light, OCR, N:M alokacije → ADR-0016
 
-Ažurirano: **2026-07-10**
+#### Post-Sprint operativni sloj ✅ (2026-08)
+
+| ADR | Deliverable |
+|-----|-------------|
+| ADR-0020 | `GET /api/documents/` read model + SPA `/dokumenti` (operativni badge, KPI iz subledgera) |
+| ADR-0021 | Banking operational read API + SPA `/bankarstvo/*` |
+| ADR-0022–0023 | Partner MDM API + SPA `/partneri/*` |
+| ADR-0024 | Kaucije (Deposit) — Finance write + dokumenti `direction=deposit` |
+| ADR-0025 | `reconcile-open-item` — bankovno zatvaranje `SubledgerItem` |
+| ADR-0026 | PrivateFundsClaim — AP bez bankovnog toka |
+
+**UI odluka (rev. 2 PASS):** tenant-wide operativni pregled = **Dokumenti**, ne zasebni modul Saldakonti. Partner dubina = `/partneri/{id}/saldakonto`. Spec: [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md).
+
+Ažurirano: **2026-08-22**

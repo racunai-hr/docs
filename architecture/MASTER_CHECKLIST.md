@@ -38,7 +38,7 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | 10 | GL / Chart of accounts (RRIF) | [x] | RRIF template + tenant `ChartOfAccounts` |
 | 11 | Journal entries & auto-posting | [x] | `JournalEntry`, `PostingRule`, `post()`/`reverse()` |
 | 12 | Balance sheet / RDG / trial balance | [x] | XLSX export, testovi |
-| 13 | Saldakonti (otvorene stavke, aging) | [x] | `SubledgerItem`, posting hooks, `domains/finance` facade |
+| 13 | Saldakonti (otvorene stavke, aging) | [x] | `SubledgerItem` backend + partner API; tenant UI = `/dokumenti` KPI + views ([`ADR-0020`](ADR-0020-document-read-model.md), [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md)) |
 | 14 | Početno stanje import | [ ] | Odgođeno — čeka računovodstvenu dokumentaciju (issue #1) |
 
 ---
@@ -97,9 +97,9 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 
 | # | Modul | Status | Napomena |
 |---|-------|--------|----------|
-| 33 | Reporting & dashboard | [~] | Bilanca/RDG [x]; dashboard scaffold |
+| 33 | Reporting & dashboard | [~] | Bilanca/RDG [x]; Documents read model SPA [x]; Faza 3a workflow pending; dashboard scaffold |
 | 34 | Assets (dugotrajna imovina) | [~] | Aktivacija, linearna amortizacija, `domains/assets` facade L3 |
-| 35 | Banking & reconciliation | [~] | CAMT import, matching; OTP sandbox |
+| 35 | Banking & reconciliation | [~] | CAMT import; operational SPA; `reconcile-open-item` (ADR-0025); OTP sandbox |
 | 36 | Workflow (odobravanja) | [~] | Expense status; nema generičkog BPM |
 | 37 | DMS | [~] | Expense attachments only |
 | 38 | CRM | [ ] | Faza 2 |
@@ -139,7 +139,7 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | # | Zahtjev | Status | Napomena |
 |---|---------|--------|----------|
 | 53 | Multi-tenant izolacija | [x] | `TenantMixin`, scoped manageri, middleware |
-| 54 | API-first (OpenAPI) | [~] | DRF OpenAPI contract za auth, documents i banking; fiscal/intermediary imaju zasebne ugovore; ostale domene ulaze postupno. |
+| 54 | API-first (OpenAPI) | [~] | DRF OpenAPI contract za auth, documents, banking, finance/partners; fiscal/intermediary zasebni ugovori |
 | 55 | Test coverage (unit + integration) | [~] | PDV + banking CI; nema global coverage gate |
 | 56 | Observability (logging, health) | [~] | `/api/ready/`; nema Sentry/Prometheus |
 | 57 | Security (HSTS, Turnstile, secrets) | [~] | Secure cookies; nema MFA |
@@ -157,6 +157,6 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | [~] Djelomično | 28 |
 | [ ] Nije započeto | 14 |
 
-**North Star KPI (trenutno):** ~25% — tvrtka može legalno voditi knjige, pratiti saldakonti, generirati ZP i prošireni PDV (EU/RC/OSS); opening balance, G2B predaja i operativni UI još nedostaju.
+**North Star KPI (trenutno):** ~35% — knjige, saldakont backend, ZP/PDV, Documents/Banking/Partner operativni SPA; Faza 3a workflow, opening balance, G2B i puni fiskalizacijski cutover još nedostaju. Vidi [`NORTH_STAR.md`](NORTH_STAR.md).
 
-Ažurirano: **2026-07-10** (Sprint 3 zatvoren — ADR-0014)
+Ažurirano: **2026-08-22** (living docs reconcile — Korak A)
