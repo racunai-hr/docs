@@ -60,6 +60,29 @@ Porezni kalendar
 
 Djelatnost nije Tax navigacijski koncept. Vertikalni proizvodi predaju računovodstvene činjenice; Tax domena iz kanonskih računovodstvenih izvora određuje porezni rezultat.
 
+### SPA hub catalog (`/t/{slug}/porezi`)
+
+Domain groups above stay the IA contract. The SPA hub does **not** render `EU poslovanje` as a group. It shows an ePorezna-like catalog of forms:
+
+```text
+Porez na dodanu vrijednost
+  PDV
+  PDV-ispravak
+  PDV-S (EU poslovanje)
+  ZP (EU poslovanje)
+  OSS (EU poslovanje)
+Porez na dobit
+  PD
+Porez na potrošnju
+  PPO
+Porez na dohodak i doprinosi
+  JOPPD
+Predaje i potvrde
+Porezni kalendar
+```
+
+Live hub rows: **PDV** and **PDV-S (EU poslovanje)** — both open Razdoblja (`/porezi/pdv`). PDV-S then uses the existing period-scoped screen (`/porezi/pdv-s?period=YYYY-MM`). PDV-S vs ZP semantics unchanged (inbound vs outbound EU).
+
 ---
 
 ## Četiri odgovornosti
