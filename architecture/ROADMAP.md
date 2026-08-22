@@ -17,7 +17,7 @@ Poslovni plan po fazama. North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md). Check
 | v3.0 (Faza 3) | 90%                           | Enterprise — plaće, proizvodnja, veći timovi         |
 
 
-**Trenutno:** ~35% (2026-08-22) — vidi [`NORTH_STAR.md`](NORTH_STAR.md). Sprint 3 zatvoren; od tada isporučeni operativni slojevi (Documents, Banking, Partner MDM). Sljedeći korak: Faza 3a workflow ([`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md) rev. 2).
+**Trenutno:** ~35% (2026-08-22) — vidi [`NORTH_STAR.md`](NORTH_STAR.md). Sprint 3 zatvoren; od tada isporučeni operativni slojevi (Documents, Banking, Partner MDM). **Faza 3a** Implemented / Accepted (app `9d088df`, [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md)). Sljedeći korak: Sprint 4.
 
 Svaki sprint povećava ovaj postotak. Sprint retrospectives (ADR) bilježe uklonjene blockere.
 
@@ -168,11 +168,11 @@ Struktura se više ne mijenja. Sljedeći korak je isporuka, ne dizajn.
 Sprint 1–3  ✅  (ADR-0012 … ADR-0014)
 Post-Sprint operativni sloj  ✅  (ADR-0020 … ADR-0026 — Documents, Banking, Partner, kaucije)
 Sprint 4    [~]  (Assets + fiskalizacija produkcija — ADR-0015)
-Faza 3a     [ ]  (Documents-centric operativni workflow — FAZA3 spec rev. 2; bez novog /saldakonti modula)
+Faza 3a     ✅  (Documents-centric operativni workflow — app `9d088df`; FAZA3 spec §7 PASS)
 Sprint 5    [ ]  (Workflow, DMS light, OCR — ADR-0016)
 ```
 
-**Aktivno:** dovršetak Sprint 4 (amortizacija, M1.6–M1.8 fiskalizacija) + priprema Faze 3a implementacije (nakon living docs reconcile).
+**Aktivno:** dovršetak Sprint 4 (amortizacija, M1.6–M1.8 fiskalizacija).
 
 **Ne aktivno:** novi arhitekturni moduli, Tax/Submission refaktor, G2B ePorezna automatizacija.
 
@@ -185,12 +185,12 @@ Sprint 5    [ ]  (Workflow, DMS light, OCR — ADR-0016)
 4. Sprint 2–3            (Finance saldakont backend, Tax ZP/PDV) ✅
 5. Operativni SPA sloj   (Documents, Banking, Partner) ✅ — ADR-0020–0026
 6. Sprint 4              (Assets + fiskalizacija) [~]
-7. Faza 3a workflow      (Documents + Partner + Banking povezivanje) ← sljedeći implementation gate
+7. Faza 3a workflow      (Documents + Partner + Banking povezivanje) ✅ — app `9d088df`
 ```
 
 ### To-do
 
-**Sljedeći implementation gate:** Faza 3a — [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md) §9 (Documents subnav, legacy URL mapiranje, banking CTA). **Bez** novih Finance read endpointa u 3a.
+**Sljedeći implementation gate:** Sprint 4 — amortizacija, M1.6–M1.8 fiskalizacija produkcija → ADR-0015. Faza 3b (aging widget) ostaje opcionalni backlog.
 
 **Sprint 4 (djelomično):** amortizacija, M1.6–M1.8 fiskalizacija produkcija → ADR-0015 (plan: [`.cursor/plans/sprint_4_assets_fiskalizacija.plan.md`](../../.cursor/plans/sprint_4_assets_fiskalizacija.plan.md))
 
@@ -238,7 +238,7 @@ Sprint 5    [ ]  (Workflow, DMS light, OCR — ADR-0016)
 
 **North Star nakon Sprint 3:** ~25% ([`ADR-0014`](ADR-0014-tax-domain-completion.md))
 
-**North Star nakon operativnog sloja (2026-08):** ~35% — Documents read model UI, Banking operational API/UI, explicit bank reconcile (ADR-0025), Partner MDM SPA, kaucije/privatna sredstva. Operativni workflow još nije zaokružen (Faza 3a).
+**North Star nakon operativnog sloja (2026-08):** ~35% — Documents read model UI, Banking operational API/UI, explicit bank reconcile (ADR-0025), Partner MDM SPA, kaucije/privatna sredstva, Faza 3a operativni workflow (app `9d088df`).
 
 **Preostalo (backlog, izvan Sprint 3 scopea):**
 
@@ -277,7 +277,8 @@ Cursor todos: [`.cursor/plans/sprint_4_assets_fiskalizacija.plan.md`](../../.cur
 | ADR-0024 | Kaucije (Deposit) — Finance write + dokumenti `direction=deposit` |
 | ADR-0025 | `reconcile-open-item` — bankovno zatvaranje `SubledgerItem` |
 | ADR-0026 | PrivateFundsClaim — AP bez bankovnog toka |
+| Faza 3a | Documents/Partner/Banking operativni workflow — legacy URL, subnav, banking CTA, reconcile deep-link (app `9d088df`) |
 
-**UI odluka (rev. 2 PASS):** tenant-wide operativni pregled = **Dokumenti**, ne zasebni modul Saldakonti. Partner dubina = `/partneri/{id}/saldakonto`. Spec: [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md).
+**UI odluka (rev. 2 PASS; Faza 3a Implemented):** tenant-wide operativni pregled = **Dokumenti**, ne zasebni modul Saldakonti. Partner dubina = `/partneri/{id}/saldakonto`. Spec: [`FAZA3_SALDAKONTI_SPEC.md`](FAZA3_SALDAKONTI_SPEC.md).
 
-Ažurirano: **2026-08-22**
+Ažurirano: **2026-08-22** (Faza 3a living-docs consistency)
