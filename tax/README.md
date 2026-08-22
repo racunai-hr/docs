@@ -81,7 +81,7 @@ Predaje i potvrde
 Porezni kalendar
 ```
 
-Live hub rows: **PDV** and **PDV-S (EU poslovanje)** — both open Razdoblja (`/porezi/pdv`). PDV-S then uses the existing period-scoped screen (`/porezi/pdv-s?period=YYYY-MM`). PDV-S vs ZP semantics unchanged (inbound vs outbound EU).
+Live hub rows: **PDV** → `/porezi/pdv` (PDV razdoblja, zatim PDV workflow); **PDV-S (EU poslovanje)** → `/porezi/pdv-s` (PDV-S razdoblja, zatim `/porezi/pdv-s?period=YYYY-MM`). Isti `VATPeriod` read endpoint smije se reuseati kao kalendar; UI ih ne smije stapati. PDV-S vs ZP semantics unchanged (inbound vs outbound EU).
 
 ---
 
