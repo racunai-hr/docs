@@ -245,11 +245,12 @@ Tek nakon što je vozilo u uporabi i nabavna vrijednost finalizirana.
 3. [ ] Provjeriti `BankAccount.ledger_account` za EUR račun `HR6124070001100204771`
 4. [ ] Uvesti CAMT053 izvod koji sadrži isplatu 22.05.2026. (ref ZOU 497136235)
 5. [x] Kreirati dobavljača **Automobile Hadžić** u `Supplier` (`seed_manual_suppliers`, USt-IdNr `DE229674882`)
-6. [ ] Kreirati ručnu temeljnicu: D **0373** / K ledger konto banke, 8.000 EUR, datum **22.05.2026.**
-7. [ ] Opis/reference s VIN, računom i bank ref-om (vidi gore)
-8. [ ] Knjižiti temeljnicu
-9. [ ] Uskladiti bankovnu transakciju (`matched_journal_entry`)
-10. [ ] Verificirati bruto bilancu / saldo **0373**
+6. [x] Kreirati ručnu temeljnicu: D **0373** / K ledger konto banke, 8.000 EUR, datum **22.05.2026.**
+7. [x] Opis/reference s VIN, računom i bank ref-om (vidi gore)
+8. [x] Knjižiti temeljnicu
+9. [x] Uskladiti bankovnu transakciju (`matched_journal_entry`) — TX **#18** ↔ JE **#49**
+10. [x] Povezati ulazni dokument **Expense #16** (`T-2026-0009`) na JE #49/#57 (GFK) + status `paid` **bez** Expense approve (signal `auto_post_expense` bi knjižio 4120 — stornirano JE #99/#100)
+11. [ ] Verificirati bruto bilancu / saldo **0373**
 
 ---
 
