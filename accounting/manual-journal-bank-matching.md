@@ -19,8 +19,34 @@ Za **osnovna sredstva** (issue #6): [fixed-assets-architecture.md](fixed-assets-
 | Tok | Alat |
 |-----|------|
 | Izdani račun, trošak, naplata računa | Automatsko knjiženje (`post_document`, `post_invoice_payment`) |
-| Početna stanja, ispravke, split knjiženja, pozajmice, naknade | **Ručna temeljnica** + bank match |
+| Početna stanja, ispravke, split knjiženja, pozajmice | **Ručna temeljnica** + bank match |
+| Bankovne naknade (OTP i slično) | Vidi [Bankovne naknade](#bankovne-naknade-hybrid-vs-statement-only) |
 | Naplata računa s Payment zapisom | Payment usklađenje (postojeći flow) |
+
+---
+
+## Bankovne naknade (hybrid vs statement-only)
+
+Kad banka tereći račun za vođenje / platni promet, kanonski put ovisi o tome postoji li ulazni račun (npr. SUPER):
+
+| Situacija | Kanonski put |
+|-----------|--------------|
+| Postoji ulazni / SUPER račun banke | Expense → kategorija bankovne usluge / konto troška platnog prometa (npr. RRiF **4650**) → `approve` → AP → bank `reconcile-open-item` |
+| Postoji samo bankovni izvod | Ručna `bank_fee` JE → Dr trošak platnog prometa / Cr banka → `match` na bankovnu transakciju |
+
+**Ne** knjižiti isti terećenje i kao direktni `bank_fee` JE **i** kao odobreni Expense (duplo). Ako je prvo korišten statement-only put, a kasnije stigne SUPER račun: unmatch → storno `bank_fee` JE → zatim hybrid put.
+
+Konto troška je tenant konfiguracija (`ExpenseCategory.default_account` / `ChartOfAccounts`); RRiF **4650** je primjer, ne hardkod u poslovnoj logici — vidi [chart-of-accounts-rules.md](chart-of-accounts-rules.md).
+
+### VAT napomena (domestic bank fee, PDV 0)
+
+Za **domestic** bankovnu uslugu / naknadu s `tax_amount=0`, bez knjiženja pretporeza (npr. 1400) i bez posebnog `vat_procedure` mappinga:
+
+- **ne** generira se umjetni U-RA / box **303** red
+- classifier rezultat `EXPENSE_GENERIC_303_REMOVED` je **očekivan** (namjerna zaštita: 303 je pretporez 25%, ne oslobođena bankovna usluga)
+- nema deductible VAT-a; classifier / PDV registry se zbog toga **ne** širi ad-hoc
+
+Ostali `REVIEW_REQUIRED` kodovi nisu automatski „očekivani” — tretiraju se kao blocker dok se ne razjasne.
 
 ---
 
