@@ -1,6 +1,6 @@
 # Remediation matrica — document / GL / subledger (Korak 2)
 
-> **Status:** Korak 2a locked; Korak 2b (`asset_purchase` profil) implementiran u kodu + testovima. Bez storna/repostinga na finestar. Nema DB writeova, storna ni repostinga dok se ova matrica ne odobri.
+> **Status:** Korak 2a locked; Korak 2b (`asset_purchase` profil) implementiran; Korak 2c dry-run **READY** na finestar uključujući **incident fingerprint** (JE178–181 / item61 / AuditLog 308). Write orchestrator implementiran, ali **nema GO za `--execute`** dok se eksplicitno ne odobri jedan kontrolirani write nad T-2026-0009.
 >
 > **Ulaz:** inventar `audit_document_gl_subledger_mismatch --tenant finestar` (2026-08-23) — 36 dokumenata, 1 mismatch: expense `T-2026-0009` (`P1+P2+P3+P6`).
 >
@@ -130,7 +130,7 @@ Patterni ostaju **ne-ekskluzivni**; remediation se bira po **kombinaciji + vrsti
 | Korak 1 | Read-only inventar | ✅ gotov |
 | **Korak 2a** | Lock matrice + profil `asset_purchase` | ✅ locked |
 | Korak 2b | Implementacija profila (`Expense.posting_profile` + rules + tests) | ✅ done |
-| Korak 2c | Dry-run remediation plan (`plan_expense_asset_purchase_remediation`, fail-closed, no writes) | ✅ done (BLOCKED: asset_purchase PostingRule not seeded on finestar) |
+| Korak 2c | Dry-run remediation plan + PostingRule seed (`asset_purchase` on finestar) | ✅ READY (all prerequisites OK; remediation writes still blocked) |
 | Korak 2d | Storno/repost `T-2026-0009` na finestar | eksplicitni GO |
 | Kasnije | PFC integrity scan (read-only) | nakon što Hadžić nije blocker |
 
