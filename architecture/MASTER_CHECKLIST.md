@@ -98,7 +98,7 @@ North Star KPI: [`NORTH_STAR.md`](NORTH_STAR.md) · Roadmap: [`ROADMAP.md`](ROAD
 | # | Modul | Status | Napomena |
 |---|-------|--------|----------|
 | 33 | Reporting & dashboard | [~] | Bilanca/RDG [x]; Documents read model SPA [x]; Documents/Partner/Banking operativni workflow [x] (Faza 3a); dashboard scaffold |
-| 34 | Assets (dugotrajna imovina) | [~] | Aktivacija, linearna amortizacija, `domains/assets` facade L3 |
+| 34 | Assets (dugotrajna imovina) | [~] | Aktivacija, linearna amortizacija, `domains/assets` facade L3, read API + Imovina SPA; rashodovanje i write UI otvoreni |
 | 35 | Banking & reconciliation | [~] | CAMT import; operational SPA; `reconcile-open-item` (ADR-0025); Faza 3a reconcile deep-link + povratak [x]; OTP sandbox |
 | 36 | Workflow (odobravanja) | [~] | Expense status; nema generičkog BPM |
 | 37 | DMS | [~] | Expense attachments only |

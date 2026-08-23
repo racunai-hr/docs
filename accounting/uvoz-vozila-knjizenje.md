@@ -245,8 +245,8 @@ Opis: `Aktivacija VW T-Cross VIN: WVGZZZC1ZPY022544`
 
 Tek nakon što je vozilo u uporabi i nabavna vrijednost finalizirana.
 
-- Modul osnovnih sredstava **nije implementiran**
-- Do tada: evidencija izvan ERP-a ili kasniji ticket
+- Linearna mjesečna amortizacija postoji (`generate_monthly_depreciation`, `post_depreciation`, Celery `accounting.run_monthly_depreciation`)
+- Korisnički pregled kartice i plana: `/imovina` (read-only)
 
 ---
 
@@ -352,12 +352,6 @@ Knjiženje ne zamjenjuje PPMV, registraciju — samo financijsku evidenciju u GK
 
 ---
 
-## Budući modul: Osnovna sredstva
+## Osnovna sredstva
 
-Za rent-a-car flotu planiran je modul **Osnovna sredstva** (GitHub issue #6):
-
-- model s VIN-om, statusom (`u pripremi` / `aktivno`), kontima iz kontnog plana (ne hardkodirano)
-- aktivacija: D 032001 / K 0373
-- automatska mjesečna amortizacija
-
-Do tada: faze 1, 2, 4 ručno preko Manual JE; VIN i dokumenti u opisu temeljnice. (Faza 3 samo ako ikad uvoz iz treće zemlje.)
+Modul **Osnovna sredstva** (GitHub issue #6) postoji: `FixedAsset` s VIN-om i statusom, aktivacija D 032001 / K 0373, linearna mjesečna amortizacija, read API + `/imovina`. Konta ostaju FK iz kontnog plana (ne hardkodirano). Write UI i rashodovanje još nisu u ovom sliceu.

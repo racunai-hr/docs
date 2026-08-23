@@ -153,3 +153,25 @@ Vraća `(bool, list[str])` — admin prikazuje npr. „✔ Spremno za aktivaciju
 **Periodični run:** Celery `accounting.run_monthly_depreciation` (1. u mjesecu 06:00) + `depreciate_fixed_assets --tenant --year --month [--dry-run]`.
 
 **API:** `domains.assets.facade` (maturity L3); legacy re-export u `accounting.services.fixed_assets`.
+
+### Read API + Imovina SPA
+
+Javni ugovor je namjerno uži od persistence modela. Nema `ModelSerializer` / `__all__`.
+
+```text
+GET /api/assets/fixed-assets/
+GET /api/assets/fixed-assets/{id}/
+GET /api/assets/fixed-assets/{id}/depreciation-schedule/
+```
+
+Prefiks `assets/` mounta `config/api_urls.py`. Write metode nisu registrirane (`POST` → 405).
+
+DTO allowlist:
+
+- **FixedAssetListItem** — `id`, `inventory_number`, `name`, `status`, `origin`, `purchase_date`, `activation_date` (`in_service_date`), `acquisition_cost`, `accumulated_depreciation`, `current_book_value`
+- **FixedAssetDetail** — lista + `vin`, `useful_life_months`, `depreciation_method`, `activation_journal_entry_id`
+- **DepreciationScheduleItem** — `id`, `year`, `month`, `depreciation_amount`, running `accumulated_depreciation` / `book_value_after`, `posted`, `journal_entry_id`
+
+Nisu u javnom ugovoru: konta, `source_expense_id`, `purchase_journal_entry_id`, `disposed_at`, `activation_readiness`.
+
+UI: glavni meni **Imovina** (`/t/{slug}/imovina`) — registar (default Svi), kartica Pregled / Amortizacija. Link na temeljnicu samo kad JE ID postoji. Nema write akcija.
