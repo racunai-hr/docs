@@ -132,7 +132,27 @@ Patterni ostaju **ne-ekskluzivni**; remediation se bira po **kombinaciji + vrsti
 | Korak 2b | Implementacija profila (`Expense.posting_profile` + rules + tests) | ✅ done |
 | Korak 2c | Dry-run remediation plan + PostingRule seed (`asset_purchase` on finestar) | ✅ READY (all prerequisites OK; remediation writes still blocked) |
 | Korak 2d | Storno/repost `T-2026-0009` na finestar | eksplicitni GO |
+| **Gate A** | Pretporez (`D 1400`) radi i za `asset_purchase` (4-scenarijska regresija) | ✅ PASS |
+| **Golf CVH** | Reklasifikacija T-2026-0013/14/15 (4120 → 0373) + reconcile kartice | ✅ `17.380,06 = 17.380,06`; PDV 07 identičan |
 | Kasnije | PFC integrity scan (read-only) | nakon što Hadžić nije blocker |
+
+### Gate A — pretporez je profile-agnostic
+
+Legacy guard u `_rule_matches` tretirala je **svako** `expense_approved` pravilo bez `posting_profile` uvjeta kao opex-only, uključujući pretporez (`amount_field=tax_amount`). To je rušilo kanonski `asset_purchase` put za račune s PDV-om: ostajao je samo `D 0373 / K 2201` neto, bez 1400.
+
+Popravak je namjerno uzak:
+
+- unscoped **neto** pravila i dalje ostaju opex-only (4120 ne smije pucati uz 0373)
+- pretporez ostaje profile-agnostic (`condition={'min_tax': '0.01'}` u seedu, bez `posting_profile`)
+- matrica: `opex`/`asset_purchase` × PDV>0 / PDV=0
+
+### Golf CVH — ovisni trošak registracije (Expense 20/21/22)
+
+Dokument ostaje izvorni dokument. Promjena `posting_profile` opex → `asset_purchase` je **trajna auditirana reklasifikacija** (`expense_posting_profile_reclassified`), ne usputni tehnički korak. Correction JE nastaje kanonskim `post_document()`. `acquisition_cost` se usklađuje iz `capitalized_net` (`reconcile_acquisition_cost`), ne iz operatorovog `to_amount`.
+
+PDV prijava nije P&L. Ispravak se knjiži u tekućem razdoblju (kolovoz): srpanjska temeljnica ostaje vidljiva kao `reversed`, kumulativni Finance rezultat postaje ispravan, PDV 07 ostaje izvan write-patha.
+
+`vehicle_*` kategorija sama po sebi nikada ne implicira 0373 / `asset_purchase`. Classification cleanup kategorija nije dio ovog slicea.
 
 ---
 

@@ -224,7 +224,25 @@ RRiF: ovisni troškovi nabave — za vozila u pripremi kapitalizirati na **0373*
 
 Obje: D **0373** / K **1000**, datum **03.07.2026.**, primatelj FZOEU (`HR5424020061100971754`). Dossier: `09-fzoeu-rppo/`.
 
-Nabavna vrijednost kartice Golf (FixedAsset id **3**): **17.049,79 €**. Usklađenje na kartici zbraja nabavu + PPMV obvezu + FZOEU (storno par PPMV-a se u NET predikatu poništava) i mora biti jednako `acquisition_cost`. `activate_fixed_asset()` prenosi `acquisition_cost`, ne saldo 0373. Aktivacija (0373 → 032001) još nije rađena.
+**Pravilo po statusu vozila**
+
+- `in_preparation`: prva registracija, tehnički pregled i homologacija knjiže se na **0373** (povećavaju nabavnu vrijednost). Profil dokumenta je `asset_purchase`, ne kategorija.
+- `active`: svaki naknadni račun za registraciju ili tehnički pregled je trošak razdoblja (razred 4), čak i ako stigne odmah nakon aktivacije.
+- **Osiguranje (AO / kasko)** nikad ne ide na 0373, bez obzira na trenutak uvoza ili aktivacije. Knjiži se kao trošak razdoblja. Ako polica prelazi u iduću poslovnu godinu, primjenjuje se AVR (nije implementirano u ovom sliceu).
+
+`vehicle_*` kategorija sama po sebi **ne** implicira 0373 ni `asset_purchase`.
+
+**Golf — CVH registracija / tehnički (T-2026-0013/14/15):** knjiženo kao opex na 4120 pa reklasificirano kroz `plan/execute/verify_vehicle_dependent_cost_capitalization`. Correction JE: D **0373** + D **1400** / K **2201-P00026**. PFC plaćanja (JE 82/111/113) ostaju i zatvaraju novu AP stavku. Stornirani 4120 par se ne veže na karticu. Osiguranje `T-2026-0017` ostaje rashod, izvan kartice.
+
+| Dokument | Neto | PDV | Sadržaj |
+|----------|-----:|----:|---------|
+| T-2026-0013 | 66,36 | 16,59 | Identifikacija i utvrđivanje stanja vozila M1 |
+| T-2026-0014 | 40,04 | 10,01 | Tehnički pregled + EKO-test REG-KAT |
+| T-2026-0015 | 223,87 | 7,49 | Poslovi prije registracije, prometna, pločice |
+
+Ispravak se knjiži u tekućem razdoblju (kolovoz): srpanjska temeljnica ostaje vidljiva kao `reversed`; kumulativni Finance rezultat postaje ispravan. PDV 07 ostaje netaknut — PDV prijava nije P&L.
+
+Nabavna vrijednost kartice Golf (FixedAsset id **3**) nakon CVH kapitalizacije: **17.380,06 €** (`17.049,79 + 66,36 + 40,04 + 223,87`), izvedena iz kapitaliziranih knjiženja, ne iz ručno zadanog iznosa. Usklađenje na kartici zbraja nabavu + PPMV obvezu + FZOEU + CVH (storno par PPMV-a se u NET predikatu poništava) i mora biti jednako `acquisition_cost`. `activate_fixed_asset()` prenosi `acquisition_cost`, ne saldo 0373. Aktivacija (0373 → 032001) još nije rađena.
 
 ---
 

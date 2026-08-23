@@ -192,7 +192,7 @@ Sprint 5    [ ]  (Workflow, DMS light, OCR — ADR-0016)
 
 **Sljedeći implementation gate:** Sprint 4 — amortizacija, M1.6–M1.8 fiskalizacija produkcija → ADR-0015. Faza 3b (aging widget) ostaje opcionalni backlog.
 
-**Sprint 4 (djelomično):** amortizacija (A1–A8 read API + `/imovina` + povezane temeljnice), M1.6–M1.8 fiskalizacija produkcija → ADR-0015 (rezerviran retro; nema zasebnog Cursor plan filea u repou).
+**Sprint 4 (djelomično):** amortizacija (A1–A9 read API + `/imovina` + povezane temeljnice + CVH kapitalizacija), M1.6–M1.8 fiskalizacija produkcija → ADR-0015 (rezerviran retro; nema zasebnog Cursor plan filea u repou).
 
 **Sprint 3 (završeno):** [`SPRINT_3_ZP_XSD_GATE.md`](SPRINT_3_ZP_XSD_GATE.md) · [`ADR-0014`](ADR-0014-tax-domain-completion.md) · Cursor plan (completed): [`.cursor/plans/sprint_3_zp_next.plan.md`](../../.cursor/plans/sprint_3_zp_next.plan.md)
 
@@ -256,6 +256,7 @@ Sprint 5    [ ]  (Workflow, DMS light, OCR — ADR-0016)
 | **A6** | `domains/assets` facade + testovi + docs | [x] |
 | **A7** | Read API + `/imovina` SPA (lista, kartica, plan; bez write) | [x] |
 | **A8** | `FixedAssetJournalLink` + tab Temeljnice + kapitalizacijsko usklađenje | [x] |
+| **A9** | Gate A pretporez za `asset_purchase` + Golf CVH kapitalizacija (4120 → 0373) | [x] |
 | **B1–B2** | M1.6 UI cutover (outbound + inbound produkcija) | [x] |
 | **B3** | M1.7 uklanjanje izravnog Super klijenta iz API-ja ([ADR-0017](ADR-0017-fiscal-gateway-model-a.md); Super ostaje Model A) | [~] |
 | **B4–B6** | M1.8 Track 0 + PTS runbook + produkcijski cutover | [~] |

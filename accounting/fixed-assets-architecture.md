@@ -185,5 +185,6 @@ Veza asset ↔ temeljnica je **eksplicitna**, nikad VIN heuristika u runtime rea
 
 - Lifecycle SSOT: `FixedAsset.purchase_journal_entry`, `activation_journal_entry`, `disposal_journal_entry`; amortizacija na `DepreciationSchedule.journal_entry`.
 - Dodatne veze: `FixedAssetJournalLink` (`dependent_cost` / `payment` / `other`). Storno nije poslovna uloga — čita se iz `JournalEntry` (`audit_kind`: active / reversed / storno).
-- **Kapitalizacijski set** za usklađenje: `purchase` + `dependent_cost` (+ njihove storno posljedice u NET predikatu). Izvan usklađenja: `payment`, `activation`, `depreciation`, `disposal`, `other`.
+- **Kapitalizacijski set** za usklađenje: `purchase` + `dependent_cost` (+ njihove storno posljedice u NET predikatu). Izvan usklađenja: `payment`, `activation`, `depreciation`, `disposal`, `other`. `dependent_cost` smije doći iz kanonskog `post_document()` puta, ne samo iz ručne temeljnice.
+- U remediationu se `FixedAsset.acquisition_cost` **izvodi** iz `capitalized_net` (`reconcile_acquisition_cost`); operator ne zadaje ciljni iznos.
 - Aktivacija (0373 → 032001) namjerno nije u usklađenju: zatvara konto u pripremi i ne smije spustiti `capitalized_net` na 0.
