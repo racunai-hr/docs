@@ -138,7 +138,7 @@ Potpis ne smije mijenjati poslovne podatke u tijelu obrasca. Ako se razlikuju, p
 Ne. `submitted` i `imported` verzije su immutable. Ispravak = nova verzija.
 
 **Što ako nemam izlazne račune u razdoblju?**  
-Box 660 (`nema prometa`) postavlja se automatski kad su svi izlazni boxovi nula.
+Polje 660 (`Podatak660`) u XML-u ePorezna uvijek šaljemo kao `true` (kao u predanim v11 XML-ovima). To **nije** zastavica „nema prometa“ — portal ga sam postavlja i pri uvozu s prometom. UKUPNO I.+II. je polje 000 = 111 + 200.vrijednost.
 
 **Koji boxovi su trenutno aktivni u ERP-u?**  
 201, 202, 203 (izlaz), 303 (ulaz). Ostali su u registryju za buduća proširenja — vidi [`pdv-mapping.md`](pdv-mapping.md).

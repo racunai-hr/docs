@@ -33,7 +33,8 @@ Poslovna semantika (SSOT): [`pdv-eu-source-matrix.yaml`](pdv-eu-source-matrix.ya
 | 614 | scalar | AGGREGATE_BASE | da | EU dobra — obveza (RC) |
 | 615 | scalar | AGGREGATE_VAT | da | EU dobra — pretporez (RC) |
 | 400 | scalar | COMPUTED_VAT_DUE | da | Obveza / pretporez razlika |
-| 660 | bool | BOOLEAN_NO_OUTPUT | da | Nema isporuka u razdoblju |
+| 000 | scalar | TOTAL_I_PLUS_II | ne | UKUPNO (I.+II.) = 111 + 200.vrijednost |
+| 660 | bool | BOOLEAN_TRUE | ne | ePorezna `Podatak660` uvijek `true` |
 
 Ostali boxovi su u registryju s `value_source=ZERO` (eksplicitno) dok se ne implementiraju.
 
