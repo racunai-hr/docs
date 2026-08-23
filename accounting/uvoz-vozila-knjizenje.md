@@ -156,7 +156,7 @@ Dobavljač u ERP-u: `seed_manual_suppliers` → **Ministarstvo financija — Car
 | Ukupan porez | **191,00 €** | 1.051,04 € |
 | Vrijednosna komponenta | **0,00 €** | 567,22 € |
 | Ekološka komponenta | **191,00 €** | 483,82 € |
-| Uplata | ⏳ rok ~15.07.2026. (JE #56 otvoreno) | ✅ 19.06.2026. (JE #54–#55) |
+| Uplata | ✅ 14.07.2026. (JE #56 + #142) | ✅ 19.06.2026. (JE #54–#55) |
 | Poziv na broj | 1147-36619131370 | 1147-36619131370 |
 
 **PPMV ne ulazi u fazu 1.** Knjižiti tek kad nastane obveza odnosno uplata.
@@ -178,13 +178,14 @@ Dobavljač u ERP-u: `seed_manual_suppliers` → **Ministarstvo financija — Car
 
 *(Stornirana JE #52 — direktno D 0373 / K 1000.)*
 
-**T-Cross — knjiženo (dug, neplaćeno):**
+**T-Cross — knjiženo (plaćeno, zatvoreno):**
 
 | Korak | JE | Datum | Knjiženje |
 |-------|-----|-------|-----------|
-| Obveza (rješenje) | **#56** `202606-0013` | 30.06.2026. | D **0373** / K **2201-S00006**, **191,00 €** — otvorena obveza |
+| Obveza (rješenje) | **#56** `202606-0013` | 30.06.2026. | D **0373** / K **2201-S00006**, **191,00 €** |
+| Uplata | **#142** `202607-0036` | 14.07.2026. | D **2201-S00006** / K **1000**, **191,00 €** + bank match TX **#35** (`ZOU 506312375`) |
 
-Uplata T-Cross: kad prođe s računa → D **2201-S00006** / K **1000** + bank match.
+Nabavna vrijednost kartice T-Cross (FixedAsset id **2**): 8.000,00 (nabava) + 191,00 (PPMV) = **8.191,00 €**. Aktivacija još nije rađena.
 
 ---
 
@@ -213,6 +214,17 @@ Tehnički pregled, registracija, homologacija i sl. — kapitalizirati na **0373
 **T-Cross:** prijevoz je **uključen u račun 70025237** (8.000 €). CMR (`07-prijevoz-cmr/`) je transportna dokumentacija, ne zasebna stavka za knjiženje. **Ne knjižiti** dodatni trošak prijevoza za ovo vozilo.
 
 RRiF: ovisni troškovi nabave — za vozila u pripremi kapitalizirati na **0373** samo ono što stvarno nije već u cijeni kupnje.
+
+**Golf — FZOEU / RPPO (plaćeno, zatvoreno):** rješenje i uplata isti dan (03.07.2026.) → jedna temeljnica po naknadi + bank match. Nije Expense approve (bi palo na 4120). Baterije 05/2026 = 0,00 € — nema JE.
+
+| Naknada | JE | Iznos | PNB | Bank TX |
+|---------|-----|------:|-----|---------|
+| Vozila (gospodarenje otpadom, 05/2026) | **#140** `202607-0034` | 112,80 € | HR01513484-408675-1661199 | **#33** |
+| Gume (gospodarenje otpadom, 05/2026) | **#141** `202607-0035` | 3,60 € | HR01415645-408675-1661228 | **#32** |
+
+Obje: D **0373** / K **1000**, datum **03.07.2026.**, primatelj FZOEU (`HR5424020061100971754`). Dossier: `09-fzoeu-rppo/`.
+
+Nabavna vrijednost kartice Golf (FixedAsset id **3**): 15.882,35 (nabava) + 1.051,04 (PPMV) + 112,80 + 3,60 = **17.049,79 €**. `activate_fixed_asset()` prenosi `acquisition_cost`, ne saldo 0373 — kartica je usklađena s tim zbrojem. Aktivacija (0373 → 032001) još nije rađena.
 
 ---
 
@@ -313,11 +325,12 @@ match_transaction_to_journal_entry(bank_tx, entry, user)
 | Iznos | 8.000 € (ukl. prijevoz) | 15.882,35 € |
 | Datum računa | 22.05.2026. | 27.05.2026. |
 | PPMV rješenje | 191,00 € (30.06.) | 1.051,04 € (17.06.) |
-| PPMV uplata | čeka | ✅ 19.06.2026. (JE #52) |
+| PPMV uplata | ✅ 14.07.2026. (JE #142 / TX #35) | ✅ 19.06.2026. (JE #54–#55) |
+| FZOEU / RPPO | — | ✅ 03.07.2026. vozila 112,80 € (JE #140 / TX #33) + gume 3,60 € (JE #141 / TX #32) |
 | Porijeklo | EU (DE) — **bez faze 3** | EU (DE) — **bez faze 3** |
 | Plaćanje nabave | Banka → Admir Hadžić (8.000 €) | **Privatna gotovina Ante Vrcan** → obveza **2309** |
 | Faza 1 knjiženje | D **0373** / K **1000** (JE #49) | D **0373** / K **2309-P00001** (JE #51) |
-| FixedAsset | id 2 | id 3 |
+| FixedAsset | id 2 (`acquisition_cost` **8.191,00 €**, u pripremi) | id 3 (`acquisition_cost` **17.049,79 €**, u pripremi) |
 
 ---
 
