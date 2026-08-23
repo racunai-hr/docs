@@ -185,7 +185,7 @@ Dobavljač u ERP-u: `seed_manual_suppliers` → **Ministarstvo financija — Car
 | Obveza (rješenje) | **#56** `202606-0013` | 30.06.2026. | D **0373** / K **2201-S00006**, **191,00 €** |
 | Uplata | **#142** `202607-0036` | 14.07.2026. | D **2201-S00006** / K **1000**, **191,00 €** + bank match TX **#35** (`ZOU 506312375`) |
 
-Nabavna vrijednost kartice T-Cross (FixedAsset id **2**): 8.000,00 (nabava) + 191,00 (PPMV) = **8.191,00 €**. Aktivacija još nije rađena.
+Nabavna vrijednost kartice T-Cross (FixedAsset id **2**): **8.191,00 €**. Usklađenje na kartici (`GET .../journal-entries/`) zbraja samo nabavu i ovisne troškove naspram `acquisition_cost`. Aktivacija još nije rađena.
 
 ---
 
@@ -224,7 +224,7 @@ RRiF: ovisni troškovi nabave — za vozila u pripremi kapitalizirati na **0373*
 
 Obje: D **0373** / K **1000**, datum **03.07.2026.**, primatelj FZOEU (`HR5424020061100971754`). Dossier: `09-fzoeu-rppo/`.
 
-Nabavna vrijednost kartice Golf (FixedAsset id **3**): 15.882,35 (nabava) + 1.051,04 (PPMV) + 112,80 + 3,60 = **17.049,79 €**. `activate_fixed_asset()` prenosi `acquisition_cost`, ne saldo 0373 — kartica je usklađena s tim zbrojem. Aktivacija (0373 → 032001) još nije rađena.
+Nabavna vrijednost kartice Golf (FixedAsset id **3**): **17.049,79 €**. Usklađenje na kartici zbraja nabavu + PPMV obvezu + FZOEU (storno par PPMV-a se u NET predikatu poništava) i mora biti jednako `acquisition_cost`. `activate_fixed_asset()` prenosi `acquisition_cost`, ne saldo 0373. Aktivacija (0373 → 032001) još nije rađena.
 
 ---
 

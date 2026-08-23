@@ -78,7 +78,7 @@ Sales .......... L2
 Purchasing ..... L2    (OCR review draft)
 Integration .... L3    (Fiscal Gateway Model A — ADR-0017/0018)
 Reporting ...... L2    (Documents read model SPA — ADR-0020; Bilanca/RDG)
-Assets ......... L3    (aktivacija + amortizacija + read API/SPA — Sprint 4 djelomično)
+Assets ......... L3    (aktivacija + amortizacija + read API/SPA + povezane temeljnice — Sprint 4 djelomično)
 Banking ........ L3    (operational read API + SPA; reconcile-open-item — ADR-0021/0025)
 Compliance ..... L2
 MDM ............ L3    (Partner MDM API + SPA — ADR-0022/0023)

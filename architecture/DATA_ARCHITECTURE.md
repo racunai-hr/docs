@@ -52,6 +52,8 @@ erDiagram
 
     FixedAsset }o--o| Expense : "origin purchase"
     FixedAsset }o--o| JournalEntry : "activation entry"
+    FixedAsset ||--o{ FixedAssetJournalLink : "explicit JE links"
+    FixedAssetJournalLink }o--|| JournalEntry : journal_entry
 ```
 
 ---
@@ -209,7 +211,7 @@ erDiagram
 | residual_value | DecimalField | Ostatak vrijednosti |
 | in_service_date | DateField | Datum aktivacije |
 
-**Veze:** `JournalEntry` (purchase, activation, disposal), `ChartOfAccounts` (4 konta), `DepreciationSchedule` (1:N po razdoblju).
+**Veze:** `JournalEntry` (purchase, activation, disposal), `ChartOfAccounts` (4 konta), `DepreciationSchedule` (1:N po razdoblju), `FixedAssetJournalLink` (ovisni trošak / plaćanje / ostalo).
 
 ### 10b. DepreciationSchedule (`accounting.DepreciationSchedule`)
 
@@ -221,6 +223,16 @@ erDiagram
 | journal_entry | FK → JournalEntry | Knjižena temeljnica |
 
 **Unique:** `(fixed_asset, year, month)` — idempotentnost periodičnog runa.
+
+### 10c. FixedAssetJournalLink (`accounting.FixedAssetJournalLink`)
+
+| Polje | Tip | Opis |
+|-------|-----|------|
+| fixed_asset | FK → FixedAsset | Imovina |
+| journal_entry | FK → JournalEntry | Temeljnica |
+| role | Choice | dependent_cost / payment / other |
+
+Eksplicitna veza izvan lifecycle FK-ova. Unique `(fixed_asset, journal_entry)`. Storno je lifecycle temeljnice, ne role. VIN se ne koristi za matching u runtime putu.
 
 ### 11. User (`auth.User` + `accounts.UserProfile`)
 

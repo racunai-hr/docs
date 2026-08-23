@@ -162,6 +162,7 @@ Javni ugovor je namjerno uži od persistence modela. Nema `ModelSerializer` / `_
 GET /api/assets/fixed-assets/
 GET /api/assets/fixed-assets/{id}/
 GET /api/assets/fixed-assets/{id}/depreciation-schedule/
+GET /api/assets/fixed-assets/{id}/journal-entries/
 ```
 
 Prefiks `assets/` mounta `config/api_urls.py`. Write metode nisu registrirane (`POST` → 405).
@@ -171,7 +172,18 @@ DTO allowlist:
 - **FixedAssetListItem** — `id`, `inventory_number`, `name`, `status`, `origin`, `purchase_date`, `activation_date` (`in_service_date`), `acquisition_cost`, `accumulated_depreciation`, `current_book_value`
 - **FixedAssetDetail** — lista + `vin`, `useful_life_months`, `depreciation_method`, `activation_journal_entry_id`
 - **DepreciationScheduleItem** — `id`, `year`, `month`, `depreciation_amount`, running `accumulated_depreciation` / `book_value_after`, `posted`, `journal_entry_id`
+- **AssetJournalEntry** — `journal_entry_id`, `entry_number`, `entry_date`, `description`, `status`, `audit_kind`, `role`, `total_amount`, `capitalized_amount`
+- **CapitalizationReconciliation** — `capitalized_net`, `acquisition_cost`, `difference`, `balanced`
 
 Nisu u javnom ugovoru: konta, `source_expense_id`, `purchase_journal_entry_id`, `disposed_at`, `activation_readiness`.
 
-UI: glavni meni **Imovina** (`/t/{slug}/imovina`) — registar (default Svi), kartica Pregled / Amortizacija. Link na temeljnicu samo kad JE ID postoji. Nema write akcija.
+UI: glavni meni **Imovina** (`/t/{slug}/imovina`) — registar (default Svi), kartica Pregled / Temeljnice / Amortizacija. Link na temeljnicu samo kad JE ID postoji. Nema write akcija.
+
+### Veza imovine i temeljnice
+
+Veza asset ↔ temeljnica je **eksplicitna**, nikad VIN heuristika u runtime read/write putu.
+
+- Lifecycle SSOT: `FixedAsset.purchase_journal_entry`, `activation_journal_entry`, `disposal_journal_entry`; amortizacija na `DepreciationSchedule.journal_entry`.
+- Dodatne veze: `FixedAssetJournalLink` (`dependent_cost` / `payment` / `other`). Storno nije poslovna uloga — čita se iz `JournalEntry` (`audit_kind`: active / reversed / storno).
+- **Kapitalizacijski set** za usklađenje: `purchase` + `dependent_cost` (+ njihove storno posljedice u NET predikatu). Izvan usklađenja: `payment`, `activation`, `depreciation`, `disposal`, `other`.
+- Aktivacija (0373 → 032001) namjerno nije u usklađenju: zatvara konto u pripremi i ne smije spustiti `capitalized_net` na 0.
