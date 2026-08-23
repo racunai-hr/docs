@@ -43,8 +43,15 @@ Konto troška je tenant konfiguracija (`ExpenseCategory.default_account` / `Char
 Za **domestic** bankovnu uslugu / naknadu s `tax_amount=0`, bez knjiženja pretporeza (npr. 1400) i bez posebnog `vat_procedure` mappinga:
 
 - **ne** generira se umjetni U-RA / box **303** red
-- classifier rezultat `EXPENSE_GENERIC_303_REMOVED` je **očekivan** (namjerna zaštita: 303 je pretporez 25%, ne oslobođena bankovna usluga)
-- nema deductible VAT-a; classifier / PDV registry se zbog toga **ne** širi ad-hoc
+- HR banka s `tax_amount=0` klasificira se kao `EXP_DOMESTIC_BANK_NO_VAT` (`NOT_TAX_RELEVANT`)
+- ostali 0% leftover (bez banka/osiguranje identiteta) i dalje daju `EXPENSE_GENERIC_303_REMOVED`
+- nema deductible VAT-a; 303 se zbog toga **ne** puni ad-hoc
+
+Tuzemni ulazni račun s pretporezom 25% (npr. CVH tehnički pregled) ide `EXP_DOMESTIC_25_303`, uključujući 1-cent ROUND_HALF_EVEN drift (npr. 40,50 × 0,25 = 10,125 → 10,12 vs račun 10,13). CVH/STP header s miješanom stopom, kad je `tax_amount` 25% pretporez na dio neto, ide `EXP_CVH_MIXED_25_303` (osnovica = `tax_amount / 0.25`); to **nije** generičko pravilo za svaku čudnu efektivnu stopu.
+
+EU intra-community stjecanje dobara (0% račun EU dobavljača s VIN-om ili `supply_kind=goods`, npr. Audi / SaM) ide `EXP_EU_GOODS_207_307` (207/307). To **nije** generic foreign-expense fallback.
+
+CH prepaid telecom (npr. Telecom26 AG, `Švicarska` / `CHE-…`, 0% PDV, knjiženje 4120 bez RC konta) ide `EXP_CH_TELECOM_NO_VAT` (`NOT_TAX_RELEVANT`). To **nije** 210/306 (EU B2B usluge) ni 303. Ostali treći-zemaljski 0% leftoveri i dalje daju `EXPENSE_GENERIC_303_REMOVED`.
 
 Ostali `REVIEW_REQUIRED` kodovi nisu automatski „očekivani” — tretiraju se kao blocker dok se ne razjasne.
 
