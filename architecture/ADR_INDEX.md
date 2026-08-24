@@ -27,6 +27,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0025](ADR-0025-bank-reconcile-open-item.md) | Explicit bank reconcile to open SubledgerItem | Domain | Accepted (Amended) | 2026-08-20 | — |
 | [ADR-0026](ADR-0026-private-funds-claim.md) | Private funds / paid on behalf of company | Domain | Accepted | 2026-08-20 | — |
 | [ADR-0027](ADR-0027-pdv-correction-lifecycle.md) | PDV correction lifecycle + Section I derived fields | Business | Accepted | 2026-08-23 | — |
+| [ADR-0028](ADR-0028-official-document.md) | Službeni ulazni dokument (`OfficialDocument`) | Domain | Proposed | 2026-08-24 | — |
 
 ---
 
@@ -76,6 +77,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-22 | Living docs reconcile (Korak A) — North Star ~35%; FAZA3 spec rev. 2 PASS (Documents + Partner + Banking workflow) |
 | 2026-08-22 | Faza 3a Implemented / Accepted — app `develop` @ `9d088df`; legacy URL, operativni subnav, banking CTA, reconcile deep-link; 62/62 testova; Faza 3b (aging) ostaje opcionalni backlog |
 | 2026-08-23 | ADR-0027 Accepted — PDV ispravak (VATReturn verzije + SubmissionEvent po verziji); Section I 101/103/111 derived; 0015/0016 rezervirani |
+| 2026-08-24 | ADR-0028 Proposed — OfficialDocument kao četvrti kanonski tip; direction=official; bez DMS-a i bez auto-postinga; implementacija čeka Architecture Review; 0015/0016 rezervirani |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---
