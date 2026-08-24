@@ -82,6 +82,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-24 | ADR-0028 Accepted — Architecture Review APPROVE; implementacija zaseban gate (upload path nakon PK/UUID; `registered` zahtijeva valjani PDF); 0015/0016 rezervirani |
 | 2026-08-24 | ADR-0029 Proposed — OfficialDocument posting profiles + `official_document_posted`; katalog `ppmv_vehicle_acquisition` / `administrative_fee`; Knjiži = A (JE) + B (AP) u istom koraku; 0028 netaknut do Accepta; 0015/0016 rezervirani |
 | 2026-08-24 | ADR-0029 Accepted — Architecture Review APPROVE (`4ce206a`); `economic_effect` = `capitalize` / `expense`; legacy 0028 JE bez AP = 409 `already_linked_manual_posting`; Knjiži = atomarni A+B; implementacija zaseban GO, odvojen od 0028 `api`/`app`; 0015/0016 rezervirani |
+| 2026-08-24 | ADR-0029 implementacijski GO — Gate 1 API + Gate 2 app + living-doc ER; Knjiži = A+B; profil lock nakon marker JE + AP; Fine Star PPMV #1 acceptance |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---

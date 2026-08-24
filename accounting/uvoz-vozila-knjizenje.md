@@ -149,7 +149,7 @@ Bez bank match-a. Temeljnica **JE #51** (`202605-0012`), FixedAsset id **3**. Ka
 
 Dobavljač u ERP-u: `seed_manual_suppliers` → **Ministarstvo financija — Carinska uprava, CU Šibenik** (OIB `18683136487`).
 
-**Dokument (ADR-0028):** PPMV rješenje nije `Expense`. Registrira se kao `OfficialDocument` (`kind=tax_decision`, `direction=official`) s PDF-om na zapisu; postojeća ručna temeljnica veže se preko `JournalEntry.source`. Opcionalno `related_fixed_asset` na karticu vozila. Tab Ulazni šalje `direction=incoming,official`. Referentni primjer: **UP/I-410-22/26-09/49557**, 03.08.2026., Audi A8, **10.347,20 €**.
+**Dokument (ADR-0028 + ADR-0029):** PPMV rješenje nije `Expense`. Registrira se kao `OfficialDocument` (`kind=tax_decision`, `direction=official`) s PDF-om na zapisu. Knjiži bira eksplicitni profil `ppmv_vehicle_acquisition` i u istom koraku radi JE (D 0373 / K 2201) **i** payable `SubledgerItem` (partner = Carinska). Legacy `link-journal` (samo JE, bez AP) nije uspješan 0029 posting. Opcionalno `related_fixed_asset` na karticu vozila. Tab Ulazni šalje `direction=incoming,official`. Referentni primjer: **UP/I-410-22/26-09/49557**, 03.08.2026., Audi A8, **10.347,20 €**.
 
 | Polje | T-Cross | Golf (referenca) |
 |-------|---------|------------------|

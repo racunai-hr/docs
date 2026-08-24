@@ -13,6 +13,7 @@ erDiagram
     Tenant ||--o{ Invoice : owns
     Tenant ||--o{ Expense : owns
     Tenant ||--o{ OfficialDocument : owns
+    Tenant ||--o{ OfficialDocumentPostingProfile : owns
     Tenant ||--o{ JournalEntry : owns
     Tenant ||--o{ VATPeriod : owns
     Tenant ||--o{ BankTransaction : owns
@@ -37,7 +38,9 @@ erDiagram
     Expense ||--o{ ExpenseAttachment : has
     Expense }o--o| Vehicle : vehicle
     OfficialDocument ||--o| JournalEntry : "source (GFK)"
+    OfficialDocument }o--o| OfficialDocumentPostingProfile : posting_profile
     OfficialDocument }o--o| FixedAsset : related_fixed_asset
+    OfficialDocument }o--o| SubledgerItem : source_gfk
 
     JournalEntry ||--|{ JournalEntryLine : contains
     JournalEntryLine }o--|| ChartOfAccounts : "account"
@@ -128,8 +131,9 @@ erDiagram
 | status | Choice | `draft` / `registered` / `cancelled` |
 | original_file | FileField | Jedan PDF/JPG/PNG na dokumentu |
 | related_fixed_asset | FK → FixedAsset | Opcionalno; **nije** dio identiteta |
+| posting_profile | FK → OfficialDocumentPostingProfile | Nullable; **nije** `kind`. Mutabilan do uspješnog A+B ([`ADR-0029`](ADR-0029-official-document-posting.md)) |
 
-**Veze:** `JournalEntry.source` GFK (postojeća ručna temeljnica; v1 bez auto-postinga i bez `SubledgerItem`). Unique `(tenant, issuer, document_number)`. Upload path tek nakon PK: `official_documents/{tenant_id}/{pk}/…`. Read model: `direction=official`; UI tab Ulazni šalje `direction=incoming,official`.
+**Veze:** `JournalEntry.source` GFK. Knjiži (`official_document_posted`) atomarno radi JE **i** payable `SubledgerItem` (issuer = partner). Legacy 0028 `link-journal` ostaje JE bez AP i ne zaključava profil. Unique `(tenant, issuer, document_number)`. Upload path tek nakon PK: `official_documents/{tenant_id}/{pk}/…`. Read model: `direction=official`; UI tab Ulazni šalje `direction=incoming,official`. Ako postoji `SubledgerItem`, on je SSOT za payment status.
 
 ### 5. Payment (`payments.Payment`)
 
@@ -203,7 +207,7 @@ erDiagram
 |-------|-----|------|
 | partner | FK → Partner | Kupac/dobavljač |
 | direction | Choice | receivable / payable |
-| source | GenericFK | Invoice, Expense, Deposit, PrivateFundsClaim |
+| source | GenericFK | Invoice, Expense, Deposit, PrivateFundsClaim, OfficialDocument |
 | journal_entry | FK → JournalEntry | Temeljnica koja je otvorila stavku |
 | original_amount | DecimalField | Početni iznos obveze/potraživanja |
 | open_amount | DecimalField | **SSOT** za neplaćeni saldo |

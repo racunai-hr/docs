@@ -233,9 +233,9 @@ liability_only u economic_effect
 
 - [x] Architecture Review ovog ADR-a (APPROVE, 2026-08-24)
 - [x] Nakon Accept: jedan cross-link u ADR-0028 Related / Follow-up — bez mijenjanja v1 granica
-- [ ] Implementacijski GO: A+B u istom Knjiži
-- [ ] Amendment `PostingRule.DOCUMENT_TYPES` + seed pravila po tenantu
-- [ ] Living-doc ER tek uz implementaciju
+- [x] Implementacijski GO: A+B u istom Knjiži (2026-08-24)
+- [x] Amendment `PostingRule.DOCUMENT_TYPES` + seed pravila po tenantu
+- [x] Living-doc ER tek uz implementaciju
 - [ ] Zaseban gate: remediation legacy `link-journal` JE → AP (nije dio ovog ADR-a)
 
 ## 5. Acceptance
