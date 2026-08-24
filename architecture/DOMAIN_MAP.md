@@ -34,7 +34,7 @@ Maturity se ažurira pri zatvaranju milestonea ili kvartalnom reviewu.
 | **Integration** | L3 | `domains/integration/` | `integrations`, `fiscal_gateway`, `super_integration`, `ubl` | Importira Core; ne Finance/Tax direktno |
 | **Banking** | L3 | `domains/banking/` | `banking`, `payments` | Importira Core, Finance (eventi) |
 | **Reporting** | L2 | `domains/reporting/` (+ `ai/`) | `accounting/services/reports.py`, `dashboard`, `domains/reporting/documents/` | Read-only: Finance, Tax, Sales, Purchasing, Banking, Integration, DMS |
-| **Assets** | L3 | `domains/assets/` | `accounting` (FixedAsset) | Importira Finance, Purchasing |
+| **Assets** | L3 | `domains/assets/` | `accounting` (FixedAsset, Vehicle) | Importira Finance, Purchasing |
 | **Workflow** | L1 | `domains/workflow/` | `accounting/services/submission/` | Importira Core, Tax |
 | **Compliance** | L2 | cross-cutting (ne app) | audit u `accounts`, `SubmissionEvent` | Cross-cutting — ne importira domene |
 | **MDM** | L2 | cross-cutting (ne app) | `partners`, `settings` (TaxRate) | Importira samo Core |
@@ -78,7 +78,7 @@ Sales .......... L2
 Purchasing ..... L2    (OCR review draft)
 Integration .... L3    (Fiscal Gateway Model A — ADR-0017/0018)
 Reporting ...... L2    (Documents read model SPA — ADR-0020; Bilanca/RDG)
-Assets ......... L3    (aktivacija + amortizacija + read API/SPA + povezane temeljnice — Sprint 4 djelomično)
+Assets ......... L3    (aktivacija + amortizacija + read API/SPA + povezane temeljnice — Sprint 4 djelomično; Vehicle + Expense.vehicle)
 Banking ........ L3    (operational read API + SPA; reconcile-open-item — ADR-0021/0025)
 Compliance ..... L2
 MDM ............ L3    (Partner MDM API + SPA — ADR-0022/0023)

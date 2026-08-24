@@ -16,6 +16,7 @@ erDiagram
     Tenant ||--o{ VATPeriod : owns
     Tenant ||--o{ BankTransaction : owns
     Tenant ||--o{ FixedAsset : owns
+    Tenant ||--o{ Vehicle : owns
 
     Partner ||--o{ Invoice : "company_to"
     Partner ||--o{ Expense : supplier
@@ -32,6 +33,7 @@ erDiagram
 
     Expense ||--o| JournalEntry : "source (GFK)"
     Expense ||--o{ ExpenseAttachment : has
+    Expense }o--o| Vehicle : vehicle
 
     JournalEntry ||--|{ JournalEntryLine : contains
     JournalEntryLine }o--|| ChartOfAccounts : "account"
@@ -54,6 +56,7 @@ erDiagram
     FixedAsset }o--o| JournalEntry : "activation entry"
     FixedAsset ||--o{ FixedAssetJournalLink : "explicit JE links"
     FixedAssetJournalLink }o--|| JournalEntry : journal_entry
+    Vehicle }o--o| FixedAsset : "optional OneToOne"
 ```
 
 ---
@@ -105,7 +108,7 @@ erDiagram
 | total_amount | DecimalField | Ukupan iznos |
 | vat_deductible | BooleanField | PDV odbitak |
 
-**Veze:** `ExpenseAttachment`, `ExpensePayer`, `JournalEntry` (GFK source). Auto-posting: `post_document('expense_approved')`.
+**Veze:** `ExpenseAttachment`, `ExpensePayer`, `JournalEntry` (GFK source), opcionalni `vehicle` → `Vehicle` (analitika; ne utječe na knjiženje). Auto-posting: `post_document('expense_approved')`. Jedno vozilo po dokumentu.
 
 ### 5. Payment (`payments.Payment`)
 
@@ -211,7 +214,21 @@ erDiagram
 | residual_value | DecimalField | Ostatak vrijednosti |
 | in_service_date | DateField | Datum aktivacije |
 
-**Veze:** `JournalEntry` (purchase, activation, disposal), `ChartOfAccounts` (4 konta), `DepreciationSchedule` (1:N po razdoblju), `FixedAssetJournalLink` (ovisni trošak / plaćanje / ostalo).
+**Veze:** `JournalEntry` (purchase, activation, disposal), `ChartOfAccounts` (4 konta), `DepreciationSchedule` (1:N po razdoblju), `FixedAssetJournalLink` (ovisni trošak / plaćanje / ostalo). Opcionalni reverse `vehicle` → `Vehicle`.
+
+`vin` / `registration_plate` na `FixedAsset` su **legacy snapshot**. Operativni kanonski identitet je `Vehicle.vin`.
+
+### 10d. Vehicle (`accounting.Vehicle`)
+
+| Polje | Tip | Opis |
+|-------|-----|------|
+| name | CharField | Operativni naziv |
+| vin | CharField | Operativni kanonski VIN (unique per tenant kad nije prazan) |
+| registration_plate | CharField | Registracija (nije unique) |
+| fixed_asset | OneToOne → FixedAsset | Opcionalna računovodstvena kartica |
+| is_active | Boolean | Operativni status, nije OS status |
+
+**Veze:** `Expense.vehicle` (1:N, `PROTECT`). Povezivanje na OS samo kroz `link_vehicle_to_fixed_asset()`.
 
 ### 10b. DepreciationSchedule (`accounting.DepreciationSchedule`)
 

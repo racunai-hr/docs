@@ -2,7 +2,7 @@
 
 > **6.1 BASELINE (zamrznuto 2026-07-03):** model, admin, `create_fixed_asset_from_purchase()`. Daljnje promjene samo bugfix. Sljedeće: **6.3 aktivacija**.
 
-Vidi: [uvoz-vozila-knjizenje.md](uvoz-vozila-knjizenje.md) · [chart-of-accounts-rules.md](chart-of-accounts-rules.md) · GitHub [#5](https://github.com/avrcanio/racunai.hr/issues/5) · [#6](https://github.com/avrcanio/racunai.hr/issues/6)
+Vidi: [uvoz-vozila-knjizenje.md](uvoz-vozila-knjizenje.md) · [chart-of-accounts-rules.md](chart-of-accounts-rules.md) · GitHub [#5](https://github.com/avrcanio/racunai.hr/issues/5) · [#6](https://github.com/avrcanio/racunai.hr/issues/6) · Vehicle slice: [racunai-hr/api#17](https://github.com/racunai-hr/api/issues/17)
 
 ---
 
@@ -80,27 +80,35 @@ Fine Star konta:
 
 ---
 
-## Rent-a-car: Vehicle ≠ FixedAsset
+## Vehicle ≠ FixedAsset
+
+`Vehicle` je operativni agregat (identitet vozila). `FixedAsset` je računovodstvena kartica OS. Veza je opcionalna — vozilo može postojati bez imovine (najam/leasing), a imovina bez vozila (stroj, namještaj).
 
 ```
-Vehicle (rent-a-car, operativa)
-        │
-        │ OneToOne FK
-        ▼
-FixedAsset (računovodstvo)
+Vehicle
+│
+├── accounting_asset ──────► FixedAsset   (opcionalni OneToOne)
+│                            ├─ nabavna vrijednost
+│                            ├─ aktivacija
+│                            ├─ amortizacija
+│                            └─ otuđenje
+│
+└── operating_costs ───────► Expense.vehicle
+                             (jedno vozilo po dokumentu)
 ```
 
-**Vozilo za najam nije osnovno sredstvo** — koristi osnovno sredstvo.
+`Expense.vehicle` znači samo *„ovaj trošak pripada ovom vozilu”*. Ne ulazi u nabavnu vrijednost, **ne mijenja `posting_profile` i ne implicira kapitalizaciju**. CVH i ostali rashodi ostaju na 4120.
 
-| FixedAsset | Vehicle (v2+) |
-|------------|---------------|
-| računovodstvo | registracija |
-| amortizacija | kilometraža |
-| nabava / aktivacija | status dostupnosti |
-| temeljnice (FK) | rezervacije |
-| | osiguranje, servis |
+Granularnost je jedno vozilo po dokumentu. `ExpenseLine.vehicle` je odgođen dok `ExpenseLine` ne dobije stvarni produkcijski writer.
 
-Jedan `Vehicle` → jedan `FixedAsset`.
+### Vlasništvo nad VIN-om
+
+| Polje | Uloga |
+|-------|--------|
+| `Vehicle.vin` | Operativni kanonski VIN. Novi kod čita i piše ovdje. |
+| `FixedAsset.vin` | Legacy / računovodstveni snapshot. Nije drugi SSOT. `extract_vin_from_journal_entry` i `plan_asset_journal_links` privremeno ostaju na njemu. |
+
+Novi kod ne upisuje VIN proizvoljno na oba mjesta. Povezivanje ide isključivo kroz `link_vehicle_to_fixed_asset()`; `clean()` je admin UX guard, ne jamstvo (`update()` / `bulk_create` nisu pokriveni). Migracija ili brisanje `FixedAsset.vin` je zaseban budući slice.
 
 ---
 
@@ -111,7 +119,8 @@ Jedan `Vehicle` → jedan `FixedAsset`.
 | **6.1** | Model, admin, `create_fixed_asset_from_purchase()` | ✅ **baseline** |
 | **6.3** | `can_activate()` + `activate_fixed_asset()` — 0373 → 032001 | ✅ |
 | **6.4** | `generate_monthly_depreciation()` + `post_depreciation()` | ✅ |
-| — | Rent-a-car `Vehicle` model | nakon OS |
+| — | `Vehicle` operativni agregat + `Expense.vehicle` | ✅ |
+| — | `ExpenseLine.vehicle` / kilometraža / TCO | odgođeno |
 
 ### Faza 6.3 — preduvjeti i atomska aktivacija
 
