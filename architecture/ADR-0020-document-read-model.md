@@ -57,9 +57,9 @@ Klijent ne smije reimplementirati ovu tablicu.
 
 | Prikaz | Izvor istine | Nije izvor | Ako zapisa nema |
 |--------|----------------|------------|-----------------|
-| Status dokumenta | `Invoice.status` / `Expense.status` | saldakonto, eRačun, PDV | dokument 404 |
+| Status dokumenta | `Invoice.status` / `Expense.status` / `OfficialDocument.status` | saldakonto, eRačun, PDV | dokument 404 |
 | Operativni status | assembler, deterministički prioritet (§8) | React, novi DB enum | uvijek izračunat |
-| Knjiženje | `JournalEntry` GFK na dokument | status dokumenta | `not_posted` |
+| Knjiženje | `JournalEntry` GFK na dokument (`Invoice`, `Expense`, `Deposit`, `OfficialDocument`) | status dokumenta | `not_posted` |
 | Fiskalno razdoblje | `FiscalPeriod` | `VATPeriod` | `not_recorded` |
 | Plaćeno / otvoreno | `SubledgerItem` + `SubledgerAllocation` | `status=paid` na dokumentu | `no_subledger` / `not_recorded` |
 | Bankovno usklađenje | `BankTransaction.match_status` | zatvoren saldakonto | `not_recorded` ili `not_applicable` |
@@ -69,7 +69,7 @@ Klijent ne smije reimplementirati ovu tablicu.
 | Obuhvat računa u predanoj verziji | document-level dokaz u snapshotu predane verzije | `VATPeriod.status=submitted` | **uvijek `not_provable` u v1** |
 | eRačun | `As4DocumentLink` / `SuperDocumentLink` | — | `not_recorded` |
 | Fiskalizacija | `FiscalSubmissionLog` + `IntegrationOutboxMessage` | — | JIR `not_recorded`; ZKI `not_recorded` |
-| Privitci | kolekcija `ExpenseAttachment`; izlazni PDF/UBL | pretpostavka jednog filea | prazna lista |
+| Privitci | kolekcija `ExpenseAttachment`; izlazni PDF/UBL; `OfficialDocument.original_file` | pretpostavka jednog filea; nije DMS | prazna lista |
 | Kontrole | katalog pravila u assembleru | UI `if` | prazna lista |
 | Partner OIB / PDV ID / IBAN | `Partner`, `Partner.vat_number`, `PartnerBankAccount` | — | `not_recorded` |
 | Valuta | `Expense.currency`; Invoice bez polja = EUR | HNB tečaj u read modelu | tečaj `not_recorded` |
@@ -224,14 +224,17 @@ Write u zaključanom fiskalnom razdoblju nije tema ovog read-only ADR-a.
 
 Lista koristi baznu projekciju nad `UNION ALL` (ili ekvivalentan database-level oblik) koja omogućuje filtriranje, stabilno sortiranje i paginaciju **prije** dohvaćanja detaljnih relacija.
 
+Kanonski branchovi: `Invoice` (`outgoing`), `Expense` (`incoming`), `Deposit` (`deposit`), `OfficialDocument` (`official`) — [ADR-0028](ADR-0028-official-document.md).
+
 Stabilni redoslijed:
 
 ```text
 document_date DESC, direction ASC, id DESC
 ```
 
-- `document_date`: Invoice `issue_date`, Expense `expense_date`
-- `direction`: `incoming` | `outgoing`
+- `document_date`: Invoice `issue_date`, Expense `expense_date`, Deposit `deposit_date`, OfficialDocument `issue_date`
+- `direction` je **identitet** retka: `incoming` | `outgoing` | `deposit` | `official`
+- filter `direction` je set-valued: jedna vrijednost = točno jedan identitet; `direction=incoming,official` je **samo** grupni filter za UI tab Ulazni (ADR-0028). `direction=incoming` ostaje samo `Expense`
 - obavezan tie-breaker `direction + id` (PK nije jedinstven preko unije)
 - svi filteri primjenjuju se prije paginacije
 - detaljne relacije (saldakonto, ledger, eRačun, banka) dohvaćaju se samo za ID-eve trenutne stranice, u istom snapshotu

@@ -190,12 +190,12 @@ Buduće auto-knjiženje **može** ići preko `JournalEntry.source` GFK bez schem
 ### Follow-up
 
 - [x] Architecture Review ovog ADR-a (APPROVE, 2026-08-24)
-- [ ] Nakon GO: model, read-model UNION, API, UI (zaseban implementacijski plan)
-- [ ] Upload path: dokument mora imati PK (ili stabilni UUID) **prije** spremanja `original_file`; `{doc_id}` ne smije ovisiti o prvom saveu s praznim id-em
-- [ ] `registered` server-side zahtijeva valjani PDF; `missing_pdf` na registriranom dokumentu je integrity/storage greška, ne normalno stanje
-- [ ] Amendment ADR-0020 §3 (izvor istine) i §10 (UNION + `direction`) tek uz implementaciju
-- [ ] Amendment `DATA_ARCHITECTURE.md` ER uz implementaciju
-- [ ] Ažuriranje `uvoz-vozila-knjizenje.md`: PPMV rješenje kao `OfficialDocument`, ne samo opis JE
+- [x] Nakon GO: model, read-model UNION, API, UI (zaseban implementacijski plan)
+- [x] Upload path: dokument mora imati PK (ili stabilni UUID) **prije** spremanja `original_file`; `{doc_id}` ne smije ovisiti o prvom saveu s praznim id-em
+- [x] `registered` server-side zahtijeva valjani PDF; `missing_pdf` na registriranom dokumentu je integrity/storage greška, ne normalno stanje
+- [x] Amendment ADR-0020 §3 (izvor istine) i §10 (UNION + `direction`) tek uz implementaciju
+- [x] Amendment `DATA_ARCHITECTURE.md` ER uz implementaciju
+- [x] Ažuriranje `uvoz-vozila-knjizenje.md`: PPMV rješenje kao `OfficialDocument`, ne samo opis JE
 - [ ] DMS / generički `Attachment` ostaje Sprint 5 gate, zaseban ADR
 
 ## 5. Acceptance

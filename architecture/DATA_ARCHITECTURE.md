@@ -12,6 +12,7 @@ erDiagram
     Tenant ||--o{ Partner : owns
     Tenant ||--o{ Invoice : owns
     Tenant ||--o{ Expense : owns
+    Tenant ||--o{ OfficialDocument : owns
     Tenant ||--o{ JournalEntry : owns
     Tenant ||--o{ VATPeriod : owns
     Tenant ||--o{ BankTransaction : owns
@@ -20,6 +21,7 @@ erDiagram
 
     Partner ||--o{ Invoice : "company_to"
     Partner ||--o{ Expense : supplier
+    Partner ||--o{ OfficialDocument : issuer
 
     Invoice ||--o{ InvoiceItem : contains
     Tenant ||--o{ SubledgerItem : owns
@@ -34,6 +36,8 @@ erDiagram
     Expense ||--o| JournalEntry : "source (GFK)"
     Expense ||--o{ ExpenseAttachment : has
     Expense }o--o| Vehicle : vehicle
+    OfficialDocument ||--o| JournalEntry : "source (GFK)"
+    OfficialDocument }o--o| FixedAsset : related_fixed_asset
 
     JournalEntry ||--|{ JournalEntryLine : contains
     JournalEntryLine }o--|| ChartOfAccounts : "account"
@@ -84,7 +88,7 @@ erDiagram
 | tax_number | CharField | OIB |
 | vat_number | CharField | PDV broj |
 
-**Veze:** `Invoice.company_to`, `Expense.supplier`, `PartnerContact`, `PartnerBankAccount`, `AnalyticAccount`. TD-001 riješen — kanonski MDM; `expenses.Supplier` deprecated (tablica zadržana za rollback).
+**Veze:** `Invoice.company_to`, `Expense.supplier`, `OfficialDocument.issuer`, `PartnerContact`, `PartnerBankAccount`, `AnalyticAccount`. TD-001 riješen — kanonski MDM; `expenses.Supplier` deprecated (tablica zadržana za rollback).
 
 ### 3. Invoice (`invoices.Invoice`)
 
@@ -110,6 +114,23 @@ erDiagram
 
 **Veze:** `ExpenseAttachment`, `ExpensePayer`, `JournalEntry` (GFK source), opcionalni `vehicle` → `Vehicle` (analitika; ne utječe na knjiženje). Auto-posting: `post_document('expense_approved')`. Jedno vozilo po dokumentu.
 
+### 4b. OfficialDocument (`accounting.OfficialDocument`)
+
+Četvrti kanonski poslovni dokument ([`ADR-0028`](ADR-0028-official-document.md)). Nije `Expense` i nije DMS.
+
+| Polje | Tip | Opis |
+|-------|-----|------|
+| kind | Choice | `tax_decision` / `other` |
+| issuer | FK → Partner | Izdavatelj (`PROTECT`) |
+| document_number | CharField | Broj izdavatelja (identitet uz tenant + issuer) |
+| issue_date, due_date | DateField | Poslovni datumi |
+| amount | DecimalField | Iznos |
+| status | Choice | `draft` / `registered` / `cancelled` |
+| original_file | FileField | Jedan PDF/JPG/PNG na dokumentu |
+| related_fixed_asset | FK → FixedAsset | Opcionalno; **nije** dio identiteta |
+
+**Veze:** `JournalEntry.source` GFK (postojeća ručna temeljnica; v1 bez auto-postinga i bez `SubledgerItem`). Unique `(tenant, issuer, document_number)`. Upload path tek nakon PK: `official_documents/{tenant_id}/{pk}/…`. Read model: `direction=official`; UI tab Ulazni šalje `direction=incoming,official`.
+
 ### 5. Payment (`payments.Payment`)
 
 | Polje | Tip | Opis |
@@ -128,7 +149,7 @@ erDiagram
 | entry_number | CharField | Broj temeljnice |
 | entry_date | DateField | Datum knjiženja |
 | status | Choice | draft / posted / reversed |
-| source | GenericFK | Invoice, Expense, PaymentOrder, … |
+| source | GenericFK | Invoice, Expense, OfficialDocument, PaymentOrder, … |
 | fiscal_period | FK → FiscalPeriod | Razdoblje |
 
 **Veze:** `JournalEntryLine` (1:N), `ChartOfAccounts` preko linija. Immutable nakon `posted` — samo storno.
