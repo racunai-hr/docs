@@ -253,7 +253,7 @@ Ukupno kapitalizirano na vozilo:
 PDV: nema
 ```
 
-Fine Star OfficialDocument **#6** vozila `UP/I-351-02/26-29/9463` (JE **#204** D 0373 / K 2201, AP **#72** closed, settle JE **#205**, TX **#45**) i **#7** gume `UP/I-351-02/26-24/11251` (JE **#206**, AP **#73** closed, settle JE **#207**, TX **#44**). Linkovi `dependent_cost` **#14** / **#15** na karticu #4. `acquisition_cost` kartice još nije `reconcile_acquisition_cost` (ostaje 33.000,00 €).
+Fine Star OfficialDocument **#6** vozila `UP/I-351-02/26-29/9463` (JE **#204** D 0373 / K 2201, AP **#72** closed, settle JE **#205**, TX **#45**) i **#7** gume `UP/I-351-02/26-24/11251` (JE **#206**, AP **#73** closed, settle JE **#207**, TX **#44**). Linkovi `dependent_cost` **#14** / **#15** na karticu #4. Nabavna vrijednost te kartice nakon CVH kapitalizacije je **43.988,37 €** (razrada niže).
 
 Oba rješenja su jedan ekonomski teret za unos tog vozila i ne smiju se tretirati različito. Uplata naknade za vozilo je uvjet prve registracije.
 
@@ -274,6 +274,16 @@ Oba rješenja su jedan ekonomski teret za unos tog vozila i ne smiju se tretirat
 | T-2026-0015 | 223,87 | 7,49 | Poslovi prije registracije, prometna, pločice |
 
 Ispravak se knjiži u tekućem razdoblju (kolovoz): srpanjska temeljnica ostaje vidljiva kao `reversed`; kumulativni Finance rezultat postaje ispravan. PDV 07 ostaje netaknut — PDV prijava nije P&L.
+
+**Audi A8 — CVH registracija / tehnički (T-2026-0021/22/23):** isti put, isti servis, kartica **#4**, case `AUDI-A8-CVH-2026-08`. Correction JE **#209** / **#211** / **#213** (24.08.2026.) D **0373** + D **1400** / K **2201-P00026**; originali **#129** / **#131** / **#138** su `reversed`. PFC plaćanja (JE **#130** / **#132** / **#139**, obveza **2309** prema Anti Vrcanu) ostaju i zatvaraju nove AP stavke **#74** / **#75** / **#76**.
+
+| Dokument | Neto | PDV | Sadržaj |
+|----------|-----:|----:|---------|
+| T-2026-0021 | 66,36 | 16,59 | Identifikacija i utvrđivanje stanja vozila M1 |
+| T-2026-0022 | 40,50 | 10,13 | Tehnički pregled + EKO-test DIZEL |
+| T-2026-0023 | 364,71 | 7,49 | Poslovi prije registracije, prometna, pločice |
+
+Nabavna vrijednost kartice Audi A8 (FixedAsset id **4**): **43.988,37 €** (`33.000,00 nabava + 10.347,20 PPMV + 169,60 FZOEU + 471,57 CVH`), izvedena iz kapitaliziranih knjiženja. PDV razdoblje 08/2026 još nije otvoreno, pa ta tri računa nemaju U-RA red — pretporez je na correction temeljnicama, a evidencija dolazi s projekcijom kolovoza.
 
 Nabavna vrijednost kartice Golf (FixedAsset id **3**) nakon CVH kapitalizacije: **17.380,06 €** (`17.049,79 + 66,36 + 40,04 + 223,87`), izvedena iz kapitaliziranih knjiženja, ne iz ručno zadanog iznosa. Usklađenje na kartici zbraja nabavu + PPMV obvezu + FZOEU + CVH (storno par PPMV-a se u NET predikatu poništava) i mora biti jednako `acquisition_cost`. `activate_fixed_asset()` prenosi `acquisition_cost`, ne saldo 0373. Aktivacija (0373 → 032001) još nije rađena.
 
