@@ -234,9 +234,9 @@ HSFI 6: trošak nabave dugotrajne materijalne imovine uključuje nepovratna dava
 
 **Naknade nastale nakon stavljanja vozila u uporabu ili za zasebno nabavljene/zamjenske gume u pravilu su rashod razdoblja, osim ako konkretni izdatak zasebno zadovoljava kriterije kapitalizacije.**
 
-Budući OfficialDocument profili (nije seedano): `fzoeu_vehicle_acquisition_fee` i `fzoeu_tire_acquisition_fee` — `economic_effect=capitalize`, `requires_fixed_asset=true`, `allowed_kinds=['tax_decision']`. Generički `fzoeu_vehicle_fee` / `fzoeu_tire_fee` se ne koriste: FZOEU naknada koja jednog dana bude rashod razdoblja dobiva vlastiti profil.
+OfficialDocument profili: `fzoeu_vehicle_acquisition_fee` i `fzoeu_tire_acquisition_fee` — `economic_effect=capitalize`, `requires_fixed_asset=true`, `allowed_kinds=['tax_decision']`. Generički `fzoeu_vehicle_fee` / `fzoeu_tire_fee` se ne koriste: FZOEU naknada koja jednog dana bude rashod razdoblja dobiva vlastiti profil.
 
-**Audi A8 — srpanj 2026.** (FixedAsset id **4**, VIN `WAUZZZF86RN003268`, izdavatelj FZOEU, IBAN `HR5424020061100971754`, dospijeće **31.08.2026.**, bez PDV-a; još nije `OfficialDocument` / Knjiži)
+**Audi A8 — srpanj 2026.** (FixedAsset id **4**, VIN `WAUZZZF86RN003268`, izdavatelj FZOEU, IBAN `HR5424020061100971754`, izdano **06.08.2026.**, dospijeće **31.08.2026.**, bez PDV-a)
 
 ```text
 FZOEU vozilo:
@@ -252,6 +252,8 @@ Ukupno kapitalizirano na vozilo:
 166,00 + 3,60 = 169,60 €
 PDV: nema
 ```
+
+Fine Star OfficialDocument **#6** vozila `UP/I-351-02/26-29/9463` (JE **#204** D 0373 / K 2201, AP **#72** closed, settle JE **#205**, TX **#45**) i **#7** gume `UP/I-351-02/26-24/11251` (JE **#206**, AP **#73** closed, settle JE **#207**, TX **#44**). Linkovi `dependent_cost` **#14** / **#15** na karticu #4. `acquisition_cost` kartice još nije `reconcile_acquisition_cost` (ostaje 33.000,00 €).
 
 Oba rješenja su jedan ekonomski teret za unos tog vozila i ne smiju se tretirati različito. Uplata naknade za vozilo je uvjet prve registracije.
 

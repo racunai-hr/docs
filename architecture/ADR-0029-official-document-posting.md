@@ -79,8 +79,10 @@ Samo profili čiji je `economic_effect` zaključan:
 |--------|-----------------|-------------------|------------------------|
 | `ppmv_vehicle_acquisition` | `tax_decision` | `capitalize` | da |
 | `administrative_fee` | `other` | `expense` | ne |
+| `fzoeu_vehicle_acquisition_fee` | `tax_decision` | `capitalize` | da |
+| `fzoeu_tire_acquisition_fee` | `tax_decision` | `capitalize` | da |
 
-`tax_obligation` **nije** u v1 katalogu. `liability_only` **nije** u v1 enumu — dodaje se kad postoji stvarni dokument s tim učinkom. Drugi porezni dokument čeka vlastiti profil.
+`tax_obligation` **nije** u katalogu. `liability_only` **nije** u enumu — dodaje se kad postoji stvarni dokument s tim učinkom. Drugi porezni dokument čeka vlastiti profil. Generički `fzoeu_vehicle_fee` / `fzoeu_tire_fee` se ne koriste: rashod razdoblja dobiva vlastiti profil.
 
 Upravljačka pristojba, carinska davanja, komunalna naknada, sudska pristojba — **nisu** seed. Dolaze kao novi `code` kad postoji dokument.
 
@@ -100,6 +102,8 @@ Ime prati trenutak knjiženja: dokument je već `registered`; akcija je Knjiži;
 |-------|-----------------------------|------------|
 | `official_document_posted` | `ppmv_vehicle_acquisition` | D CIP (0373) / K AP (2201) |
 | `official_document_posted` | `administrative_fee` | D rashod / K AP (2201) |
+| `official_document_posted` | `fzoeu_vehicle_acquisition_fee` | D CIP (0373) / K AP (2201) |
+| `official_document_posted` | `fzoeu_tire_acquisition_fee` | D CIP (0373) / K AP (2201) |
 
 Nescope-ana `expense_approved` pravila **ne** smiju pucati na `OfficialDocument`.
 
@@ -236,6 +240,7 @@ liability_only u economic_effect
 - [x] Implementacijski GO: A+B u istom Knjiži (2026-08-24)
 - [x] Amendment `PostingRule.DOCUMENT_TYPES` + seed pravila po tenantu
 - [x] Living-doc ER tek uz implementaciju
+- [x] Seed `fzoeu_vehicle_acquisition_fee` / `fzoeu_tire_acquisition_fee` (HSFI 6 nabava, stvarni dokument)
 - [ ] Zaseban gate: remediation legacy `link-journal` JE → AP (nije dio ovog ADR-a)
 
 ## 5. Acceptance
