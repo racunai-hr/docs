@@ -224,7 +224,36 @@ RRiF: ovisni troškovi nabave — za vozila u pripremi kapitalizirati na **0373*
 | Vozila (gospodarenje otpadom, 05/2026) | **#140** `202607-0034` | 112,80 € | HR01513484-408675-1661199 | **#33** |
 | Gume (gospodarenje otpadom, 05/2026) | **#141** `202607-0035` | 3,60 € | HR01415645-408675-1661228 | **#32** |
 
-Obje: D **0373** / K **1000**, datum **03.07.2026.**, primatelj FZOEU (`HR5424020061100971754`). Dossier: `09-fzoeu-rppo/`.
+Obje: D **0373** / K **1000**, datum **03.07.2026.**, primatelj FZOEU (`HR5424020061100971754`). Dossier: `09-fzoeu-rppo/`. To je **implementacijski precedent** konzistentnosti sustava (JE + `FixedAssetJournalLink` na karticu #3), ne primarni računovodstveni argument.
+
+**FZOEU / RPPO — računovodstveno pravilo (HSFI 6)**
+
+HSFI 6: trošak nabave dugotrajne materijalne imovine uključuje nepovratna davanja i troškove koji se izravno mogu pripisati dovođenju imovine u stanje za namjeravanu uporabu ([NN 86/2015](https://narodne-novine.nn.hr/clanci/sluzbeni/2015_08_86_1709.html)). `in_preparation` je tehnički signal u sustavu, ne računovodstveni razlog.
+
+**FZOEU naknada za vozilo i pripadajuće originalne gume, kada proizlazi iz uvoza/unosa konkretnog vozila i nastaje prije njegova stavljanja u uporabu, kapitalizira se u nabavnu vrijednost tog vozila.**
+
+**Naknade nastale nakon stavljanja vozila u uporabu ili za zasebno nabavljene/zamjenske gume u pravilu su rashod razdoblja, osim ako konkretni izdatak zasebno zadovoljava kriterije kapitalizacije.**
+
+Budući OfficialDocument profili (nije seedano): `fzoeu_vehicle_acquisition_fee` i `fzoeu_tire_acquisition_fee` — `economic_effect=capitalize`, `requires_fixed_asset=true`, `allowed_kinds=['tax_decision']`. Generički `fzoeu_vehicle_fee` / `fzoeu_tire_fee` se ne koriste: FZOEU naknada koja jednog dana bude rashod razdoblja dobiva vlastiti profil.
+
+**Audi A8 — srpanj 2026.** (FixedAsset id **4**, VIN `WAUZZZF86RN003268`, izdavatelj FZOEU, IBAN `HR5424020061100971754`, dospijeće **31.08.2026.**, bez PDV-a; još nije `OfficialDocument` / Knjiži)
+
+```text
+FZOEU vozilo:
+169,60 € obračun
+− 3,60 € naknada za pripadajuće gume
+= 166,00 € rješenje
+
+FZOEU gume:
+4 × 0,90 €
+= 3,60 € rješenje
+
+Ukupno kapitalizirano na vozilo:
+166,00 + 3,60 = 169,60 €
+PDV: nema
+```
+
+Oba rješenja su jedan ekonomski teret za unos tog vozila i ne smiju se tretirati različito. Uplata naknade za vozilo je uvjet prve registracije.
 
 **Pravilo po statusu vozila**
 
