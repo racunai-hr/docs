@@ -1,7 +1,7 @@
 # ADR-0028 — Službeni ulazni dokument (`OfficialDocument`)
 
 ```text
-Status: Proposed
+Status: Accepted
 Date: 2026-08-24
 Type: Domain
 Supersedes: —
@@ -10,7 +10,7 @@ Related: ADR-0010-domain-architecture.md, ADR-0011-architecture-freeze-v1.0.md, 
 
 ## Status
 
-**Proposed** — nova vrsta kanonskog poslovnog dokumenta i njezino uključivanje u document read model (ADR-0020) su zaključani. Ovaj ADR **ne** uvodi DMS infrastrukturu, generički attachment sloj niti vlastiti posting/payment workflow. Implementacija je **drugi gate** nakon Architecture Reviewa, isto kao ADR-0024.
+**Accepted** — Architecture Review 2026-08-24. Nova vrsta kanonskog poslovnog dokumenta i njezino uključivanje u document read model (ADR-0020) su zaključani. Ovaj ADR **ne** uvodi DMS infrastrukturu, generički attachment sloj niti vlastiti posting/payment workflow. Implementacija je **zaseban gate** i čeka eksplicitni GO.
 
 Ne superseda Invoice, Expense ni Deposit. Ne mijenja Banking v2. Ne mijenja DMS maturitet (ostaje L0 / stub).
 
@@ -189,8 +189,10 @@ Buduće auto-knjiženje **može** ići preko `JournalEntry.source` GFK bez schem
 
 ### Follow-up
 
-- [ ] Architecture Review ovog ADR-a
+- [x] Architecture Review ovog ADR-a (APPROVE, 2026-08-24)
 - [ ] Nakon GO: model, read-model UNION, API, UI (zaseban implementacijski plan)
+- [ ] Upload path: dokument mora imati PK (ili stabilni UUID) **prije** spremanja `original_file`; `{doc_id}` ne smije ovisiti o prvom saveu s praznim id-em
+- [ ] `registered` server-side zahtijeva valjani PDF; `missing_pdf` na registriranom dokumentu je integrity/storage greška, ne normalno stanje
 - [ ] Amendment ADR-0020 §3 (izvor istine) i §10 (UNION + `direction`) tek uz implementaciju
 - [ ] Amendment `DATA_ARCHITECTURE.md` ER uz implementaciju
 - [ ] Ažuriranje `uvoz-vozila-knjizenje.md`: PPMV rješenje kao `OfficialDocument`, ne samo opis JE
