@@ -10,7 +10,9 @@ Related: ADR-0028-official-document.md, ADR-0013-finance-domain-stabilization.md
 
 ## Status
 
-**Proposed** — čeka Architecture Review. Ovaj ADR **ne** mijenja Accepted ADR-0028. ADR-0028 ostaje v1 evidencija (dokument + PDF + opcionalni `JournalEntry.source` link). Cross-link iz 0028 na ovaj ADR ide **tek nakon** prihvaćanja.
+**Proposed** — Architecture Review 2026-08-24: CHANGES REQUIRED (legacy ručno povezana JE; `economic_effect` v1). Ovaj prolaz zaključava ta dva pravila. Čeka ponovni review za APPROVE / Accepted.
+
+Ovaj ADR **ne** mijenja Accepted ADR-0028. ADR-0028 ostaje v1 evidencija (dokument + PDF + opcionalni `JournalEntry.source` link). Cross-link iz 0028 na ovaj ADR ide **tek nakon** prihvaćanja.
 
 Ne superseda Invoice, Expense ni Deposit. Ne širi `OfficialDocument.kind`. Ne širi `ExpenseCategory`. Ne uvodi drugi posting engine. Ne uvodi DMS.
 
@@ -60,7 +62,7 @@ Novi model u `accounting` (Finance ownership). Tenant-scoped. Unique `(tenant, c
 |-------|---------|
 | `code` | stabilni strojni identitet |
 | `name` | HR oznaka |
-| `economic_effect` | `capitalize` \| `expense` \| `liability_only` — **jedan** učinak po profilu |
+| `economic_effect` | `capitalize` \| `expense` — **jedan** učinak po profilu |
 | `allowed_kinds` | podskup `OfficialDocument.kind` |
 | `requires_fixed_asset` | uvjet za **Knjiži**, ne za registraciju |
 | `is_active` | soft-disable |
@@ -78,7 +80,7 @@ Samo profili čiji je `economic_effect` zaključan:
 | `ppmv_vehicle_acquisition` | `tax_decision` | `capitalize` | da |
 | `administrative_fee` | `other` | `expense` | ne |
 
-`tax_obligation` **nije** u v1 katalogu. `liability_only` i `expense` nisu dvije varijante istog profila. Drugi porezni dokument čeka vlastiti profil kad postoji stvarni slučaj.
+`tax_obligation` **nije** u v1 katalogu. `liability_only` **nije** u v1 enumu — dodaje se kad postoji stvarni dokument s tim učinkom. Drugi porezni dokument čeka vlastiti profil.
 
 Upravljačka pristojba, carinska davanja, komunalna naknada, sudska pristojba — **nisu** seed. Dolaze kao novi `code` kad postoji dokument.
 
@@ -126,14 +128,44 @@ Read-model badge nakon Knjiži smije afirmirati „nije plaćeno” samo iz `Sub
 Prvo koje pogodi, stane. Niže ne prepisuje više.
 
 1. **Eksplicitni odabir korisnika** — jedini write na `OfficialDocument.posting_profile`.
-2. **Već postoji `JournalEntry.source` na ovaj dokument** — ne nagađati; ponovni Knjiži vidi §2.7.
+2. **Već postoji `JournalEntry.source` na ovaj dokument** — ne nagađati profil; Knjiži vidi §2.7 / §2.8.
 3. **Prijedlog UI-a (nije write):** `kind=tax_decision` **i** `related_fixed_asset` popunjen → `ppmv_vehicle_acquisition`.
 4. **Prijedlog UI-a:** `kind=other` → `administrative_fee` smije biti ponuđen; nije implicitni write.
 5. Inače prazno — Knjiži pada dok korisnik ne odabere profil.
 
 Zabranjeno za izbor profila: iznos, PDF/OCR, `ExpenseCategory`, konto, hardkodirani OIB izdavatelja.
 
-### 2.7 Idempotency (invariant)
+### 2.7 Pre-existing ručno povezana JE (prijelaz iz ADR-0028)
+
+ADR-0028 v1 dopušta `link-journal`: `JournalEntry.source` → dokument, **bez** `SubledgerItem`. To je **legacy / manual-linked** stanje, nije uspješan 0029 posting.
+
+```text
+OfficialDocument
+   └─ postojeća JE (ručni link)
+      └─ nema SubledgerItem
+```
+
+`Knjiži` na takvom dokumentu **odbija** operaciju:
+
+```text
+409 already_linked_manual_posting
+```
+
+Ne usvaja postojeću JE. Ne kreira retroaktivno `SubledgerItem`. Ne radi novu JE. Ne pretvara ručni accounting u atomarni A+B lifecycle.
+
+Razlikovanje:
+
+| Stanje | Knjiži |
+|--------|--------|
+| Nema `JournalEntry.source` | radi A+B (ili pada na validaciji) |
+| Source JE **i** `SubledgerItem` iz `official_document_posted` | idempotentni no-op (§2.8) |
+| Source JE **bez** `SubledgerItem` (0028 `link-journal` ili bilo koji ručni link) | **409** `already_linked_manual_posting` |
+
+Pretvaranje legacy JE → AP nije `Knjiži`. Ide **zasebnim remediation servisom/gateom**, izvan ovog ADR-a.
+
+### 2.8 Idempotency (invariant)
+
+Invariant vrijedi samo za **uspješan** 0029 posting (JE **i** SubledgerItem iz `official_document_posted`):
 
 ```text
 Jedan uspješan posting po OfficialDocument + posting eventu.
@@ -141,9 +173,11 @@ To znači jedna JE i jedan SubledgerItem.
 Ponovni Knjiži ne smije proizvesti novu JE niti drugi open item.
 ```
 
+Legacy ručni link **nije** uspješan posting; na njega se ovaj invariant ne primjenjuje — vidi §2.7.
+
 `select_for_update`, unique guard i točan `posting_kind` ostaju implementacijska odluka uz postojeći `post_document`. ADR ne zaključava tehniku.
 
-### 2.8 Read model i UI
+### 2.9 Read model i UI
 
 `OfficialDocument.status` se **ne** širi s `posted` / `paid`. Knjiženje iz `JournalEntry`. Plaćanje iz `SubledgerItem` (+ bank match kao dokaz, postojeće pravilo).
 
@@ -173,6 +207,8 @@ OfficialDocumentLine / komponente iznosa
 partner-specific posting rules
 OCR
 DMS / multi-attachment
+legacy JE → AP remediation (nije Knjiži)
+liability_only u economic_effect
 ```
 
 ## 4. Consequences
@@ -191,6 +227,7 @@ DMS / multi-attachment
 - `administrative_fee` je uski ventil za `kind=other`; ne smije postati kanta za sve
 - Tenant mora imati `PostingRule` za `official_document_posted` + profil prije Knjiži
 - Issuer mora biti valjan `Partner` jer je on AP counterparty (TD-001)
+- 0028 dokument s ručnim JE linkom ostaje bez AP badgea dok ne prođe zasebni remediation; `Knjiži` ga ne „popravlja”
 
 ### Follow-up
 
@@ -199,6 +236,7 @@ DMS / multi-attachment
 - [ ] Implementacijski GO: A+B u istom Knjiži
 - [ ] Amendment `PostingRule.DOCUMENT_TYPES` + seed pravila po tenantu
 - [ ] Living-doc ER tek uz implementaciju
+- [ ] Zaseban gate: remediation legacy `link-journal` JE → AP (nije dio ovog ADR-a)
 
 ## 5. Acceptance
 
@@ -210,7 +248,9 @@ Referent: PPMV **UP/I-410-22/26-09/49557**, Carinska, Audi A8, **10.347,20 €**
 | Knjiži bez profila | odbijeno |
 | Knjiži `ppmv_vehicle_acquisition` bez imovine | odbijeno |
 | Knjiži PPMV s profilom + imovinom | jedna JE (D 0373 / K 2201) **i** jedan `SubledgerItem` payable, partner = Carinska, open 10.347,20 € |
-| Ponovni Knjiži | ista JE, isti open item; nema druge JE ni drugog itema |
+| Ponovni Knjiži nakon uspješnog A+B | ista JE, isti open item; nema druge JE ni drugog itema |
+| Knjiži na 0028 ručno povezanoj JE (nema SubledgerItem) | **409** `already_linked_manual_posting`; JE i AP netaknuti |
+| Seed `liability_only` | ne postoji |
 | `kind=tax_decision` sam | **ne** postavlja profil |
 | Seed `tax_obligation` | ne postoji |
 | Profil nosi Dr/Cr | polja ne postoje |
