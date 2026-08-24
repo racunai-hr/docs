@@ -1,7 +1,7 @@
 # ADR-0029 — OfficialDocument posting profiles + posting lifecycle
 
 ```text
-Status: Proposed
+Status: Accepted
 Date: 2026-08-24
 Type: Domain
 Supersedes: —
@@ -10,13 +10,13 @@ Related: ADR-0028-official-document.md, ADR-0013-finance-domain-stabilization.md
 
 ## Status
 
-**Proposed** — Architecture Review 2026-08-24: CHANGES REQUIRED (legacy ručno povezana JE; `economic_effect` v1). Ovaj prolaz zaključava ta dva pravila. Čeka ponovni review za APPROVE / Accepted.
+**Accepted** — Architecture Review 2026-08-24 APPROVE (`4ce206a`). Katalog profila, `official_document_posted` i atomarni Knjiži (JE + `SubledgerItem`) su zaključani. `economic_effect` v1 je `capitalize | expense`. Ručno povezana 0028 JE bez `SubledgerItem` nije uspješan posting — Knjiži vraća **409 `already_linked_manual_posting`**.
 
-Ovaj ADR **ne** mijenja Accepted ADR-0028. ADR-0028 ostaje v1 evidencija (dokument + PDF + opcionalni `JournalEntry.source` link). Cross-link iz 0028 na ovaj ADR ide **tek nakon** prihvaćanja.
+Ovaj ADR **ne** mijenja v1 granice Accepted ADR-0028. ADR-0028 ostaje evidencija (dokument + PDF + opcionalni `JournalEntry.source` link). Cross-link je u 0028 Related / Follow-up.
 
 Ne superseda Invoice, Expense ni Deposit. Ne širi `OfficialDocument.kind`. Ne širi `ExpenseCategory`. Ne uvodi drugi posting engine. Ne uvodi DMS.
 
-Implementacija je **zaseban gate** i čeka eksplicitni GO nakon Accepta. **Knjiži u v1 ovog ADR-a radi A i B u istom koraku** — JE bez otvorene obveze nije uspješan posting.
+Implementacija je **zaseban gate** i čeka eksplicitni GO. Ne miješa se s necommitanim ADR-0028 `api`/`app` kodom. **Knjiži u v1 ovog ADR-a radi A i B u istom koraku** — JE bez otvorene obveze nije uspješan posting.
 
 ## 1. Context
 
@@ -231,8 +231,8 @@ liability_only u economic_effect
 
 ### Follow-up
 
-- [ ] Architecture Review ovog ADR-a
-- [ ] Nakon Accept: jedan cross-link u ADR-0028 Related / Follow-up — bez mijenjanja v1 granica
+- [x] Architecture Review ovog ADR-a (APPROVE, 2026-08-24)
+- [x] Nakon Accept: jedan cross-link u ADR-0028 Related / Follow-up — bez mijenjanja v1 granica
 - [ ] Implementacijski GO: A+B u istom Knjiži
 - [ ] Amendment `PostingRule.DOCUMENT_TYPES` + seed pravila po tenantu
 - [ ] Living-doc ER tek uz implementaciju
@@ -257,4 +257,4 @@ Referent: PPMV **UP/I-410-22/26-09/49557**, Carinska, Audi A8, **10.347,20 €**
 | `expense_approved` pravilo | ne knjiži OfficialDocument |
 | Detalj nakon Knjiži, bez bank matcha | afirmativno „nije plaćeno” iz `SubledgerItem.open` |
 | Bank reconcile na tu stavku (ADR-0025) | „plaćeno” / `closed` — bez `official_document_paid` |
-| ADR-0028 v1 | netaknut do Accepta ovog ADR-a |
+| ADR-0028 v1 | evidencija-only; posting je ovaj ADR |

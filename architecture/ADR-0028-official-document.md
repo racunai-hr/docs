@@ -5,7 +5,7 @@ Status: Accepted
 Date: 2026-08-24
 Type: Domain
 Supersedes: —
-Related: ADR-0010-domain-architecture.md, ADR-0011-architecture-freeze-v1.0.md, ADR-0013-finance-domain-stabilization.md, ADR-0020-document-read-model.md, ADR-0024-deposit-kaucija.md, DATA_ARCHITECTURE.md, DOMAIN_MAP.md, docs/accounting/uvoz-vozila-knjizenje.md
+Related: ADR-0010-domain-architecture.md, ADR-0011-architecture-freeze-v1.0.md, ADR-0013-finance-domain-stabilization.md, ADR-0020-document-read-model.md, ADR-0024-deposit-kaucija.md, ADR-0029-official-document-posting.md, DATA_ARCHITECTURE.md, DOMAIN_MAP.md, docs/accounting/uvoz-vozila-knjizenje.md
 ```
 
 ## Status
@@ -196,6 +196,7 @@ Buduće auto-knjiženje **može** ići preko `JournalEntry.source` GFK bez schem
 - [x] Amendment ADR-0020 §3 (izvor istine) i §10 (UNION + `direction`) tek uz implementaciju
 - [x] Amendment `DATA_ARCHITECTURE.md` ER uz implementaciju
 - [x] Ažuriranje `uvoz-vozila-knjizenje.md`: PPMV rješenje kao `OfficialDocument`, ne samo opis JE
+- [x] Posting / Knjiži lifecycle: [ADR-0029](ADR-0029-official-document-posting.md) (Accepted 2026-08-24) — 0028 v1 ostaje evidencija-only
 - [ ] DMS / generički `Attachment` ostaje Sprint 5 gate, zaseban ADR
 
 ## 5. Acceptance
