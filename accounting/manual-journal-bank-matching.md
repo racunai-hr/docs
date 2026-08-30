@@ -67,7 +67,7 @@ erp/app/banking/ledger.py                       # resolve_bank_ledger_account
 
 ### `JournalLineInput`
 
-Servis prihvaća proširena polja za buduću analitiku. U v1 se perzistiraju samo polja koja `JournalEntryLine` podržava (`account`, `analytic_account`, `description`, iznosi).
+Servis prihvaća proširena polja. Perzistiraju se polja koja `JournalEntryLine` podržava (`account`, `analytic_account`, `cost_center`, `description`, iznosi). `cost_center` smije stati samo na RDG klase 4/5/7.
 
 ### `BankAccount.ledger_account`
 

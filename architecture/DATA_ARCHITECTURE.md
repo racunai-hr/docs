@@ -44,6 +44,13 @@ erDiagram
 
     JournalEntry ||--|{ JournalEntryLine : contains
     JournalEntryLine }o--|| ChartOfAccounts : "account"
+    JournalEntryLine }o--o| CostCenter : "cost_center"
+    CostCenter }o--o| CostCenter : parent
+    Expense }o--o| CostCenter : cost_center
+    Invoice }o--o| CostCenter : cost_center
+    OfficialDocument }o--o| CostCenter : cost_center
+    Vehicle |o--o| CostCenter : cost_center
+    FixedAsset }o--o| CostCenter : cost_center
     JournalEntry }o--o| FiscalPeriod : "period"
 
     VATPeriod ||--o{ VATLedgerEntry : aggregates
@@ -103,7 +110,7 @@ erDiagram
 | issue_date, due_date | DateField | Datumi |
 | subtotal, tax_amount, total_amount | DecimalField | Iznosi |
 
-**Veze:** `InvoiceItem` (1:N), `Payment.related_invoice`, `JournalEntry` (GFK source). Auto-posting preko Django signala → `post_document('invoice_issued')`.
+**Veze:** `InvoiceItem` (1:N), `Payment.related_invoice`, `JournalEntry` (GFK source), opcionalni `cost_center` → `CostCenter` (input za resolver; kanonski trag je JE linija). Auto-posting preko Django signala → `post_document('invoice_issued')`. MT na računu se ne smije mijenjati nakon knjiženja.
 
 ### 4. Expense (`expenses.Expense`)
 
@@ -115,7 +122,7 @@ erDiagram
 | total_amount | DecimalField | Ukupan iznos |
 | vat_deductible | BooleanField | PDV odbitak |
 
-**Veze:** `ExpenseAttachment`, `ExpensePayer`, `JournalEntry` (GFK source), opcionalni `vehicle` → `Vehicle` (analitika; ne utječe na knjiženje). Auto-posting: `post_document('expense_approved')`. Jedno vozilo po dokumentu.
+**Veze:** `ExpenseAttachment`, `ExpensePayer`, `JournalEntry` (GFK source), opcionalni `vehicle` → `Vehicle` (operativna analitika), opcionalni `cost_center` → `CostCenter` (input za resolver; kanonski trag je `JournalEntryLine.cost_center`). Auto-posting: `post_document('expense_approved')`. Jedno vozilo po dokumentu.
 
 ### 4b. OfficialDocument (`accounting.OfficialDocument`)
 
@@ -132,6 +139,7 @@ erDiagram
 | original_file | FileField | Jedan PDF/JPG/PNG na dokumentu |
 | related_fixed_asset | FK → FixedAsset | Opcionalno; **nije** dio identiteta |
 | posting_profile | FK → OfficialDocumentPostingProfile | Nullable; **nije** `kind`. Mutabilan do uspješnog A+B ([`ADR-0029`](ADR-0029-official-document-posting.md)) |
+| cost_center | FK → CostCenter | Input za resolver; zaključan nakon knjiženja. Kanonski trag je JE linija |
 
 **Veze:** `JournalEntry.source` GFK. Knjiži (`official_document_posted`) atomarno radi JE **i** payable `SubledgerItem` (issuer = partner). Legacy 0028 `link-journal` ostaje JE bez AP i ne zaključava profil. Unique `(tenant, issuer, document_number)`. Upload path tek nakon PK: `official_documents/{tenant_id}/{pk}/…`. Read model: `direction=official`; UI tab Ulazni šalje `direction=incoming,official`. Ako postoji `SubledgerItem`, on je SSOT za payment status.
 
@@ -156,7 +164,30 @@ erDiagram
 | source | GenericFK | Invoice, Expense, OfficialDocument, PaymentOrder, … |
 | fiscal_period | FK → FiscalPeriod | Razdoblje |
 
-**Veze:** `JournalEntryLine` (1:N), `ChartOfAccounts` preko linija. Immutable nakon `posted` — samo storno.
+**Veze:** `JournalEntryLine` (1:N), `ChartOfAccounts` preko linija, opcionalno `CostCenter` na RDG stavkama. Immutable nakon `posted` — samo storno.
+
+### 6a. JournalEntryLine (`accounting.JournalEntryLine`)
+
+| Polje | Tip | Opis |
+|-------|-----|------|
+| account | FK → ChartOfAccounts | Konto |
+| analytic_account | FK → AnalyticAccount | Saldakonti (1201/2201/2309), nije MT |
+| cost_center | FK → CostCenter | Kanonski MT trag nakon knjiženja; samo klase 4/5/7 |
+| debit_amount / credit_amount | DecimalField | Iznosi |
+
+MT na source dokumentu je input za resolver. Promjena dokumenta ne mijenja već proknjižene stavke.
+
+### 6b. CostCenter (`accounting.CostCenter`)
+
+| Polje | Tip | Opis |
+|-------|-----|------|
+| code | CharField | Šifra, unique po tenantu |
+| name | CharField | Naziv |
+| kind | Choice | location / object / overhead / group |
+| parent | FK → self | Max 2 razine; knjiživo MT ide pod grupu |
+| is_active | Boolean | Soft-disable |
+
+**Nije** konto. `kind=group` nije knjiživ. Vidi ADR-0030.
 
 ### 7. VATLedgerEntry (`accounting.VATLedgerEntry`)
 
@@ -237,6 +268,7 @@ erDiagram
 | useful_life_months | PositiveSmallIntegerField | Trajnost za amortizaciju |
 | depreciation_method | Choice | linear |
 | residual_value | DecimalField | Ostatak vrijednosti |
+| cost_center | FK → CostCenter | Input za amortizaciju; kanonski trag je JE linija |
 | in_service_date | DateField | Datum aktivacije |
 
 **Veze:** `JournalEntry` (purchase, activation, disposal), `ChartOfAccounts` (4 konta), `DepreciationSchedule` (1:N po razdoblju), `FixedAssetJournalLink` (ovisni trošak / plaćanje / ostalo). Opcionalni reverse `vehicle` → `Vehicle`.
