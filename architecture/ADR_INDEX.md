@@ -30,6 +30,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0028](ADR-0028-official-document.md) | Službeni ulazni dokument (`OfficialDocument`) | Domain | Accepted | 2026-08-24 | — |
 | [ADR-0029](ADR-0029-official-document-posting.md) | OfficialDocument posting profiles + posting lifecycle | Domain | Accepted | 2026-08-24 | — |
 | [ADR-0030](ADR-0030-cost-centers.md) | Cost Centers / Mjesta troška | Domain | Accepted | 2026-08-30 | — |
+| [ADR-0031](ADR-0031-tz2-return.md) | Obrazac TZ 2 (`TZ2Return`) | Domain | Accepted | 2026-09-15 | — |
 
 ---
 
@@ -85,6 +86,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-08-24 | ADR-0029 Accepted — Architecture Review APPROVE (`4ce206a`); `economic_effect` = `capitalize` / `expense`; legacy 0028 JE bez AP = 409 `already_linked_manual_posting`; Knjiži = atomarni A+B; implementacija zaseban GO, odvojen od 0028 `api`/`app`; 0015/0016 rezervirani |
 | 2026-08-24 | ADR-0029 implementacijski GO — Gate 1 API + Gate 2 app + living-doc ER; Knjiži = A+B; profil lock nakon marker JE + AP; Fine Star PPMV #1 acceptance |
 | 2026-08-30 | ADR-0030 Accepted — Mjesta troška (`CostCenter` + `JournalEntryLine.cost_center`); `AnalyticAccount` ostaje saldakonti; 0015/0016 rezervirani |
+| 2026-09-15 | ADR-0031 Accepted — Obrazac TZ 2 (`TZ2Return`); godišnji `tax_year`; bez VATPeriod locka; bez izmjene frozen `SubmissionService` |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 
 ---

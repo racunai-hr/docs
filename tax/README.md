@@ -31,6 +31,7 @@ Dokumentacija (living, ne infrastruktura):
 | [`FORM_IMPLEMENTATION_CONVENTION.md`](FORM_IMPLEMENTATION_CONVENTION.md) | Layout koda |
 | [`TESTING_GUIDE.md`](TESTING_GUIDE.md) | Obvezni testni paket po obrascu |
 | [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md) | ZP operativni doc |
+| [`TZ2_ARCHITECTURE.md`](TZ2_ARCHITECTURE.md) | TZ 2 operativni doc |
 
 ### Poslovni prioritet obrazaca (P0–P3)
 
@@ -75,13 +76,15 @@ Porez na dobit
   PD
 Porez na potrošnju
   PPO
+Turistička članarina
+  TZ 2
 Porez na dohodak i doprinosi
   JOPPD
 Predaje i potvrde
 Porezni kalendar
 ```
 
-Live hub rows: **PDV** → `/porezi/pdv` (PDV razdoblja, zatim PDV workflow); **PDV-S (EU poslovanje)** → `/porezi/pdv-s` (PDV-S razdoblja, zatim `/porezi/pdv-s?period=YYYY-MM`). Isti `VATPeriod` read endpoint smije se reuseati kao kalendar; UI ih ne smije stapati. PDV-S vs ZP semantics unchanged (inbound vs outbound EU).
+Live hub rows: **PDV** → `/porezi/pdv`; **PDV-S (EU poslovanje)** → `/porezi/pdv-s`; **TZ 2** → `/porezi/tz2`. Isti `VATPeriod` read endpoint smije se reuseati kao kalendar za PDV/PDV-S; TZ2 koristi `tax_year`, ne `VATPeriod`.
 
 ---
 

@@ -23,6 +23,8 @@ Operativni vodič za mjesečni Obrazac PDV u racunAI adminu. Tehnička arhitektu
 
 ### Korak 1 — Generiraj PDV ledger
 
+**App → Porezi → PDV** (`/t/{slug}/porezi/pdv`) → **Otvori razdoblje** → odaberi `YYYY-MM` → **Generiraj knjige**. Ako razdoblje ne postoji, akcija ga otvara i generira knjige (`POST /api/tax/pdv/periods/{YYYY-MM}/ledger/`). Nakon uspjeha otvaraju se kontrolni pregledi tog mjeseca. Ako knjige već postoje, ista akcija ih rebuilda (`replace=True`; ručni unosi `is_manual=True` ostaju).
+
 **Admin → Accounting → PDV razdoblja** → odaberi razdoblje → akcija **Generiraj PDV knjige** (admin labela; to je ledger, ne zakonska knjiga — vidi [`ADR-0019`](../architecture/ADR-0019-tax-classification-engine.md)).
 
 Ledger se gradi iz:

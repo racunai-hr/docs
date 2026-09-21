@@ -28,6 +28,14 @@ Isti ERP mora raditi s **bilo kojim kontnim planom** tenant-a.
 
 ---
 
+## Ulazni račun — raspodjela neto po stavkama
+
+Jedan nalog ostaje jedan AP. Ako sve `ExpenseLine` stavke imaju knjiživo `posting_account` i zbroj neto/PDV/bruto = header, `expense_approved` emitira jedan debit po stavci za osnovicu i pretporez. Obveza prema dobavljaču ostaje header pravilo. Klasa 1 (unaprijed plaćeni troškovi) ne nosi mjesto troška. RRiF roditelj `190` nije knjiživ — bira se list (npr. `1900`).
+
+OCR confirm može upisati `posting_account` po stavci (all-or-none). Tekst stavke nikad ne mapira konto.
+
+---
+
 ## Povezani dokumenti
 
 - [manual-journal-bank-matching.md](manual-journal-bank-matching.md)

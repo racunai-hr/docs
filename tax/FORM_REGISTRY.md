@@ -22,6 +22,7 @@ Ažurirati pri zatvaranju Tax milestonea ili dodavanju novog obrasca — **bez n
 | [`FORM_IMPLEMENTATION_CONVENTION.md`](FORM_IMPLEMENTATION_CONVENTION.md) | Layout `tax_forms/<form>/` |
 | [`TESTING_GUIDE.md`](TESTING_GUIDE.md) | Obvezni testni paket |
 | [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md) | Obrazac ZP (Sprint 3) |
+| [`TZ2_ARCHITECTURE.md`](TZ2_ARCHITECTURE.md) | Obrazac TZ 2 (turistička članarina) |
 
 ---
 
@@ -124,6 +125,7 @@ P2 je prioritet implementacije prema djelatnosti klijenta, ne Tax navigacijski k
 | Obrazac | Maturity | XSD | G2B | Channel | Source | Return model | Canonical Artifact | Gen | Sub | Napomena |
 |---------|----------|-----|-----|---------|--------|--------------|-------------------|-----|-----|----------|
 | **PPO** | L0 | ✅ | TBD | XSD+Portal | TBD | TBD | `payload.json` | Planned | Planned | Porez na potrošnju |
+| **TZ2** | L2 | ✅ | TBD | XSD+Portal | Ručni unos + CompanySettings | `TZ2Return` | `payload.json` | ✅ | Manual | Godišnja turistička članarina; [`TZ2_ARCHITECTURE.md`](TZ2_ARCHITECTURE.md), [`ADR-0031`](../architecture/ADR-0031-tz2-return.md) |
 | **PZ 42/63** | L0 | TBD | TBD | Portal | Finance+Tax | — | — | Planned | Planned | Posebni postupci PDV |
 | **PD-IPO** | L0 | ✅ | TBD | XSD+Portal | TBD | TBD | `payload.json` | Planned | Planned | Porez na dobit — IPO |
 | **DONH** | L0 | ✅ | TBD | XSD+Portal | TBD | TBD | `payload.json` | Planned | Planned | Porez na dohodak (godišnja) |
@@ -185,7 +187,7 @@ Isti ciklus bez obzira na obrazac — implementacija preko **TaxFormEngine** kon
 | Sloj | Putanja (privremeno) | Cilj |
 |------|----------------------|------|
 | Ledger | `accounting/services/vat.py` | `domains/tax/ledger/` |
-| Forms | `accounting/services/tax_forms/` (`pdv/`, `pdv_s/`, **`zp/`**) | `domains/tax/forms/` |
+| Forms | `accounting/services/tax_forms/` (`pdv/`, `pdv_s/`, **`zp/`**, **`tz2/`**) | `domains/tax/forms/` |
 | Submission | `accounting/services/submission/` | `domains/tax/submission/` (re-export) |
 | Validation | `tax_forms/*/validation.py` | `domains/tax/validation/` |
 | Verification | `pdv/diff.py`, `verify_pdv_period`; **`zp/verify.py`**, `verify_zp_period` | `domains/tax/verification/` |

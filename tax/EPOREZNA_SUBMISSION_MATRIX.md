@@ -90,6 +90,7 @@ Sažetak po obrascu. Detalji implementacije u ERP-u: [`FORM_REGISTRY.md`](FORM_R
 | **OSS** | One Stop Shop (e-trgovina EU) | Obveznik | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P1 | L0 | Planned | Planned |
 | **PD** | Porez na dobit | Obveznik poreza na dobit | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P1 | L0 | Planned | Planned |
 | **PPO** | Porez na potrošnju | Obveznik PPO | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P2 | L0 | Planned | Planned |
+| **TZ2** | Turistička članarina (iznajmljivač) | Privatni iznajmljivač | ✅ | TBD | ✅ | Confirmed | Portal | Portal login | TBD | P2 | L2 | ✅ | Manual |
 | **PZ 42/63** | Prijava za posebne postupke (42, 63) | Obveznik PDV-a | TBD | TBD | ✅ | Unknown | Portal | Portal login | TBD | P2 | L0 | Planned | Planned |
 | **PD-IPO** | Porez na dobit — IPO | Obveznik | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P2 | L0 | Planned | Planned |
 | **DONH** | Porez na dohodak (godišnja prijava) | Porezni obveznik | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P2 | L0 | Planned | Planned |
@@ -124,6 +125,7 @@ Isti redoslijed redaka kao §3.
 | OSS | XSD package, Research | TBD | Quarterly | Zakon o PDV-u | XML+XAdES | TBD | Planned |
 | PD | XSD package, Research | TBD | Annual | Zakon o porezu na dobit | XML+XAdES | TBD | Planned |
 | PPO | XSD package, Research | TBD | Monthly | Pravilnik o PPO | XML+XAdES | TBD | Planned |
+| TZ2 | XSD package | v1.0 | Annual | Zakon o turističkoj članarini | XML | PDF potvrda | Manual |
 | PZ 42/63 | Research | TBD | On demand | Zakon o PDV-u | TBD | TBD | Planned |
 | PD-IPO | XSD package, Research | TBD | Annual | Zakon o porezu na dobit | XML+XAdES | TBD | Planned |
 | DONH | XSD package, Research | TBD | Annual | Zakon o porezu na dohodak | XML+XAdES | TBD | Planned |
@@ -151,6 +153,7 @@ Isti redoslijed redaka kao §3.
 | **OSS** | Prijava PDV-a u okviru posebnog postupka za e-trgovinu (One Stop Shop). |
 | **PD** | Prijava poreza na dobit. |
 | **PPO** | Prijava poreza na potrošnju. |
+| **TZ2** | Prijava paušalnog iznosa turističke članarine za iznajmljivače (Obrazac TZ 2). |
 | **PZ 42/63** | Prijave u posebnim postupcima oporezivanja (čl. 42 i 63 Zakona o PDV-u). |
 | **PD-IPO** | Prijava poreza na dobit za investicijske fondove (IPO). |
 | **DONH** | Godišnja prijava poreza na dohodak. |
@@ -173,6 +176,7 @@ Interna arhitektura i mapiranje modela. **§B nije normativ** — opisuje kako r
 | PDV-ispravak | Nova verzija + supersede | `VATReturn` + `SubmissionService.supersede()` | Isti payload kanon |
 | PDV-S | Inbound EU ledger (stjecanja i primljene usluge) | `PDVSReturn`, agregat iz VAT knjige | Manual ePorezna |
 | ZP | Outbound EU isporuke (dobra i usluge) | `ZPReturn`, agregat iz VAT knjige | Sprint 3 ✅ — [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md) |
+| TZ2 | Godišnja turistička članarina | `TZ2Return`, ručni unos + CompanySettings | [`TZ2_ARCHITECTURE.md`](TZ2_ARCHITECTURE.md), ADR-0031 |
 | JOPPD | Cross-domain builder | `JOPPDReturn` (TBD), `joppd_builder/` | HR `Employee` samo izvor |
 | PDV-K | Odvojen obrazac od PDV | `PDVKReturn` (planirano) | vidi [`pdv-extensions-roadmap.md`](../accounting/pdv-extensions-roadmap.md) §2 |
 | OSS | Proširenje PDV konteksta | Planirano u PDV 610+ / zaseban modul | e-trgovina |
