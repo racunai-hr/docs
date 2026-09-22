@@ -28,6 +28,15 @@ docker exec racunai_django python manage.py seed_cost_centers --tenant finestar 
 
 Objektna vozila (`701`, `702`, …) se vežu ručno na `Vehicle.cost_center`.
 
+## Kartica MT i dokumenti na imovini
+
+Dva izvora ostaju odvojena:
+
+- **Kartica MT** (`/izvjestaji/mjesta-troska/{id}`) prikazuje knjižene RDG stavke i dokumente čiji posted JE ima `JournalEntryLine.cost_center`. Nabava i PPMV na 0373 nisu RDG i ne ulaze na tu karticu.
+- **Kartica imovine → Dokumenti** prikazuje operativni identitet: `Expense.vehicle` (preko `Vehicle.fixed_asset`) i `OfficialDocument.related_fixed_asset`.
+
+Dok rashod nije proknjižen s tim MT, kartica MT može biti prazna iako tab Dokumenti na OS već pokazuje PPMV odluke.
+
 ## Izvan v1
 
 Prevaljivanje po ključevima, MT po stavci računa, obavezni MT po kontu, budžet.
