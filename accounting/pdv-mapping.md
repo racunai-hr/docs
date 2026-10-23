@@ -5,18 +5,18 @@ Jedini izvor istine za definicije polja je `accounting/services/tax_forms/pdv/bo
 | Kod | Oznaka | Kategorija | PDV polje | Tip | Aktivan | Implementiran | Rezerviran | Pravilo |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 000 | Ukupni promet u razdoblju oporezivanja | other | 000 | scalar | da | ne | ne | — |
-| 100 | Isporuke u RH po stopi 0% (osim izvoza) | other | 100 | scalar | da | ne | ne | — |
-| 101 | Isporuke dobara unutar EU | other | 101 | scalar | da | da | ne | Invoice EU outbound goods, 0% PDV, I-RA izlazni |
-| 102 | Isporuke dobara u treće zemlje (izvoz) | other | 102 | scalar | da | ne | ne | — |
-| 103 | Obavljene usluge unutar EU | other | 103 | scalar | da | da | ne | Invoice EU outbound services (datum usluge), 0% PDV, I-RA izlazni |
-| 104 | Obavljene usluge u treće zemlje | other | 104 | scalar | da | ne | ne | — |
-| 105 | Isporuke NPS u RH | other | 105 | scalar | da | ne | ne | — |
-| 106 | Trosarinske naknade | other | 106 | scalar | da | ne | ne | — |
-| 107 | Posebni postupci oporezivanja | other | 107 | scalar | da | ne | ne | — |
-| 108 | Ostalo oslobođeno | other | 108 | scalar | da | ne | ne | — |
-| 109 | Ostalo neoporezivo | other | 109 | scalar | da | ne | ne | — |
-| 110 | Ostale isporuke | other | 110 | scalar | da | ne | ne | — |
-| 111 | Ukupno oslobođeno i neoporezivo | other | 111 | scalar | da | ne | ne | — |
+| 100 | Transakcije koje ne podliježu oporezivanju, oslobođene i oporezive po stopi 0% — ukupno | other | 100 | scalar | da | ne | ne | — |
+| 101 | Isporuke u RH za koje PDV obračunava primatelj | other | 101 | scalar | da | ne | ne | — |
+| 102 | Isporuke dobara obavljene u drugim državama članicama | other | 102 | scalar | da | ne | ne | — |
+| 103 | Isporuke dobara unutar EU | other | 103 | scalar | da | da | ne | Invoice EU outbound goods, 0% PDV, I-RA izlazni |
+| 104 | Obavljene usluge unutar EU | other | 104 | scalar | da | da | ne | Invoice EU outbound services (datum usluge), 0% PDV, I-RA izlazni |
+| 105 | Obavljene isporuke osobama bez sjedišta u RH | other | 105 | scalar | da | da | ne | Invoice third-country services (datum usluge), 0% PDV, I-RA izlazni |
+| 106 | Sastavljanje i postavljanje dobara u drugoj državi članici EU | other | 106 | scalar | da | ne | ne | — |
+| 107 | Isporuke novih prijevoznih sredstava u EU | other | 107 | scalar | da | ne | ne | — |
+| 108 | Tuzemne isporuke | other | 108 | scalar | da | ne | ne | — |
+| 109 | Izvozne isporuke | other | 109 | scalar | da | da | ne | Invoice third-country goods, 0% PDV, I-RA izlazni |
+| 110 | Ostala oslobođenja | other | 110 | scalar | da | ne | ne | — |
+| 111 | Isporuke po stopi 0% | other | 111 | scalar | da | ne | ne | — |
 | 200 | Oporezive isporuke — ukupno | output | 200 | pair | da | ne | ne | — |
 | 201 | Oporezive isporuke po stopi 5% | output | 201 | pair | da | da | ne | Invoice item, stopa 5%, I-RA izlazni |
 | 202 | Oporezive isporuke po stopi 13% | output | 202 | pair | da | da | ne | Invoice item, stopa 13%, I-RA izlazni |

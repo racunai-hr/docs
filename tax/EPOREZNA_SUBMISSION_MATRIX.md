@@ -82,7 +82,7 @@ Sažetak po obrascu. Detalji implementacije u ERP-u: [`FORM_REGISTRY.md`](FORM_R
 | Obrazac | Svrha (kratko) | Tko predaje | XSD | G2B | Portal | Status | Transport | Authentication | Response | Biz | Maturity | Gen XML | Submit |
 |---------|----------------|-------------|-----|-----|--------|--------|-----------|----------------|----------|-----|----------|---------|--------|
 | **PDV** | Mjesečna/kvartalna prijava PDV-a | Obveznik PDV-a | ✅ | ✅ | ✅ | Confirmed | SOAP | FINA poslovni certifikat | UUID | P0 | L3 | ✅ | Manual |
-| **PDV-ispravak** | Ispravak predanog PDV-a | Obveznik PDV-a | ✅ | ✅ | ✅ | Confirmed | SOAP | FINA poslovni certifikat | UUID | P0 | L3 | ✅ | Manual |
+| **PDV-ispravak** | Obavijest o ispravku osnovice zbog nenaplate dulje od godine | Obveznik PDV-a | ✅ | — | ✅ | Confirmed | Portal | Portal login | UUID | P0 | L2 | ✅ | Manual |
 | **PDV-S** | Prijava stjecanja dobara i primljenih usluga iz EU | Obveznik PDV-a | ✅ | Partial | ✅ | Partial | SOAP | FINA poslovni certifikat | UUID | P0 | L2 | ✅ | Manual |
 | **ZP** | Zbirna prijava isporuka dobara i usluga EU obveznicima | Obveznik PDV-a | ✅ | TBD | ✅ | Research | TBD | TBD | TBD | P0 | L2 | ✅ | Manual |
 | **JOPPD** | Jedinacna prijava poreza i doprinosa | Poslodavac | ✅ | ✅ | ✅ | Confirmed | SOAP | FINA poslovni certifikat | broj zaprimanja | P0 | L0 | Planned | Planned |
@@ -117,7 +117,7 @@ Isti redoslijed redaka kao §3.
 | Obrazac | Source | Schema Version | Frequency | Legal Reference | Attachments | Confirmation | Automation |
 |---------|--------|----------------|-----------|-----------------|-------------|--------------|------------|
 | PDV | G2B Guide, XSD package | v11.0 | Monthly / Quarterly | Zakon o PDV-u | XML+XAdES | UUID | Manual |
-| PDV-ispravak | G2B Guide, XSD package | v11.0 | On demand | Zakon o PDV-u | XML+XAdES | UUID | Manual |
+| PDV-ispravak | G2B Guide, XSD package | v1.0 | On demand | Zakon o PDV-u čl. 33. st. 11. | XML+XAdES | UUID | Manual |
 | PDV-S | G2B Guide, XSD package | TBD | Quarterly | Zakon o PDV-u | XML+XAdES | UUID | Manual |
 | ZP | XSD package, Research | TBD | Quarterly | Zakon o PDV-u | XML+XAdES | TBD | Manual |
 | JOPPD | G2B Guide, XSD package | TBD | Monthly | OPZ | XML+XAdES | broj zaprimanja | Planned |
@@ -145,7 +145,7 @@ Isti redoslijed redaka kao §3.
 | Obrazac | PU značenje |
 |---------|-------------|
 | **PDV** | Prijava poreza na dodanu vrijednost za obračunsko razdoblje (mjesečno ili kvartalno). |
-| **PDV-ispravak** | Ispravak već predane PDV prijave za isto razdoblje. |
+| **PDV-ispravak** | Obavijest o ispravku porezne osnovice jer potraživanje nije naplaćeno dulje od godine. Nije ispravak već predane PDV prijave. |
 | **PDV-S** | Prijava za stjecanje dobara i primljene usluge iz drugih država članica EU (HR ← EU). VIES je usporedni sustav, ne identitet obrasca. |
 | **ZP** | Zbirna prijava isporuka dobara i obavljenih usluga u druge države članice EU poreznim obveznicima (HR → EU). |
 | **JOPPD** | Jedinacna prijava poreza na dohodak i prireza te doprinosa za mirovinsko i zdravstveno osiguranje. |
@@ -173,7 +173,7 @@ Interna arhitektura i mapiranje modela. **§B nije normativ** — opisuje kako r
 | PU obrazac | racunAI koncept | Return model / izvor | Napomena |
 |------------|-----------------|----------------------|----------|
 | PDV | Mjesečni PDV pipeline | `VATReturn`, `VATLedgerEntry` | Frozen ADR-0007 |
-| PDV-ispravak | Nova verzija + supersede | `VATReturn` + `SubmissionService.supersede()` | Isti payload kanon |
+| PDV-ispravak | ObrazacPDVispravak v1.0, ručni retci računa | XML preuzimanje | Nije `VATReturn` ni nova verzija redovnog PDV-a |
 | PDV-S | Inbound EU ledger (stjecanja i primljene usluge) | `PDVSReturn`, agregat iz VAT knjige | Manual ePorezna |
 | ZP | Outbound EU isporuke (dobra i usluge) | `ZPReturn`, agregat iz VAT knjige | Sprint 3 ✅ — [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md) |
 | TZ2 | Godišnja turistička članarina | `TZ2Return`, ručni unos + CompanySettings | [`TZ2_ARCHITECTURE.md`](TZ2_ARCHITECTURE.md), ADR-0031 |
