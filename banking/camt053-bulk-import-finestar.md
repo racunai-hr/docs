@@ -27,3 +27,4 @@ Bez ovog zapisa bulk import CAMT.053 datoteke vraća grešku *Nepoznat IBAN* za 
 
 - Auto-kreiranje `BankAccount` iz XML-a **nije** uključeno u v1.
 - Više `<Stmt>` elemenata u jednoj datoteci mapira se na odgovarajući račun po IBAN-u unutar istog tenant-a.
+- Kunski izvod (`Ccy=HRK`) ide na isti EUR račun. Originalni iznosi ostaju u HRK, a knjiženje koristi eur ekvivalent po fiksnom tečaju 7,53450. Uvoz javlja upozorenje. Drugi bankovni račun za isti IBAN se ne otvara.

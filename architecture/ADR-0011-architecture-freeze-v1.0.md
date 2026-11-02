@@ -8,6 +8,8 @@ Supersedes: —
 Related: ADR-0010-domain-architecture.md, ADR-0012-sprint-1-retrospective.md, ADR_INDEX.md, ARCHITECTURE_GOVERNANCE.md
 ```
 
+> **Amendment (ADR-0032):** novi Django app `payroll` i nove vrste dokumenata `JOPPDReturn` te payroll isprave IP1/NP1/IO1/NO1; `PayrollDocument` trenutno persistira NP1/IO1/NO1, dok se IP1 generira na zahtjev — vidi [ADR-0032](ADR-0032-payroll-hr-compliance.md).
+
 ## Status
 
 **Accepted** — dokumentacijska struktura od 34 dokumenta i domenska arhitektura iz ADR-0010 su zamrznute. Sljedeći korak je isporuka, ne dizajn.

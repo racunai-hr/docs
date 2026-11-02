@@ -97,7 +97,7 @@ Implementacija: [`accounting/services/vat.py`](../../api/app/accounting/services
 | **PDV-ispravak** | L2 | ✅ | — | XSD+Portal | Ručni retci računa | — | XML | ✅ | — | Manual | ObrazacPDVispravak v1.0, nenaplativa potraživanja; nije nova verzija PDV prijave |
 | **PDV-S** | L2 | ✅ | Partial | XSD+G2B+Portal | VATLedger | `PDVSReturn` | `payload.json` | ✅ | ✅ | Manual | Stjecanja dobara i primljene usluge iz EU |
 | **ZP** | L2 | ✅ | TBD | XSD+Portal | VATLedger | `ZPReturn` | `payload.json` | ✅ | ✅ | Manual | Sprint 3 ✅ — [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md), [`ADR-0014`](../architecture/ADR-0014-tax-domain-completion.md) |
-| **JOPPD** | L0 | ✅ | ✅ | XSD+G2B+Portal | Builder | `JOPPDReturn` (TBD) | `payload.json` | Planned | — | Planned | Planned candidate v1.5 |
+| **JOPPD** | L1 | ⚠️ draft | — | XSD+Portal (planned) | `domains.hr.facade` DTO → `domains/tax/forms/joppd/` | `JOPPDReturn` | `payload.json` | ✅ | — | Manual | XML strukturno slijedi obrazac, ali **nije** validiran protiv službenog XSD-a (nema lokalne kopije sheme kao ZP/PDV/TZ2) — potrebna provjera ovlaštenog računovođe prije produkcijske predaje. Vidi `domains/tax/forms/joppd/__init__.py`. |
 
 ### JOPPD — planned candidate for v1.5
 
