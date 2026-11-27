@@ -264,6 +264,37 @@ Implementacija ide **zasebnim planom** nakon prihvaćanja ADR-a:
 11. Dokument bez učinka → `NOT_TAX_RELEVANT`
 12. Nepoznata kombinacija → `REVIEW_REQUIRED` ili `INVALID`, bez tihog fallbacka u 303
 
+## Amendment 2026-11-27 — porezne činjenice (ADR-0034)
+
+Status amendmenta: **Accepted** uz [ADR-0034](ADR-0034-pdv-s-workflow.md). Osnovni ADR i dalje je Proposed u dijelu cutovera.
+
+### A1. Porezna činjenica
+
+Za dokument dobavljača iz druge države članice klasifikacija se temelji na potvrđenoj činjenici (`ExpenseTaxFact`), po retku:
+
+| Podatak | Pravilo |
+|---|---|
+| vrsta | `goods`, `services`, `excluded` |
+| postupak | standardni ili izričito navedeni poseban režim; poseban režim bez pravila → `REVIEW_REQUIRED` |
+| porezni datum | obvezan; datum unosa nikad nije porezni datum |
+| datum isporuke | kad je potreban za porezni datum |
+| stopa, osnovica EUR, tečaj | potvrđeni, s izvorom |
+| snimka dobavljača | naziv, država, PDV ID u trenutku potvrde |
+| autor, vrijeme, revizija | izmjena stvara novu reviziju; stare ostaju |
+
+### A2. Pravila klasifikacije
+
+- Činjenice se ne izvode iz države, opisa, kategorije troška ni VIN-a. EU dobavljač bez PDV-a i bez činjenica → `REVIEW_REQUIRED` (`EU_TAX_FACTS_MISSING`).
+- Dokument s činjenicama nadređen je temeljnicama istog dokumenta; one se ne zbrajaju drugi put.
+- Ručna temeljnica na EU kontima bez potvrđenog izvora ide na pregled. Knjiženje na kontu 0373 samo po sebi nije porezna činjenica.
+- Ručne korekcije PDV-S (ADR-0034 D01) sljedive su porezne činjenice s dokumentom, razlogom i autorom; ne mijenjaju knjigu.
+- OSS, IOSS i prodaja putem sučelja nemaju polje na Obrascu PDV → `REVIEW_REQUIRED`.
+- Čista pravila žive u `domains/tax/facts` bez ORM-a. PDV projekcija i PDV-S koriste isti `TaxClassificationEngine`.
+
+### A3. Granica
+
+Stari generator knjiga (tenanti bez uključenog zapisa projekcije) ne čita činjenice. To je poznato ograničenje do cutovera, ne drugi klasifikacijski ugovor.
+
 ## Alternatives considered
 
 | Odbačeno | Razlog |

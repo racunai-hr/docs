@@ -32,8 +32,9 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0030](ADR-0030-cost-centers.md) | Cost Centers / Mjesta troška | Domain | Accepted | 2026-08-30 | — |
 | [ADR-0031](ADR-0031-tz2-return.md) | Obrazac TZ 2 (`TZ2Return`) | Domain | Accepted | 2026-09-15 | — |
 | [ADR-0032](ADR-0032-payroll-hr-compliance.md) | Payroll & HR Compliance Architecture | Domain | Accepted | 2026-11-02 | — |
-| [ADR-0033](ADR-0033-mcp-gateway.md) | racunAI MCP Gateway Architecture | Integration | Proposed | 2026-11-27 | — |
-| [ADR-0034](ADR-0034-pdv-s-workflow.md) | Samostalni PDV-S obrazac i životni ciklus predaje | Business | Proposed | 2026-11-27 | — |
+| [ADR-0033](ADR-0033-incoming-invoice-foreign-currency.md) | Ulazni računi u stranoj valuti i prikaz u EUR | Domain | Proposed | 2026-11-27 | — |
+| [ADR-0034](ADR-0034-pdv-s-workflow.md) | Samostalni PDV-S obrazac i životni ciklus predaje | Business | Accepted | 2026-11-27 | — |
+| [ADR-0035](ADR-0035-mcp-gateway.md) | racunAI MCP Gateway Architecture | Integration | Proposed | 2026-11-27 | — |
 
 ---
 
@@ -97,6 +98,8 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 
 | 2026-11-27 | ADR-0034 Proposed — samostalni PDV-S, snapshot verzije, naknadna PDV kontrola; R0 regulatorni gate otvoren; bez implementacije |
 | 2026-11-27 | ADR-0034 R0 **PARTIAL** — [izvještaj](../tax/pdv-s/R0-FINAL-REPORT.md); otvorena pitanja o odobrenjima, negativnim iznosima i tečaju; preduvjeti amendment ADR-0019 i ispravak mapiranja PDV polja; ADR ostaje Proposed, bez implementacije |
+| 2026-11-27 | MCP Gateway renumeriran iz ADR-0033 u ADR-0035; ADR-0033 (devizni ulazni računi) prenesen s grane `main` |
+| 2026-11-27 | ADR-0034 **Accepted** — poslovne odluke D01–D10; dopuna ADR-0019 (porezne činjenice); mapiranje Obrasca PDV v16; Q-01, Q-02, Q-07 ostaju REVIEW REQUIRED |
 
 ---
 

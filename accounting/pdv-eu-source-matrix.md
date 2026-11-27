@@ -9,10 +9,10 @@ Ovaj dokument se generira iz YAML-a; ne uređivati ručno.
 
 | Polje | Vrijednost |
 | --- | --- |
-| Verzija | `1.2.0` |
+| Verzija | `2.0.0` |
 | Status | **Locked** |
 | Vlasnik | Accounting |
-| Zadnji pregled | 2026-07-10 |
+| Zadnji pregled | 2026-11-27 |
 
 ## Procesni ugovor (status)
 
@@ -39,60 +39,53 @@ Stabilni identitet poslovnog pravila — **ne koristiti box kodove kao identitet
 
 ### `EU_GOODS_ACQUISITION` — EU stjecanje dobara
 
-- **Izvor:** `manual_journal_entry`
-- **Boxovi:** `207`, `307`
-- **Primjer:** Automobile Hadžić DE, račun 70025237, 8.000 EUR neto, 0% PDV (isporuka u RH)
-- **Dobavljač (ref):** `DE229674882`
+- **Izvor:** `tax_fact_or_journal`
+- **Boxovi:** `205`, `206`, `207`, `305`, `306`, `307`
+- **Primjer:** Sintetički dobavljač DE, 8.000 EUR neto, stjecanje po stopi 25 %
 - **Stopa PDV:** 25%
 - **Konta:**
   - `asset`: `0373`
-  - `obveza`: `24022`
-  - `pretporez`: `14022`
-- **Napomena:** Nabava vozila iz EU. Osnovica i PDV obveza u box 207 (II.7): D 0373 (osnovica), K 24022 (PDV). Pretporez u box 307 (III.7): D 14022. Boxovi 610–615 su VIII.1 ispravak DI (faza B).
+  - `obveza`: `24020-24022`
+  - `pretporez`: `14020-14022`
+- **Napomena:** Izvor je potvrđena porezna činjenica (vrsta isporuke, porezni datum, postupak, stopa) ili temeljnica na EU kontima. Stopa određuje polje: 5 % II.5/III.5, 13 % II.6/III.6, 25 % II.7/III.7. Konto 0373 bez EU retka u istoj temeljnici nije dokaz stjecanja i traži pregled. Mapiranje usklađeno sa službenim opisom elemenata XML sheme PDV v11.0 (2026-11-27) uz autorizaciju vlasnika; zasebna potvrda računovođe još nije evidentirana.
 
-### `OSS_ECOMMERCE_SUPPLY` — OSS isporuka e-trgovina EU
+### `EU_SERVICES_RECEIVED` — Primljene usluge iz EU
 
-- **Izvor:** `invoice_item`
-- **Boxovi:** `215`
-- **Primjer:** B2C web shop DE, 100 EUR neto + 19% DE PDV
-- **Napomena:** InvoiceItem vat_procedure=oss. Strani PDV ne ulazi u box 400 ni 200. Ne mapira se u ZP boxove 101/103 (B2B isključivo).
-
-### `EU_DISTANCE_SALE` — Prodaja na daljinu unutar EU
-
-- **Izvor:** `invoice_item`
-- **Boxovi:** `204`
-- **Napomena:** InvoiceItem vat_procedure=eu_distance.
-
-### `EU_ELECTRONIC_INTERFACE` — Isporuke putem elektroničkog sučelja
-
-- **Izvor:** `invoice_item`
-- **Boxovi:** `214`
-- **Napomena:** InvoiceItem vat_procedure=eu_electronic.
-
-### `IOSS_IMPORT` — IOSS uvoz — pretporez u drugoj državi
-
-- **Izvor:** `expense_or_journal`
-- **Boxovi:** `308`
+- **Izvor:** `tax_fact_or_journal`
+- **Boxovi:** `208`, `209`, `210`, `308`, `309`, `310`
+- **Stopa PDV:** 25%
 - **Konta:**
-  - `pretporez`: `14042`
-- **Napomena:** Expense vat_procedure=ioss ili JE D 14042. Isključeno iz box 400. Ne preklapa se sa ZP (EU outbound B2B).
+  - `obveza`: `24030-24032`
+  - `pretporez`: `14030-14032`
+- **Napomena:** 5 % II.8/III.8, 13 % II.9/III.9, 25 % II.10/III.10. Porezni datum je dan obavljanja usluge.
+
+### `DOMESTIC_REVERSE_CHARGE` — Tuzemni prijenos porezne obveze (primljene isporuke)
+
+- **Izvor:** `manual_journal_entry`
+- **Boxovi:** `204`, `304`
+- **Stopa PDV:** 25%
+- **Konta:**
+  - `obveza`: `2401`
+  - `pretporez`: `1401`
+- **Napomena:** II.4 i III.4. Ne ulazi u PDV-S. OSS, prodaja na daljinu, elektroničko sučelje i IOSS nemaju automatsko polje na Obrascu PDV i traže računovodstveni pregled.
 
 ## Rasponi konta (EU)
 
 | Ključ | Raspon |
 | --- | --- |
+| `domestic_reverse_charge_obveza` | `2401-24011` |
+| `domestic_reverse_charge_pretporez` | `1401-14011` |
 | `eu_goods_obveza` | `24020-24022` |
 | `eu_goods_pretporez` | `14020-14022` |
 | `eu_services_obveza` | `24030-24032` |
 | `eu_services_pretporez` | `14030-14032` |
-| `ioss_pretporez` | `14040-14042` |
 
 ## Invarijanti
 
 | ID | Pravilo |
 | --- | --- |
 | `I1` | `207.base >= 0` |
-| `I2` | `207.vat == round(207.base * 0.25, 2)` |
+| `I2` | `207.vat == round(207.base * 0.25, 2); 206: 0.13; 205: 0.05` |
 | `I3` | `207.vat == 307.vat and 207.base == 307.base` |
 | `I4` | `400 unchanged when 207/307 net zero (RC neutral)` |
 
@@ -106,4 +99,4 @@ Stabilni identitet poslovnog pravila — **ne koristiti box kodove kao identitet
 ## Reference
 
 - `docs/accounting/uvoz-vozila-knjizenje.md`
-- `erp/app/expenses/data/manual_supplier_map.py`
+- `docs/tax/pdv-s/IMPLEMENTATION.md`

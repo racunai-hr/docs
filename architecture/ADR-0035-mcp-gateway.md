@@ -1,10 +1,11 @@
-# ADR-0033 — racunAI MCP Gateway Architecture
+# ADR-0035 — racunAI MCP Gateway Architecture
 
 ```text
 Status: Proposed
 Date: 2026-11-27
 Type: Integration
 Supersedes: —
+Renumbered: 2026-11-27, ranije objavljen kao ADR-0033 (broj pripada deviznim ulaznim računima, na koje se poziva kod)
 Related: ADR-0010, ADR-0011, ADR-0013, ADR-0014, ADR-0020, ADR-0021, ADR-0022, ADR-0025, ADR-0027
 ```
 

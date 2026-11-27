@@ -1,6 +1,6 @@
 # ADR-0034 — Samostalni PDV-S obrazac i životni ciklus predaje
 
-Status: Proposed  
+Status: Accepted  
 Date: 2026-11-27  
 Type: Business  
 Supersedes: —  
@@ -8,7 +8,7 @@ Related: [ADR-0007](ADR-0007-pdv-module.md), [ADR-0008](ADR-0008-submission-even
 
 ## 1. Cilj i status
 
-Proposed; nije odobrenje implementacije ili deploymenta. Korisnik mora moći kreirati PDV-S za odabrani mjesec bez prethodnog kreiranja ili predaje PDV prijave. Obuhvat je sva zakonski relevantna nabava robe i usluga iz EU, ne samo vozila. PDV prijava nastaje kasnije; usporedba nakon njezine predaje ne smije blokirati PDV-S.
+Accepted 2026-11-27: vlasnik je potvrdio odluke D01–D10 i odobrio implementaciju i deployment uz uspješne testove, provjeru migracija, sigurnosnu kopiju, postupak povratka i zaštitu novih funkcija (§8). Korisnik mora moći kreirati PDV-S za odabrani mjesec bez prethodnog kreiranja ili predaje PDV prijave. Obuhvat je sva zakonski relevantna nabava robe i usluga iz EU, ne samo vozila. PDV prijava nastaje kasnije; usporedba nakon njezine predaje ne smije blokirati PDV-S.
 
 ## 2. Postojeće stanje
 
@@ -129,3 +129,25 @@ Pregled regulatornih tvrdnji iz §3 nije utvrdio dokazano netočnu tvrdnju. Posl
 ### Konflikti s postojećom arhitekturom
 
 Preduvjeti izvan PDV-S modula: porezne činjenice i jedinstvena klasifikacija (amendment [ADR-0019](ADR-0019-tax-classification-engine.md)) te mapiranje polja Obrasca PDV ([ADR-0007](ADR-0007-pdv-module.md)). Odluke D02 i D10 provedive su uz zamrznuti `SubmissionService` ([ADR-0009](ADR-0009-submission-module-v1.md)) samo uz vlastiti model priloga i blokadu uvoza koji bi poremetio redoslijed predaja. Cjelovit popis K-1 do K-10 i predloženi gateovi prije PDVS-01/03: [arhitekturna revizija](../tax/pdv-s/R0-ARCHITECTURE-REVIEW.md). Plan u §5 nije promijenjen.
+
+## 8. Prihvaćanje i provedba (2026-11-27)
+
+Prethodni tekst čuva stanje prije prihvaćanja. Gdje se razlikuje, vrijedi ovaj odjeljak. Opis provedbe: [IMPLEMENTATION](../tax/pdv-s/IMPLEMENTATION.md).
+
+| Stavka | Odluka |
+|---|---|
+| R0 | Ostaje **PARTIAL**. Implementacija je odobrena uz uvjet da scenariji ovisni o Q-01, Q-02 i Q-07 daju REVIEW REQUIRED i blokiraju finalizaciju samo zahvaćenog obrasca. Q-03 do Q-06 postupaju jednako |
+| K-1, K-7 porezne činjenice | Dopuna [ADR-0019](ADR-0019-tax-classification-engine.md); jedan klasifikacijski servis |
+| K-2 polja Obrasca PDV | Mapiranje v16 prema službenim opisima, uz [ADR-0007](ADR-0007-pdv-module.md); [pdv-mapping](../accounting/pdv-mapping.md) |
+| K-3 korekcije | Zaseban dokumentirani zapis uključen u snimku; zatvara se vezom na dokument |
+| K-4 prilozi | Vlastiti model priloga vezan uz `SubmissionEvent` i verziju; `SubmissionService` nepromijenjen |
+| K-5 redoslijed uvoza | Uvoz starije predaje i konflikt UUID-a blokiraju se |
+| K-6 kune | Razdoblja prije 1.1.2023. samo uvoz i prikaz |
+| K-8 zaključana razdoblja | Kandidat nastaje čitanjem kroz isti klasifikacijski servis; knjige se ne mijenjaju |
+| K-9 razdoblje | Samo mjesečno razdoblje; `PROTECT` |
+| K-10 hash | Postojeći `pdvs-v1` sadržajni hash zadržan; dodan integritetni hash cijele snimke |
+| Pohrana dokaza | U bazi, ne pod javno posluživanim datotekama |
+| VIES | [RFC](../integrations/RFC-VIES-CONNECTOR.md) |
+| Postojeći sigurnosni dug | Zaseban budući program ([TECHNICAL_DEBT](TECHNICAL_DEBT.md)); novi ulazi izolirani po tenantu i ulozi |
+
+Povijesne predaje nisu mijenjane niti rekonstruirane. Predane PDV prijave ne ispravljaju se automatski.

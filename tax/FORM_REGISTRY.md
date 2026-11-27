@@ -2,7 +2,7 @@
 
 ```text
 Status: Living document (SSOT)
-Last updated: 2026-08-22
+Last updated: 2026-11-27
 Related: docs/tax/README.md, docs/architecture/DOMAIN_MAP.md, docs/architecture/ADR-0019-tax-classification-engine.md
 ```
 
@@ -95,7 +95,7 @@ Implementacija: [`accounting/services/vat.py`](../../api/app/accounting/services
 |---------|----------|-----|-----|---------|--------|--------------|-------------------|-----|-------|-----|----------|
 | **PDV** | L3 | ✅ | ✅ | XSD+G2B+Portal | VATLedger | `VATReturn` | `payload.json` | ✅ | ✅ | Manual | Frozen ADR-0007; [`pdv-obrazac-architecture.md`](../accounting/pdv-obrazac-architecture.md) |
 | **PDV-ispravak** | L2 | ✅ | — | XSD+Portal | Ručni retci računa | — | XML | ✅ | — | Manual | ObrazacPDVispravak v1.0, nenaplativa potraživanja; nije nova verzija PDV prijave |
-| **PDV-S** | L2 | ✅ | Partial | XSD+G2B+Portal | VATLedger | `PDVSReturn` | `payload.json` | ✅ | ✅ | Manual | Stjecanja dobara i primljene usluge iz EU |
+| **PDV-S** | L2 | ✅ | Partial | XSD+G2B+Portal | Porezne činjenice + dokumentirane korekcije | `PDVSReturn` | Zamrznuta `PDVSReturnVersion` (snimka + XML) | ✅ | ✅ | Manual | Stjecanja dobara i primljene usluge iz EU; samostalan životni ciklus — [`ADR-0034`](../architecture/ADR-0034-pdv-s-workflow.md), [`IMPLEMENTATION.md`](pdv-s/IMPLEMENTATION.md) |
 | **ZP** | L2 | ✅ | TBD | XSD+Portal | VATLedger | `ZPReturn` | `payload.json` | ✅ | ✅ | Manual | Sprint 3 ✅ — [`ZP_ARCHITECTURE.md`](ZP_ARCHITECTURE.md), [`ADR-0014`](../architecture/ADR-0014-tax-domain-completion.md) |
 | **JOPPD** | L1 | ⚠️ draft | — | XSD+Portal (planned) | `domains.hr.facade` DTO → `domains/tax/forms/joppd/` | `JOPPDReturn` | `payload.json` | ✅ | — | Manual | XML strukturno slijedi obrazac, ali **nije** validiran protiv službenog XSD-a (nema lokalne kopije sheme kao ZP/PDV/TZ2) — potrebna provjera ovlaštenog računovođe prije produkcijske predaje. Vidi `domains/tax/forms/joppd/__init__.py`. |
 

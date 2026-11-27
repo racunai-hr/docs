@@ -8,6 +8,8 @@ Related: [PDVS-PRODUCTION-01](../tax/pdv-s/PRODUCTION-READINESS-PLAN.md), [ADR-0
 
 RacunAI.hr je trenutačno u testnoj fazi. Vlasnik planira buduću migraciju Django backenda na FastAPI + SQLAlchemy, koristeći provjerena iskustva iz sigurnosne arhitekture koja se razvija na drugom projektu. Potpuna rekonstrukcija sigurnosnog sloja postojećeg Django backenda, rotacije pristupnih podataka kao zaseban program i organizacijska/compliance priprema za širu uporabu odgađaju se. To nije potvrda sigurnosti sadašnjeg sustava, prihvat svakog pojedinog rizika niti dokaz sanacije.
 
+Odluka 2026-11-27: ADR-0034 odobren je za implementaciju i deployment uz izolirane nove ulaze; postojeći sigurnosni dug ostaje zaseban budući projekt.
+
 SEC-AUDIT-01 je izvršen; sanacija nije izvršena prema posljednjem dostupnom izvještaju. G01 se odvaja od kritičnog puta razvoja poreznog modula, ali ne označava PASS. Poznati rizici ostaju otvoreni. Minimalno ograničavanje pristupa stvarnim privatnim dokumentima ostaje preporučena zasebna mjera; ovaj zapis ne autorizira promjenu produkcije. Ne širiti uporabu na druge korisnike niti proglasiti produkcijsku spremnost dok relevantni sigurnosni kriteriji nisu dokazano ispunjeni. Privremeni razvoj i testiranje nisu certifikacija produkcije.
 
 Ovaj registar ne sadrži putanje ranjivosti, pristupne podatke, stvarne identifikatore, poslovne dokumente ili detaljne dokaze. Oni ostaju u postojećem privatnom SEC-AUDIT-01 izvještaju izvan Gita.
@@ -30,7 +32,10 @@ Ovaj registar ne sadrži putanje ranjivosti, pristupne podatke, stvarne identifi
 | TD-OPS-03 | Lokalni CI, porezni regresijski testovi, GitHub Actions | OPEN | Preporučeno prije promjena porezne jezgre, obvezno G10; postojeći OPS-03 |
 | TD-OPS-04 | Ponovljiv deploy/rollback i identitet imagea | OPEN | G11; postojeći OPS-04 |
 | TD-OPS-05 | WIP-01: postojeće necommitane produkcijske izmjene | OPEN | Zaseban pregled prije prvog deploya; ne uklanjati ili automatski commitati |
-| TD-GOV-01 | Konflikt numeracije ADR-0033 i usklađivanje dokumentacijskih grana | OPEN | G05; postojeći DOC-01; bez gubitka povijesti |
+| TD-GOV-01 | Konflikt numeracije ADR-0033 i usklađivanje dokumentacijskih grana | PARTIAL | Numeracija riješena 2026-11-27 (MCP → ADR-0035); spajanje grana ostaje |
+| TD-TAX-01 | Otvorena regulatorna pitanja Q-01, Q-02, Q-07 (i Q-03 do Q-11) | OPEN | Pisana potvrda; do tada REVIEW REQUIRED |
+| TD-TAX-02 | Stari generator PDV knjiga ne koristi porezne činjenice | OPEN | Cutover prema ADR-0019 |
+| TD-TAX-03 | Računovodstvena potvrda matrice EU izvora i mapiranja v16 | OPEN | Prije prve predaje koja ovisi o novom mapiranju |
 
 ## Buduća migracija backenda
 
