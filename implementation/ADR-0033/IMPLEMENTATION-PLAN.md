@@ -65,15 +65,32 @@ Potvrda je nepromjenjiva. Izmjena stvara novu verziju i moguća je samo dok nema
 | FX-04 knjiženje | zaštite u svim nalazima iz §2, zatvorena fiskalna razdoblja, kompatibilan API | postojeće temeljnice nisu mijenjane |
 | FX-05 plaćanja | djelomična i višestruka plaćanja, razlike, naknade, vrednovanje, usklađenje saldakonta i GK | knjiženje razlika traži odobrena konta; devizni predujmovi nisu podržani |
 
-## 5. Redoslijed uvođenja (nije izvršen, traži zasebnu autorizaciju)
+## 5. Uvođenje (izvršeno 2026-11-27 uz odobrenje vlasnika)
 
-1. Architecture Review i odluke iz [ACCOUNTING-REVIEW](ACCOUNTING-REVIEW.md).
-2. RFC i Issue za novi vanjski izvor (ECB, HNB) prema `ARCHITECTURE_GOVERNANCE.md`.
-3. Merge `api`, zatim `app`.
-4. Deploy: migracije `accounting.0045` i `expenses.0028` (aditivne).
-5. `fetch_fx_rates --source ECB --mode history`, `fetch_fx_rates --source HNB --mode date --date …` za potrebne dane, `ensure_fx_beat_schedule`.
-6. `audit_fx_documents` (read-only) i pregled nalaza.
-7. Odobrenje konta u adminu tek nakon računovodstvene odluke.
-8. Račun 547: zaseban postupak uz autorizaciju.
+| Korak | Stanje |
+|-------|--------|
+| Architecture Review i odluke iz [ACCOUNTING-REVIEW](ACCOUNTING-REVIEW.md) | **nije provedeno** prije deploya; zaključani dijelovi ostaju zaključani |
+| RFC i Issue za ECB i HNB prema `ARCHITECTURE_GOVERNANCE.md` | **nije napravljeno** |
+| Merge `api` i `app` u `develop`, promocija u `main` | napravljeno |
+| Sigurnosna kopija baze, proba nad kopijom, povratak provjeren | napravljeno |
+| Migracije `accounting.0045`, `expenses.0028` | primijenjene |
+| Dohvat tečajeva (ECB zadnjih 90 dana, HNB dnevni i 2. 11. 2026.), dnevni raspored | napravljeno |
+| `audit_fx_documents` | izvršen (samo čitanje) |
+| Odobrenje konta tečajnih razlika | **nije napravljeno**; čeka računovodstvenu odluku |
+| Račun 547 | nije mijenjan; zaseban postupak |
 
-Povratak: kod se vraća na prethodnu verziju; nove tablice i stupci mogu ostati. Unmigracija je provjerena, ali briše potvrde i devizna plaćanja ako postoje.
+Za starije datume od 90 dana: `fetch_fx_rates --source ECB --mode history` ili `--source HNB --mode date --date …`.
+
+## 6. Povratak na prethodnu verziju
+
+**Sam povratak koda nije dovoljan.** Stupac `accounting_subledgeritem.currency` je obavezan i nema zadanu vrijednost u bazi, pa stari kod ne može upisati stavku saldakonta.
+
+A. Bez gubitka podataka (preporučeno, obavezno ako postoje potvrde ili devizna plaćanja): prije vraćanja koda postaviti
+
+```sql
+ALTER TABLE accounting_subledgeritem ALTER COLUMN currency SET DEFAULT 'EUR';
+```
+
+B. Unmigracija, samo dok nema potvrda, plaćanja i vrednovanja (briše ih zajedno s tečajevima): **novim** kodom `migrate expenses 0027`, zatim `migrate accounting 0044`.
+
+Zatim vratiti kod `api` i prethodnu sliku `app` te ponovno pokrenuti servise. Obje varijante provjerene su na kopiji baze. Ako postoje devizne obveze ili plaćanja, stari kod ih ne razumije: njih prije povratka treba pregledati.

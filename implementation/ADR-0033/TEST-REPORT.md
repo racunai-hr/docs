@@ -78,8 +78,6 @@ Prilagođeni su jer ADR mijenja ponašanje: dva testa stranog PDV-a na zalihi vo
 
 - Vizualni pregled sučelja u pregledniku i end-to-end tok sa živim API-jem.
 - Istodobni zahtjevi za plaćanje u više dretvi (zaključavanja postoje, test ne).
-- Nove migracije nad kopijom produkcijske baze i trajanje deploya.
-- `audit_fx_documents` nad produkcijskim podacima (tablice tamo ne postoje).
 - Dohvat pune ECB povijesti (`--mode history`).
 
 ## 7. GitHub CI
@@ -94,3 +92,18 @@ Sva pokretanja za commitove iz ovog izvještaja su uspješna.
 | `app` | OpenAPI TypeScript types (`types`) | [pull_request](https://github.com/racunai-hr/app/actions/runs/46015185147) | uspješno |
 
 GitHub CI repozitorija `api` provjerava samo OpenAPI ugovor i njegov inventar. Poslovni testovi izvršeni su lokalno (§2).
+
+## 8. Provjere prije produkcijskog deploya
+
+Izvršene 2026-11-27 nad stablom koje je deployano. Dopunjuju §2 i §6.
+
+| Provjera | Rezultat |
+|----------|----------|
+| Cijeli pytest | 1560 prolazi, 18 pada, 19 grešaka; bez novih padova |
+| `fiscal_gateway` i `ubl` (privremeno uklonjen `pytest_plugins` iz `conftest`) | 61 prolazi, 3 pada, 5 preskočeno; isto na starom i novom kodu |
+| `super_integration/tests.py` zasebno | 5 prolazi na starom i novom kodu |
+| Migracije nad kopijom produkcijske baze | uspješne, nekoliko sekundi |
+| Usporedba starog i novog koda nad kopijom: zbrojevi, porezna klasifikacija i projekcija PDV-a | identični |
+| Razlike u prikazu | samo očekivane: novi KPI brojači, oznaka nepotvrđenog tečaja, blokiran prijedlog knjiženja stranog računa, uklonjena lažna kontrola PDV neslaganja na starim HRK računima |
+| Povratak (dvije varijante) | provjeren; stanje identično polaznom |
+

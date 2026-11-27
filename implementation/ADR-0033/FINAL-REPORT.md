@@ -1,6 +1,6 @@
 # ADR-0033: završni izvještaj
 
-Datum: 2026-11-27. ADR ostaje **Proposed**. Ništa nije deployano i produkcijski podaci nisu mijenjani.
+Datum: 2026-11-27. ADR ostaje **Proposed**. Deployano u produkciju 2026-11-27 uz naknadno odobrenje vlasnika; postojeći poslovni zapisi nisu mijenjani (vidi §8).
 
 ## 1. Sažetak
 
@@ -12,12 +12,12 @@ Dva dijela namjerno su zaključana do računovodstvene odluke: knjiženje tečaj
 
 | Repozitorij | Grana | Commit | Pull request |
 |-------------|-------|--------|--------------|
-| `api` | `feat/adr-0033-incoming-fx` | `8c982e8ab3ed4f85ffb7de23c11e073a88136dee` | [api#18](https://github.com/racunai-hr/api/pull/18) (draft, u `develop`) |
-| `app` | `feat/adr-0033-incoming-fx` | `ed56bb27b6b08209a5332e27d8f2997438fafbb0` | [app#8](https://github.com/racunai-hr/app/pull/8) (draft, u `develop`) |
+| `api` | `feat/adr-0033-incoming-fx` | `8c982e8ab3ed4f85ffb7de23c11e073a88136dee` | [api#18](https://github.com/racunai-hr/api/pull/18) (spojen) |
+| `app` | `feat/adr-0033-incoming-fx` | `ed56bb27b6b08209a5332e27d8f2997438fafbb0` | [app#8](https://github.com/racunai-hr/app/pull/8) (spojen) |
 | `docs` | `docs/adr-0033-implementation` | commitovi u pull requestu | [docs#3](https://github.com/racunai-hr/docs/pull/3) (draft, u `develop`; nosi i dva ADR-0033 commita koja su dosad bila samo na `main`) |
 | `stack` | | nije mijenjan | |
 
-Redoslijed mergea: `api`, zatim `app`.
+Spojeno u `develop` pa promovirano u `main`: `api` [#18](https://github.com/racunai-hr/api/pull/18), [#19](https://github.com/racunai-hr/api/pull/19) (`main` `c4902ae5d499cedd0b2f127f106a6699c6c79eb2`); `app` [#8](https://github.com/racunai-hr/app/pull/8), [#9](https://github.com/racunai-hr/app/pull/9) (`main` `e6e9b91835e4e2dfe4a308176180d93cfcf178c8`).
 
 Testovi: [TEST-REPORT](TEST-REPORT.md). Odluke: [ACCOUNTING-REVIEW](ACCOUNTING-REVIEW.md). Dizajn i uvođenje: [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md).
 
@@ -52,7 +52,7 @@ Governance:
 
 Operativno:
 
-- Uvođenje uključuje migracije i korake iz IMPLEMENTATION-PLAN §5; nije izvršeno.
+- Povratak na prethodnu verziju traži korak u bazi: IMPLEMENTATION-PLAN §6. Prva verzija ovog dokumenta pogrešno je navodila da je dovoljno vratiti kod.
 
 ## 6. Račun 547
 
@@ -168,3 +168,21 @@ Izmijenjeno (16):
 ### `docs`
 
 `accounting/pdv-mapping.md`, `implementation/ADR-0033/IMPLEMENTATION-PLAN.md`, `ACCOUNTING-REVIEW.md`, `TEST-REPORT.md`, `FINAL-REPORT.md`.
+
+## 8. Produkcijski deploy (2026-11-27)
+
+| Provjera | Rezultat |
+|----------|----------|
+| GitHub CI na `main` (`api`, `app`) | uspješno |
+| Nedostupnost API-ja pri zamjeni | oko jedne minute |
+| Migracije | primijenjene, `manage.py check` bez nalaza |
+| Servisi | zdravi, bez grešaka u zapisima neposredno nakon deploya |
+| Zbrojevi saldakonta, temeljnica i PDV knjige | isti kao na kopiji baze prije deploya |
+| Postojeći poslovni zapisi, račun 547 | nepromijenjeni |
+| Tečajevi i dnevni raspored | učitani; zadatak uspješno izvršen kroz worker |
+| Konta tečajnih razlika | nijedno odobreno |
+
+Račun 547 sada se ne može odobriti bez potvrđenog tečaja. Prije deploya prijedlog knjiženja dopuštao je knjiženje stranog broja kao EUR.
+
+Prijavljeni korisnički tok (potvrda tečaja kroz sučelje) nije isproban u pregledniku.
+
