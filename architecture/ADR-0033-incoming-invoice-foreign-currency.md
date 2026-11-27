@@ -30,6 +30,26 @@ Postojeći model već ima polja za tečaj i dio projekcije može izračunati EUR
 - Koristiti decimalnu aritmetiku: izvorni iznos dijeli se potvrđenim tečajem, a EUR rezultat zaokružuje na cent, `ROUND_HALF_UP`. Tečaj mora biti pozitivan. Za EUR je vrijednost nepromijenjena; za HRK se zadržava postojeći fiksni tečaj.
 - Porezni tečaj i datum utvrđuju se prema primjenjivim pravilima i mogu se razlikovati od dobavljačeva ili knjigovodstvenog preračuna. Njihova svrha i izvor moraju biti razlučivi; dobavljačev tečaj nije automatski potvrda porezne ispravnosti. Prije implementacije poreznih pravila potrebna je računovodstvena provjera.
 
+### Centralni servis tečajeva
+
+- Zajednički backend servis za sve module i tenante; ECB kao predloženi primarni referentni izvor, uz računovodstvenu provjeru dopuštenog izvora za svaku svrhu. Podržati dostupne valute, uključujući DKK, USD, GBP, CHF, SEK i NOK.
+- Dnevni idempotentni dohvat, lokalna povijesna pohrana i ponovni pokušaji. Evidentirati valutu, smjer kotacije, datum objave i primjene, izvor, vrijeme dohvata i verziju.
+- Za vikende i praznike predložiti prethodni objavljeni tečaj samo ako pravila konkretne svrhe to dopuštaju; prikazati stvarni datum. Bez budućeg tečaja ili tihog fallbacka. Za nepokrivene valute omogućiti dokumentirani alternativni izvor ili ručni unos.
+- Odvojiti referentni tečaj od potvrđenog snapshot-a računa; ručna izmjena zahtijeva razlog, dokaz, ovlaštenog korisnika i audit. Read model ne poziva vanjske servise.
+
+### Računi s više valuta
+
+- Razlikovati izvornu valutu i iznose dokumenta, ugovorenu valutu i iznos obveze, informativni protuvrijednosni iznos, knjigovodstvenu valutu EUR, porezni preračun i stvarnu valutu plaćanja.
+- Ako je obveza u EUR, informativni DKK iznos ne stvara deviznu obvezu. Ako je obveza u DKK, voditi otvoreni iznos u DKK i EUR knjigovodstvenu vrijednost. Ne zaključivati valutu obveze samo iz prisutnosti dvaju iznosa; tražiti potvrdu na temelju dokumentacije.
+- Za F261166 provjeriti je li ugovorena obveza 13.800 EUR ili 103.500 DKK; odnos 7,50 nije automatski službeni knjigovodstveni ili porezni tečaj.
+
+### Tečajne razlike i zatvaranje obveza
+
+- Evidentirati datum, valutu, iznos i EUR vrijednost svakog plaćanja, primijenjeni tečaj i izvor; bankovne naknade odvojiti od tečajnih razlika.
+- Podržati djelomična i višestruka plaćanja, alokaciju na račune, preostali saldo u valuti obveze i EUR te realizirane pozitivne/negativne tečajne razlike. Primjer: obveza 1.000 USD knjižena na 900 EUR, plaćanje 920 EUR bez naknada, razlika 20 EUR rashoda, uz primjenjiva računovodstvena pravila.
+- Podržati vrednovanje otvorenih monetarnih deviznih obveza na datum izvještavanja prema primjenjivom standardu, nerealizirane razlike i kasnije zatvaranje bez dvostrukog priznavanja. Ne revalorizirati EUR obvezu zbog informativne strane valute.
+- Knjiženja razlika moraju biti uravnotežena, sljediva, idempotentna i poštovati zaključana razdoblja; konkretne kontne sheme, datume i pravila vrednovanja potvrditi prije implementacije.
+
 ### Prikaz i ugovor podataka
 
 - U listi i detalju ulaznog računa glavni je prikaz EUR bruto iznos; izvorni bruto iznos i valuta prikazuju se sekundarno. Ondje gdje se prikazuju neto iznos, PDV i stavke, njihove se valute i EUR ekvivalenti jasno označavaju. Za EUR račun nema suvišnog drugog prikaza istog iznosa.
@@ -59,6 +79,9 @@ Postojeći model već ima polja za tečaj i dio projekcije može izračunati EUR
 
 ### Follow-up
 
+- [ ] Potvrditi specifikaciju centralnog servisa, pravila izvora i datuma, model valute obveze i plaćanja te računovodstveni tretman realiziranih i nerealiziranih razlika.
+- [ ] Provjeriti postojeće module plaćanja, saldakonta i knjiženja prije proširenja; definirati zasebne implementacijske zadatke i testove.
+
 - [ ] Arhitekturna i računovodstvena provjera izvora tečaja, relevantnog datuma i zasebnih poreznih zahtjeva; po prihvaćanju dopuniti ADR-0020.
 - [ ] Implementirati potvrdu tečaja, kanonski preračun, zaštitu knjiženja, kompatibilni read model i EUR primarni prikaz.
 - [ ] Pregledati račun 547 i ostale pogođene račune te provesti potrebne korekcije kroz postojeći postupak.
@@ -75,3 +98,10 @@ Postojeći model već ima polja za tečaj i dio projekcije može izračunati EUR
 | Porezni tečaj razlikuje se od dobavljačeva | Obje svrhe i izvori su razlučivi; porezni zapis ne koristi dobavljačev tečaj bez provjere |
 | Zaokruživanje stavki | EUR iznosi su usklađeni i temeljnica je uravnotežena |
 | Već knjižen račun s pogrešnim iznosom | Stanje se provjerava; ispravak je slijediv i ne prepisuje povijesnu temeljnicu |
+| Vikend/praznik | Samo dopušten prethodni objavljeni tečaj uz vidljiv datum; inače potvrđeni alternativni izvor |
+| Ponovljeni dnevni dohvat ili izmjena izvora | Nema duplikata ni promjene potvrđenih povijesnih preračuna |
+| Dvije valute, obveza u EUR | Strani informativni iznos ne stvara deviznu obvezu |
+| Dvije valute, obveza nejasna | Potvrda valute obveze prije knjiženja |
+| Djelomično plaćanje devizne obveze | Ispravna alokacija, preostali saldo i realizirana razlika bez dvostrukog knjiženja |
+| Otvorena devizna obveza na datum izvještavanja | Vrednovanje prema potvrđenim pravilima, sljedivost i bez dvostrukog priznavanja pri plaćanju |
+| Plaćanje s bankovnom naknadom | Naknada odvojena od tečajne razlike |
