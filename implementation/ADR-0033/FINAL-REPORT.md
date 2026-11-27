@@ -14,7 +14,7 @@ Dva dijela namjerno su zaključana do računovodstvene odluke: knjiženje tečaj
 |-------------|-------|--------|--------------|
 | `api` | `feat/adr-0033-incoming-fx` | `8c982e8ab3ed4f85ffb7de23c11e073a88136dee` | [api#18](https://github.com/racunai-hr/api/pull/18) (draft, u `develop`) |
 | `app` | `feat/adr-0033-incoming-fx` | `ed56bb27b6b08209a5332e27d8f2997438fafbb0` | [app#8](https://github.com/racunai-hr/app/pull/8) (draft, u `develop`) |
-| `docs` | `docs/adr-0033-implementation` | vidi pull request | draft, u `develop`; nosi i dva ADR-0033 commita koja su dosad bila samo na `main` |
+| `docs` | `docs/adr-0033-implementation` | commitovi u pull requestu | [docs#3](https://github.com/racunai-hr/docs/pull/3) (draft, u `develop`; nosi i dva ADR-0033 commita koja su dosad bila samo na `main`) |
 | `stack` | | nije mijenjan | |
 
 Redoslijed mergea: `api`, zatim `app`.
