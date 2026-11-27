@@ -34,8 +34,8 @@ Zaključak vrijedi samo za provjereno razdoblje. Do otklanjanja nalaza A-01 do A
 
 | Gate | Opseg | Ovisi o | Status | Commit SHA | Autorizacija |
 |---|---|---|---|---|---|
-| G00 | Preflight i zatvaranje listopada | — | **DONE**, otvorene stavke prenesene | vidi G00 | dana 2026-11-27 |
-| G01 | SEC-AUDIT-01 | G00 | **AUDIT DONE**, gate otvoren | vidi G01 | audit dan; sanacija nije |
+| G00 | Preflight i zatvaranje listopada | — | **DONE**, otvorene stavke prenesene | `b45dbbc` (plan) | dana 2026-11-27 |
+| G01 | SEC-AUDIT-01 | G00 | **AUDIT DONE**, gate otvoren | `b45dbbc` (plan) | audit dan; sanacija nije |
 | G02 | TAX-CORE-01 | G01 | PREPARED, nije pokrenut | — | potrebna |
 | G03 | TAX-CORE-02 | G02 | NOT STARTED | — | potrebna |
 | G04 | Regulatorni R0 closure | G03; odgovori na pravna pitanja | NOT STARTED, blokiran Q-01/02/07 | — | potrebna |
@@ -80,7 +80,7 @@ Django testovi na serveru uz `--keepdb`, kroz Docker, na izoliranoj bazi. Javni 
 | Rizici | Stanje se mijenja nakon preflighta — ponoviti prije G11 |
 | Rollback | Nije primjenjivo (samo čitanje) |
 | Status | DONE, 2026-11-27 |
-| Commit SHA | plan: vidi §7; stanje koda: api `main` `c4902ae` / `develop` `180dcb9`; app `main` `e6e9b91` / `develop` `b91a1c8`; docs `develop` `8cd1f3f` (prije ovog dokumenta); intermediary i www `ff7288a`, `08d9922` |
+| Commit SHA | plan: `b45dbbc`; stanje koda: api `main` `c4902ae` / `develop` `180dcb9`; app `main` `e6e9b91` / `develop` `b91a1c8`; docs `develop` `8cd1f3f` (prije ovog dokumenta); intermediary i www `ff7288a`, `08d9922` |
 | Autorizacija | dana |
 
 Zabilježeno: migracije primijenjene do `accounting.0045`, `expenses.0028`, bez razlike modela i migracija. GitHub Actions izvršavaju samo provjere OpenAPI sheme i TypeScript tipova; zadnja izvršavanja na navedenim commitovima uspješna. PDV regresijski workflow koji spominju upute ne nalazi se u repozitoriju koji ga može pokrenuti. Grane `docs/main` i `docs/develop` razišle su se.
@@ -108,7 +108,7 @@ Otvorene stavke prenesene dalje:
 | Rizici | Sanacija može privremeno ograničiti postojeće radnje korisnika |
 | Rollback | Po valu sanacije, definiran u privatnom planu |
 | Status | AUDIT DONE 2026-11-27; gate **otvoren** |
-| Commit SHA | audit nad api `c4902ae`; plan: vidi §7 |
+| Commit SHA | audit nad api `c4902ae`; plan: `b45dbbc` |
 | Autorizacija | read-only audit dan; izmjene koda, konfiguracije, produkcije i Git povijesti nisu |
 
 Rezultati su privatni. Javni opis pojedinih nalaza objavljuje se tek nakon sanacije.
@@ -270,6 +270,6 @@ Nije dopušteno: izmjene produkcijskog aplikacijskog koda, produkcijske migracij
 
 | Datum | Događaj | Commit |
 |---|---|---|
-| 2026-11-27 | G00 izvršen; PDVS-HOTFIX-01 zatvoren; G01 audit izvršen; plan uspostavljen; zaustavljeno na kontrolnoj točki G01 | upisuje se sljedećim commitom |
+| 2026-11-27 | G00 izvršen; PDVS-HOTFIX-01 zatvoren; G01 audit izvršen; plan uspostavljen; zaustavljeno na kontrolnoj točki G01 | `b45dbbc` |
 
 Pri svakoj izmjeni ažurirati status, commit SHA i dnevnik.
