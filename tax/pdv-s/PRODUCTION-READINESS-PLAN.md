@@ -4,10 +4,10 @@
 Status: Living document
 Zadnja izmjena: 2026-11-27
 Cilj: produkcijski spreman PDV-S modul prema ADR-0034
-ADR-0034: Proposed
-R0: PARTIAL
-Aktivna kontrolna točka: G02 (sljedeća analiza; čeka izvršni GO) — G01 audit dovršen, sanacija odgođena
-Radna grana: develop (api, app, docs)
+ADR-0034: Accepted
+R0: PARTIAL (Q-01, Q-02, Q-07 → REVIEW REQUIRED)
+Izdanje: adr-0034-r1 isporučeno 2026-11-27; prijavljena provjera sučelja otvorena
+Radna grana: develop (api, app, docs); produkcija: release/adr-0034
 ```
 
 Povezano: [ADR-0034](../../architecture/ADR-0034-pdv-s-workflow.md) · [R0 završni izvještaj](R0-FINAL-REPORT.md) · [regulatorna analiza](R0-REGULATORY-ANALYSIS.md) · [matrica scenarija](R0-SCENARIO-MATRIX.md) · [audit implementacije](R0-EXISTING-IMPLEMENTATION-AUDIT.md) · [arhitekturna revizija](R0-ARCHITECTURE-REVIEW.md) · [FORM_REGISTRY](../FORM_REGISTRY.md)
@@ -283,3 +283,41 @@ Nije dopušteno: izmjene produkcijskog aplikacijskog koda, produkcijske migracij
 | 2026-11-27 | Odluka vlasnika: odgoda potpune legacy sigurnosne sanacije, tehnički dug evidentiran, buduća migracija FastAPI + SQLAlchemy; G02 sljedeći; G01 ostaje otvoren | `050691d` (registar duga) |
 
 Pri svakoj izmjeni ažurirati status, commit SHA i dnevnik.
+
+## 8. Izdanje adr-0034-r1 (2026-11-27)
+
+Vlasnik je zasebnim nalogom odobrio cjelovitu implementaciju i deployment ADR-0034. Taj nalog nadjačava redoslijed i autorizacije gateova u §3, §5 i §6; njihovi zapisi ostaju kao povijest.
+
+| Gate | Ishod |
+|---|---|
+| G01 | Nepromijenjeno: sanacija otvorena, zaseban budući projekt; novi ulazi izolirani po tenantu i ulozi |
+| G02, G03 | Isporučeno: mapiranje Obrasca PDV v16, porezne činjenice (dopuna ADR-0019) |
+| G04 | **Otvoreno**: bez pisane potvrde; zahvaćeni obrasci ne mogu se finalizirati |
+| G05–G09 | Isporučeno: ADR Accepted, persistence, API, sučelje, validacija, VIES, izvoz, uvoz, usklađenje |
+| G10 | Lokalna regresija i GitHub Actions prošli; stage nedostupan |
+| G11 | Deployment izvršen; sigurnosna kopija i postupak povratka pripremljeni; probni povrat baze iz kopije proveden na izoliranoj instanci |
+
+### Verzije
+
+| Repozitorij | develop | Izdanje | Produkcija |
+|---|---|---|---|
+| api | `889cd98` | `8c72ee5`, oznaka `adr-0034-r1` | `8c72ee5` |
+| app | `e5fe40d` | `37a8fa7`, oznaka `adr-0034-r1` | `37a8fa7` |
+| docs | `a8125d5` i ovaj zapis | — | nepromijenjeno (nije potrebno za rad) |
+
+`main` nije mijenjan. Produkcija koristi `release/adr-0034`, granu izvedenu iz `main`; sadržaj `api` i `app` jednak je navedenim commitovima na `develop`. Prije sljedećeg deploya s `main` izdanje treba uključiti u `main`. WIP-01 sačuvan je kao necommitana izmjena povrh izdanja.
+
+### Provjere
+
+| Provjera | Rezultat |
+|---|---|
+| Backend, izdanje + WIP-01 | 1555 testova; 12 neuspjeha jednakih onima na prethodnom kodu |
+| Frontend | 463 od 464; jedan raniji neuspjeh; typecheck i build prolaze |
+| GitHub Actions | OpenAPI i TypeScript tipovi uspješni na izdanju |
+| Migracije na kopiji podataka | naprijed, natrag, ponovno naprijed; postojeći zapisi nepromijenjeni; prethodni kod radi uz novu shemu |
+| Nakon deploya | servisi zdravi; poslovni zapisi i povijest predaja nepromijenjeni |
+| Preglednik bez prijave | preusmjerenje na prijavu; nove rute odbijaju neprijavljene zahtjeve; bez grešaka stranice |
+| Preglednik s prijavom | **nije provedeno**; provodi vlasnik |
+| VIES | adresa servisa dostupna; stvarni upit u produkciji nije izveden |
+| Stage | nije dostupan |
+

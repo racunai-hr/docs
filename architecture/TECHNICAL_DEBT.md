@@ -33,6 +33,9 @@ Ovaj registar ne sadrži putanje ranjivosti, pristupne podatke, stvarne identifi
 | TD-OPS-04 | Ponovljiv deploy/rollback i identitet imagea | OPEN | G11; postojeći OPS-04 |
 | TD-OPS-05 | WIP-01: postojeće necommitane produkcijske izmjene | OPEN | Zaseban pregled prije prvog deploya; ne uklanjati ili automatski commitati |
 | TD-GOV-01 | Konflikt numeracije ADR-0033 i usklađivanje dokumentacijskih grana | PARTIAL | Numeracija riješena 2026-11-27 (MCP → ADR-0035); spajanje grana ostaje |
+| TD-REL-01 | Produkcija na `release/adr-0034`; `main` ne sadrži izdanje | OPEN | Uključiti u `main` prije sljedećeg deploya |
+| TD-TEST-01 | Prijavljena provjera PDV-S sučelja u produkciji | OPEN | Ručna provjera prije prve predaje iz novog modula |
+| TD-TEST-02 | 12 backend i 1 frontend test padaju neovisno o ADR-0034 | OPEN | Zaseban zadatak |
 | TD-TAX-01 | Otvorena regulatorna pitanja Q-01, Q-02, Q-07 (i Q-03 do Q-11) | OPEN | Pisana potvrda; do tada REVIEW REQUIRED |
 | TD-TAX-02 | Stari generator PDV knjiga ne koristi porezne činjenice | OPEN | Cutover prema ADR-0019 |
 | TD-TAX-03 | Računovodstvena potvrda matrice EU izvora i mapiranja v16 | OPEN | Prije prve predaje koja ovisi o novom mapiranju |
