@@ -6,19 +6,21 @@ Zadnja izmjena: 2026-11-27
 Cilj: produkcijski spreman PDV-S modul prema ADR-0034
 ADR-0034: Proposed
 R0: PARTIAL
-Aktivna kontrolna točka: G01 (zaustavljeno, čeka odluke vlasnika)
+Aktivna kontrolna točka: G02 (sljedeća analiza; čeka izvršni GO) — G01 audit dovršen, sanacija odgođena
 Radna grana: develop (api, app, docs)
 ```
 
 Povezano: [ADR-0034](../../architecture/ADR-0034-pdv-s-workflow.md) · [R0 završni izvještaj](R0-FINAL-REPORT.md) · [regulatorna analiza](R0-REGULATORY-ANALYSIS.md) · [matrica scenarija](R0-SCENARIO-MATRIX.md) · [audit implementacije](R0-EXISTING-IMPLEMENTATION-AUDIT.md) · [arhitekturna revizija](R0-ARCHITECTURE-REVIEW.md) · [FORM_REGISTRY](../FORM_REGISTRY.md)
 
+Tehnički dug: [TECHNICAL_DEBT.md](../../architecture/TECHNICAL_DEBT.md).
+
 Repozitorij je javan. Stvarni poslovni podaci, produkcijski detalji i sigurnosni nalazi vode se u privatnim izvještajima izvan Gita i ovdje se ne navode.
 
 ## 1. Pravila programa
 
-1. Gateovi se izvršavaju redom. Ne radi se na svim fazama istodobno.
+1. Porezni gateovi G02–G10 izvršavaju se redom. G01 je izdvojen u zaseban sigurnosni program; njegova otvorenost ne blokira razvoj i izolirano testiranje, ali ostaje uvjet produkcijske spremnosti u G11.
 2. Svaki gate završava kontrolnom točkom: rezultat se dokumentira ovdje; sljedeći gate traži navedenu autorizaciju.
-3. Materijalni bloker zaustavlja program; ne zaobilazi se pretpostavkom.
+3. Materijalni bloker zaustavlja zahvaćeni gate; ne zaobilazi se pretpostavkom. Odgođeni legacy sigurnosni dug nije dozvola za nesigurne nove ulaze ili širenje produkcijske izloženosti.
 4. Poslovne odluke D01–D10 iz ADR-0034 potvrđene su i ne mijenjaju se.
 5. Autorizacija za jedan gate ne prenosi se na sljedeći, na produkciju niti na `main`.
 
@@ -35,8 +37,8 @@ Zaključak vrijedi samo za provjereno razdoblje. Do otklanjanja nalaza A-01 do A
 | Gate | Opseg | Ovisi o | Status | Commit SHA | Autorizacija |
 |---|---|---|---|---|---|
 | G00 | Preflight i zatvaranje listopada | — | **DONE**, otvorene stavke prenesene | `b45dbbc` (plan) | dana 2026-11-27 |
-| G01 | SEC-AUDIT-01 | G00 | **AUDIT DONE**, gate otvoren | `b45dbbc` (plan) | audit dan; sanacija nije |
-| G02 | TAX-CORE-01 | G01 | PREPARED, nije pokrenut | — | potrebna |
+| G01 | SEC-AUDIT-01 | G00 | **AUDIT DONE / REMEDIATION DEFERRED**, OPEN | `b45dbbc` (plan) | audit dan; sanacija nije; vidi tehnički dug |
+| G02 | TAX-CORE-01 | G00; G01 audit dovršen | NEXT, nije pokrenut | — | potrebna |
 | G03 | TAX-CORE-02 | G02 | NOT STARTED | — | potrebna |
 | G04 | Regulatorni R0 closure | G03; odgovori na pravna pitanja | NOT STARTED, blokiran Q-01/02/07 | — | potrebna |
 | G05 | Prihvaćanje arhitekture ADR-0034 | G04 | NOT STARTED | — | potrebna |
@@ -103,11 +105,11 @@ Otvorene stavke prenesene dalje:
 | Opseg | SEC-01 pristup datotekama; SEC-02 admin, RBAC i tenant izolacija; SEC-03 sigurnost izvoza; SEC-04 sadržaj javnih repozitorija; SEC-05 plan sanacije |
 | Ovisnosti | G00 |
 | Kriteriji audita | Svaki nalaz ima ozbiljnost, dokaz, komponentu, najmanju korekciju, regresijski test, utjecaj na korisnike, deploy i rollback; potvrđeni i nepotvrđeni odvojeni |
-| Kriteriji zatvaranja gatea | Sanacija odobrena, isporučena i provjerena regresijskim testovima, ili vlasnik za pojedini nalaz pisano prihvati rizik |
+| Kriteriji zatvaranja gatea | Relevantna sanacija ili zamjenska sigurnosna arhitektura isporučena i provjerena; odgoda nije PASS |
 | Testovi | Negativni testovi autorizacije i izolacije; testovi izvoza i uploada |
 | Rizici | Sanacija može privremeno ograničiti postojeće radnje korisnika |
 | Rollback | Po valu sanacije, definiran u privatnom planu |
-| Status | AUDIT DONE 2026-11-27; gate **otvoren** |
+| Status | AUDIT DONE 2026-11-27; **REMEDIATION DEFERRED / OPEN**; razvoj poreznog modula može nastaviti bez zatvaranja G01 |
 | Commit SHA | audit nad api `c4902ae`; plan: `b45dbbc` |
 | Autorizacija | read-only audit dan; izmjene koda, konfiguracije, produkcije i Git povijesti nisu |
 
@@ -115,18 +117,18 @@ Rezultati su privatni. Javni opis pojedinih nalaza objavljuje se tek nakon sanac
 
 ### G02 — TAX-CORE-01: službena polja Obrasca PDV
 
-Pripremljeno za kontrolnu točku; ne izvršava se usporedno s G01.
+Sljedeća kontrolna točka nakon odluke vlasnika o odgodi potpune sigurnosne sanacije. Analiza je read-only; izmjene porezne jezgre traže zaseban GO.
 
 | | |
 |---|---|
 | Opseg | Usporedba svih službenih polja s aktualnim registrom; sve stope PDV-a; tuzemni prijenos porezne obveze; EU stjecanja dobara; EU primljene usluge; ostale relevantne kategorije; utjecaj na PDV-S i na predane PDV prijave |
-| Ovisnosti | G01; zaseban zadatak pod [ADR-0007](../../architecture/ADR-0007-pdv-module.md) (arhitekturna revizija K-2) |
+| Ovisnosti | G00 i dovršen G01 audit (ne sanacija); zaseban zadatak pod [ADR-0007](../../architecture/ADR-0007-pdv-module.md) (arhitekturna revizija K-2) |
 | Redoslijed | (1) matrica polje → službeni opis → izvor → trenutno mapiranje → status; (2) read-only provjera utjecaja na predane prijave; (3) prijedlog ispravka; (4) implementacija uz zaseban GO |
 | Kriteriji | Svako polje ima službeni izvor i odluku; popis pogođenih predanih prijava u privatnom izvještaju; `PDV_MAPPING_VERSION` i `pdv-mapping.md` usklađeni |
 | Testovi | Snapshot testovi PDV-a, contract test arhitekturnog gatea, ledger diff, regresija referentnih razdoblja |
 | Rizici | Promjena mapiranja mijenja payload i XML; moguća potreba za ispravkom predanih prijava |
 | Rollback | Vraćanje verzije mapiranja; predane verzije ostaju netaknute |
-| Status | PREPARED |
+| Status | NEXT / PREPARED |
 | Commit SHA | — |
 | Autorizacija | potrebna za analizu; posebna za izmjenu koda |
 
@@ -181,7 +183,7 @@ Dijelovi koji ovise o Q-01 i Q-07 ostaju blokirajući do G04.
 | | |
 |---|---|
 | Opseg | Idempotentno kreiranje razdoblja i obrasca; verzije i snapshot; agregacija iz kanonskog izvora s greškama po dokumentu; korekcije; detekcija obveze i rokovi (D04); diff (D05); zaključavanje (D08); evidencija predaje i prilozi (D02); API i OpenAPI |
-| Ovisnosti | G05; zatvoren G01 |
+| Ovisnosti | G05; G01 sanacija nije preduvjet izoliranog razvoja; novi ulazi moraju zadovoljiti sigurnosne kriterije |
 | Kriteriji | Kriteriji ADR-0034 §5 za backend; legacy eventi i hashevi netaknuti |
 | Testovi | Unit, integration, migracijski (naprijed i natrag na kopiji), concurrency, tenant/RBAC, contract |
 | Rizici | Migracije se primjenjuju pri startu servisa; neobavezni novi stupci i zadane vrijednosti moraju podnijeti povratak starog koda |
@@ -251,18 +253,24 @@ Dijelovi koji ovise o Q-01 i Q-07 ostaju blokirajući do G04.
 | | |
 |---|---|
 | Opseg | Ponovljeni preflight; sigurnosne kopije baze i datoteka s probnim povratom; WIP-01 riješen; runbook; kriteriji prekida; provjera nakon deploya; backfill samo uz dry-run i poseban GO |
-| Ovisnosti | G10; zatvoren G01 |
+| Ovisnosti | G10; dokazano riješeni relevantni sigurnosni kriteriji G01, backup/restore i operativni preduvjeti |
 | Kriteriji | Checklist potpisan od vlasnika; rollback isproban |
 | Testovi | Smoke i regresija nakon deploya bez izmjene poslovnih podataka |
 | Rizici | Deploy mijenja živi checkout; automatske migracije |
 | Rollback | Runbook s bazom, kodom i slikama |
 | Status | NOT STARTED |
 | Commit SHA | — |
-| Autorizacija | zaseban izričit GO za merge `develop` → `main` i za deploy |
+| Autorizacija | zaseban izričit GO za odobreni release postupak i deploy; nema automatskog spajanja develop u main |
+
+## 5.1 Revidirani smjer — testna faza i budući backend
+
+Vlasnik projekta potvrđuje da je platforma još u testiranju i da planira buduću migraciju Django backenda na FastAPI + SQLAlchemy. Potpuna legacy sigurnosna rekonstrukcija, rotacije kao zaseban program i organizacijska priprema za širu uporabu odgađaju se u [registar tehničkog duga](../../architecture/TECHNICAL_DEBT.md). Nije potvrđeno da je postojeća izloženost sanirana; minimalna zaštita stvarnih privatnih dokumenata ostaje preporučena zasebna mjera, bez izvršnog GO u ovom dokumentu. Ne širiti pristup niti deklarirati produkcijsku spremnost na osnovi ove odgode.
+
+Trenutni redoslijed: TAX-CORE-01 (G02), TAX-CORE-02 (G03), regulatorni R0 (G04; upiti mogu i ranije uz autorizaciju), arhitektura (G05), PDV-S implementacija (G06–G09), CI/stage (G10), zaseban release gate (G11). Buduća migracija backenda je zaseban program, ne uvjet razvoja PDV-S u sadašnjem stacku. Novi domenski izračuni trebaju biti prenosivi, s ORM adapterima gdje je razumno; ne uvoditi novi paralelni porezni engine niti masovno refaktorirati postojeći Django. D01–D10 nepromijenjene; ADR-0034 Proposed, R0 PARTIAL.
 
 ## 6. Trenutne granice autorizacije (2026-11-27)
 
-Dopušteno: G00, ovaj plan, read-only SEC-AUDIT-01, dokumentacija i planovi sanacije, commit i push dokumentacije na `develop`.
+Dopušteno: dokumentacijska revizija plana i registra tehničkog duga, commit i push dokumentacije na develop. G00 i G01 audit ranije izvršeni. G02 je sljedeći zadatak; izvršenje i naknadne promjene koda prema njegovim zasebnim gateovima.
 
 Nije dopušteno: izmjene produkcijskog aplikacijskog koda, produkcijske migracije, promjene zaključanih razdoblja, izmjene predanih obrazaca, prepisivanje Git povijesti, produkcijski deployment, merge `develop` → `main`.
 
@@ -271,5 +279,7 @@ Nije dopušteno: izmjene produkcijskog aplikacijskog koda, produkcijske migracij
 | Datum | Događaj | Commit |
 |---|---|---|
 | 2026-11-27 | G00 izvršen; PDVS-HOTFIX-01 zatvoren; G01 audit izvršen; plan uspostavljen; zaustavljeno na kontrolnoj točki G01 | `b45dbbc` |
+
+| 2026-11-27 | Odluka vlasnika: odgoda potpune legacy sigurnosne sanacije, tehnički dug evidentiran, buduća migracija FastAPI + SQLAlchemy; G02 sljedeći; G01 ostaje otvoren | `050691d` (registar duga) |
 
 Pri svakoj izmjeni ažurirati status, commit SHA i dnevnik.
