@@ -21,6 +21,8 @@ Read-only pregled develop: api 180dcb9, app b91a1c8, docs 95f3385 (ponovno provj
 
 ## 3. R0 — regulatorni gate prije izmjene koda
 
+**Rezultat R0 (2026-11-27): PARTIAL.** Dokumentacija: [regulatorna analiza](../tax/pdv-s/R0-REGULATORY-ANALYSIS.md), [matrica scenarija](../tax/pdv-s/R0-SCENARIO-MATRIX.md), [audit implementacije](../tax/pdv-s/R0-EXISTING-IMPLEMENTATION-AUDIT.md), [arhitekturna revizija](../tax/pdv-s/R0-ARCHITECTURE-REVIEW.md), [završni izvještaj](../tax/pdv-s/R0-FINAL-REPORT.md). Sažetak u §7. Tekst niže je izvorni opseg gatea.
+
 Izvori:
 - [Zakon o izmjenama Zakona o PDV-u NN 151/2025](https://narodne-novine.nn.hr/clanci/sluzbeni/2025_12_151_2262.html), izmjena čl. 86. st. 2. i prijelazne odredbe.
 - [Pravilnik NN 11/2026](https://narodne-novine.nn.hr/clanci/sluzbeni/full/2026_01_11_90.html); za potpuna pravila koristiti važeći konsolidirani zakon i pravilnik.
@@ -106,3 +108,24 @@ Acceptance: pojedinačni uvoz valjanog XML-a i stvarnog portal UUID-a/datuma; na
 ## 6. Granice i posljedice
 
 Nema G2B automatizacije, novog poreznog enginea, izmjene PDV prijave, automatskog knjiženja radi kreiranja PDV-S, ručnog uređivanja XML/payload.json ili promjene produkcije. Prednost: samostalni workflow i ponovljiv audit. Trošak: nova persistence verzija, backfill analiza i API/UI proširenje. R0 ostaje otvoren za detaljnu pravnu matricu; implementacija ne smije početi prije njegova zatvaranja i odobrenja ADR-a. Produktne odluke 01–10 potvrđene; regulatorni gate R0 i završna revizija ostaju otvoreni do prihvaćanja ADR-a. Status maturity ne povisivati prije stvarne isporuke.
+
+## 7. Rezultat R0 i preciziranja (2026-11-27)
+
+Status ADR-a ostaje **Proposed**. R0 je **PARTIAL**: otvorena su materijalna pitanja o razdoblju i predznaku naknadnih odobrenja (Q-01), prihvaćanju negativnih iznosa na portalu (Q-02) te tečaju za dane bez tečajne liste, odobrenja i zaokruživanju (Q-07). Scenariji koji o njima ovise blokiraju finalizaciju; ne smiju se implementirati pretpostavkom.
+
+Pregled regulatornih tvrdnji iz §3 nije utvrdio dokazano netočnu tvrdnju. Poslovne odluke D01–D10 nisu mijenjane. Sljedeća preciziranja vrijede uz tekst iznad:
+
+| Mjesto | Preciziranje | R0 |
+|---|---|---|
+| §1 | Obuhvat ne uključuje, među ostalim, usluge oslobođene u RH, usluge pod posebnim pravilima mjesta obavljanja, stjecanja po postupku marže, uvoz ni nabave iz trećih zemalja (usluge iz `XI` su treća zemlja) | R0-02 |
+| §2 | Provjera HEAD-a: api `180dcb9`, app `b91a1c8`, docs `77f7228`. Živa agregacija ne obuhvaća pouzdano EU nabave evidentirane kao trošak | audit A-01–A-09 |
+| §3 | Za prijavu razdoblja 12/2025 i ranije vrijedi rok 20. u mjesecu; od 1/2026 zadnji dan idućeg mjeseca | R0-01 |
+| §3 | Starija uputa PU (2013.) traži jednakost usluga s II.8–10; portalne upute (2026.) dopuštaju manje ili jednako i upozoravaju. Portalna kontrola koristi zadnje zaprimljeni PDV obrazac bez obzira na status | R0-09 |
+| §3 | Službeni XSD ne provodi pravila 005, 009 i 012 niti provjerava zbrojeve | R0-08 |
+| §4.1 | PDV-S je uvijek mjesečni. Stjecanja dobara obveznika ispod praga stjecanja nisu oporeziva i ne ulaze; primljene usluge ulaze | R0-01 |
+| §4.5 | Interna i portalna kontrola mogu se odnositi na različite verzije PDV obrasca | R0-09 |
+| §4.6.1 | Razdoblja prije 1.1.2023. iskazana su i ispravljaju se u kunama; shema sadrži i `GB` | R0-05, R0-06 |
+
+### Konflikti s postojećom arhitekturom
+
+Preduvjeti izvan PDV-S modula: porezne činjenice i jedinstvena klasifikacija (amendment [ADR-0019](ADR-0019-tax-classification-engine.md)) te mapiranje polja Obrasca PDV ([ADR-0007](ADR-0007-pdv-module.md)). Odluke D02 i D10 provedive su uz zamrznuti `SubmissionService` ([ADR-0009](ADR-0009-submission-module-v1.md)) samo uz vlastiti model priloga i blokadu uvoza koji bi poremetio redoslijed predaja. Cjelovit popis K-1 do K-10 i predloženi gateovi prije PDVS-01/03: [arhitekturna revizija](../tax/pdv-s/R0-ARCHITECTURE-REVIEW.md). Plan u §5 nije promijenjen.

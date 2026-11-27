@@ -96,6 +96,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-11-27 | ADR-0033 Proposed — MCP Gateway; read-only V1, delegated identity, tenant isolation; implementation separately authorized |
 
 | 2026-11-27 | ADR-0034 Proposed — samostalni PDV-S, snapshot verzije, naknadna PDV kontrola; R0 regulatorni gate otvoren; bez implementacije |
+| 2026-11-27 | ADR-0034 R0 **PARTIAL** — [izvještaj](../tax/pdv-s/R0-FINAL-REPORT.md); otvorena pitanja o odobrenjima, negativnim iznosima i tečaju; preduvjeti amendment ADR-0019 i ispravak mapiranja PDV polja; ADR ostaje Proposed, bez implementacije |
 
 ---
 
