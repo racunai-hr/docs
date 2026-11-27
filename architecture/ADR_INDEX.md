@@ -32,6 +32,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0030](ADR-0030-cost-centers.md) | Cost Centers / Mjesta troška | Domain | Accepted | 2026-08-30 | — |
 | [ADR-0031](ADR-0031-tz2-return.md) | Obrazac TZ 2 (`TZ2Return`) | Domain | Accepted | 2026-09-15 | — |
 | [ADR-0032](ADR-0032-payroll-hr-compliance.md) | Payroll & HR Compliance Architecture | Domain | Accepted | 2026-11-02 | — |
+| [ADR-0033](ADR-0033-mcp-gateway.md) | racunAI MCP Gateway Architecture | Integration | Proposed | 2026-11-27 | — |
 
 ---
 
@@ -90,6 +91,8 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | 2026-09-15 | ADR-0031 Accepted — Obrazac TZ 2 (`TZ2Return`); godišnji `tax_year`; bez VATPeriod locka; bez izmjene frozen `SubmissionService` |
 | 2026-10-09 | Sljedeći planirani review (Q4 2026) |
 | 2026-11-02 | ADR-0032 Accepted — Payroll & HR Compliance (retroaktivno); novi app `payroll`, `JOPPDReturn`, `PayrollDocument` IP1/NP1/IO1/NO1; bez izmjene frozen `SubmissionService` i Banking v2; compliance gate BLOCKED (podaci, ne arhitektura); 0015/0016 rezervirani |
+
+| 2026-11-27 | ADR-0033 Proposed — MCP Gateway; read-only V1, delegated identity, tenant isolation; implementation separately authorized |
 
 ---
 
