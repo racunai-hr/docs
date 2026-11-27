@@ -151,3 +151,24 @@ Prethodni tekst čuva stanje prije prihvaćanja. Gdje se razlikuje, vrijedi ovaj
 | Postojeći sigurnosni dug | Zaseban budući program ([TECHNICAL_DEBT](TECHNICAL_DEBT.md)); novi ulazi izolirani po tenantu i ulozi |
 
 Povijesne predaje nisu mijenjane niti rekonstruirane. Predane PDV prijave ne ispravljaju se automatski.
+
+## 9. Dopuna 2026-11-27 — PDVS-HOTFIX-02: priprema tijekom tekućeg mjeseca
+
+Potvrdio vlasnik. Dopunjuje §4.3.3, §4.3.5 i §4.4; gdje se razlikuje, vrijedi ovaj odjeljak.
+
+| Radnja | Dok razdoblje traje | Nakon posljednjeg dana razdoblja |
+|---|---|---|
+| Izrada, osvježavanje, korekcije | da | da |
+| Validacija: „Razdoblje još nije završilo” | **upozorenje** (ranije blokada) | ne prikazuje se |
+| Finalizacija | da, kao priprema | da |
+| XML, PDF, XLSX, PDF validacije, ZIP | da, s oznakom pripreme | da |
+| Povrat u pripremu | da | da, do evidentirane predaje |
+| Evidentiranje predaje | **ne** | da |
+| Potvrda „nema obveze” | ne | da |
+
+- Priprema nije predaja: ne stvara `SubmissionEvent`, ne zaključava razdoblje i ne mijenja knjige.
+- Predaja se evidentira samo ako je vrijeme zaprimanja (lokalni datum) nakon posljednjeg dana razdoblja; vrijedi i za povučenu verziju.
+- Verzija finalizirana prije kraja razdoblja trajno je označena (`finalized_before_period_end`). Dok nije predana, nazivi izvoza nose `_PRIPREMA`, a interni dokumenti status pripreme. Sučelje prije predaje traži provjeru potpunosti.
+- Sve ostale kontrole ostaju nepromijenjene, uključujući Q-01, Q-02 i Q-07, porezne činjenice, VIES odluke, prazan obrazac i XSD.
+- Uvoz već predanog XML-a (D10) nije mijenjan.
+- Verzija pravila validacije je 2; sastav snimke i mapiranje (v16) nisu mijenjani.

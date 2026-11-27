@@ -17,11 +17,17 @@ Put: **Porezi i obrasci → PDV-S**.
 2. **Porezne činjenice.** Za svaki dokument EU dobavljača računovođa potvrđuje vrstu (dobra, usluge, izvan obrasca), porezni postupak, stopu, datum isporuke i porezni datum. Sustav predlaže porezni datum (R0-03), ali ništa ne zaključuje iz države, opisa ili VIN-a. Dok činjenica nema, mjesec je blokiran stavkom `EU_TAX_FACTS_MISSING`.
 3. **Kreiraj PDV-S.** Radi bez PDV prijave. Ako mjesečno razdoblje ne postoji, stvara se samo ono. Postoji najviše jedna aktivna verzija.
 4. **Provjeri retke i izvore.** Svaki redak otvara dokumente i korekcije s pojedinačnim doprinosom.
-5. **Validiraj** (uključuje VIES), **finaliziraj**, preuzmi XML i ručno ga predaj na ePoreznoj.
+5. **Validiraj** (uključuje VIES), **finaliziraj**, preuzmi XML i ručno ga predaj na ePoreznoj. Priprema i predaja su odvojene (vidi §1.1).
 6. **Evidentiraj predaju:** portalni UUID i vrijeme zaprimanja. PDF potvrda i predani XML mogu doći kasnije; do tada je status „Predano – nedostaje dokumentacija”.
 7. **Ispravak:** nakon promjene izvora prikazuju se razlike; ispravak se izrađuje samo izričitom radnjom i uvijek je cjelovit obrazac.
 
 Povrat finaliziranog obrasca u pripremu traži razlog i potvrdu da XML nije predan. Stari XML ostaje u povijesti kao neaktivan.
+
+### 1.1 Priprema tijekom tekućeg mjeseca
+
+Obrazac se može validirati, finalizirati i preuzeti (XML, PDF, XLSX, ZIP) i dok mjesec traje. „Razdoblje još nije završilo” je upozorenje. Takva verzija prikazuje se kao **Finalizirana priprema**, a datoteke nose `_PRIPREMA`.
+
+Evidentiranje predaje moguće je tek od prvog dana nakon razdoblja, s vremenom zaprimanja nakon njegova kraja. Prije predaje provjerite jesu li uključeni svi dokumenti: ako su se izvori promijenili, vratite obrazac u pripremu, osvježite, validirajte i ponovno finalizirajte.
 
 ## 2. Odluke D01–D10
 
