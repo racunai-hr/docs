@@ -6,7 +6,7 @@ Zadnja izmjena: 2026-11-27
 Cilj: produkcijski spreman PDV-S modul prema ADR-0034
 ADR-0034: Accepted
 R0: PARTIAL (Q-01, Q-02, Q-07 → REVIEW REQUIRED)
-Izdanje: adr-0034-r1 isporučeno 2026-11-27; prijavljena provjera sučelja otvorena
+Izdanje: adr-0034-r2 isporučeno 2026-11-27; prijavljena provjera sučelja otvorena
 Radna grana: develop (api, app, docs); produkcija: release/adr-0034
 ```
 
@@ -321,3 +321,22 @@ Vlasnik je zasebnim nalogom odobrio cjelovitu implementaciju i deployment ADR-00
 | VIES | adresa servisa dostupna; stvarni upit u produkciji nije izveden |
 | Stage | nije dostupan |
 
+## 9. Izdanje adr-0034-r2 — PDVS-HOTFIX-02 (2026-11-27)
+
+Odobrenje vlasnika: implementacija i deployment. Odluka: [ADR-0034 §9](../../architecture/ADR-0034-pdv-s-workflow.md). Zamjenjuje verzije produkcije iz §8; `main` nije mijenjan.
+
+| Repozitorij | develop | Izdanje i produkcija |
+|---|---|---|
+| api | `beb9353` | `6aa2d27`, oznaka `adr-0034-r2` |
+| app | `6eb1b1c` | `0c9d1e4`, oznaka `adr-0034-r2` |
+
+| Provjera | Rezultat |
+|---|---|
+| Backend | 1562 testa; 12 neuspjeha jednakih ranije poznatima |
+| Frontend | 466 od 467; jedan raniji neuspjeh; typecheck i build prolaze |
+| GitHub Actions | uspješno na `develop` i na izdanju |
+| Proba na izoliranoj kopiji podataka | finalizacija i svih pet izvoza tijekom otvorenog mjeseca; evidentiranje predaje odbijeno; povrat u pripremu |
+| Nakon deploya | servisi zdravi; neprijavljeni zahtjevi odbijeni; postojeći zapisi nisu mijenjani deployem |
+| Preglednik s prijavom | nije provedeno |
+
+Migracija nema. WIP-01 ostaje necommitan povrh izdanja.
