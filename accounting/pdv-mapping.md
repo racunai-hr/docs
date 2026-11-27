@@ -2,6 +2,8 @@
 
 Jedini izvor istine za definicije polja je `accounting/services/tax_forms/pdv/boxes.py` (`VAT_BOX_REGISTRY`). Ovaj dokument se mora držati sinkroniziranim s registryjem.
 
+> **Strane valute (ADR-0033, Proposed):** redak iz ulaznog računa u valuti različitoj od EUR i HRK nastaje samo iz potvrđenog **poreznog** preračuna. Bez njega `generate_vat_ledger` prekida generiranje razdoblja, a klasifikator vraća `REVIEW_REQUIRED` (`fx_tax_rate_unconfirmed`). Redak s konta 0373 ili 24030–24032 iz stranog računa traži pregled i kad se porezni i knjigovodstveni preračun razlikuju. Registry polja, `_MAPPING_RULES`, `PDV_MAPPING_VERSION` i XML shema nisu mijenjani.
+
 | Kod | Oznaka | Kategorija | PDV polje | Tip | Aktivan | Implementiran | Rezerviran | Pravilo |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 000 | Ukupni promet u razdoblju oporezivanja | other | 000 | scalar | da | ne | ne | — |
