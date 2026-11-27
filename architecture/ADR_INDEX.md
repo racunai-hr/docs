@@ -32,6 +32,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0030](ADR-0030-cost-centers.md) | Cost Centers / Mjesta troška | Domain | Accepted | 2026-08-30 | — |
 | [ADR-0031](ADR-0031-tz2-return.md) | Obrazac TZ 2 (`TZ2Return`) | Domain | Accepted | 2026-09-15 | — |
 | [ADR-0032](ADR-0032-payroll-hr-compliance.md) | Payroll & HR Compliance Architecture | Domain | Accepted | 2026-11-02 | — |
+| [ADR-0033](ADR-0033-incoming-invoice-foreign-currency.md) | Ulazni računi u stranoj valuti i prikaz u EUR | Domain | Proposed | 2026-11-27 | — |
 
 ---
 
