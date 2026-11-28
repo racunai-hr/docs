@@ -1,7 +1,7 @@
 # ADR-0036 — Application Shell & Navigation System (NAV-01)
 
 ```text
-Status: Proposed
+Status: Accepted
 Date: 2026-11-28
 Type: Domain
 Supersedes: —
@@ -10,7 +10,7 @@ Related: ADR-0010, ADR-0011, ADR-0020, ADR-0021, ADR-0022, ADR-0032, FAZA3_SALDA
 
 ## Status
 
-**Proposed** — produktne odluke D01–D09 potvrđene su od vlasnika projekta. Tehnički ugovor D10, konačna matrica ruta i persistence rješenje čekaju NAV-01.0 preflight i prihvaćanje. Ovaj ADR ne predstavlja autorizaciju implementacije ili deploya.
+**Accepted** — Owner approved D01–D09 and D10.1–D10.12 on 2026-11-28 after receipt of the NAV-01.0 preflight summary. Implementation remains gated by the remediation sequence below; no deployment is authorized. The detailed local route inventory and technical contracts must be reconciled against the implementation baseline.
 
 ## Context
 
@@ -51,12 +51,12 @@ Najviše dvije razine u Sidebaru (grupa i stavka), više grupa može biti otvore
 | Pregled | Nadzorna ploča, obavijesti, zadaci |
 | Dokumenti | Izlazni računi; ulazni računi, troškovi; službeni dokumenti |
 | Financije | Knjigovodstvo: glavna knjiga, temeljnice, kontni plan; saldakonti: potraživanja, obveze, otvorene stavke; analitika: mjesta troška, bruto bilanca |
-| Partneri | Svi partneri, kupci, dobavljači |
+| Partneri | Jedna stavka Partneri; kupci i dobavljači kao filtri na stranici |
 | Bankarstvo | Računi, transakcije, izvodi; usklađivanje, nalozi za plaćanje |
 | Imovina | Dugotrajna imovina, vozila; amortizacija |
 | Plaće | Zaposlenici; obračuni plaća, JOPPD |
 | Porezi | PDV, PDV-S, ZP, U-RA/I-RA; ostali obrasci |
-| Izvještaji | Bilanca, RDG; analitika partnera i mjesta troška |
+| Izvještaji | Bilanca, RDG; dostupni izvještaji i bez podataka |
 
 Ne stvarati nove poslovne stranice samo radi matrice. Zadržati Documents-centric saldakonti workflow iz FAZA3_SALDAKONTI_SPEC.md (bez uvođenja zasebne `/saldakonti` rute); za porezne evidencije poštovati postojeća značenja i workflowe. Konačne oznake, rute, grupiranje i zadane stranice verificirati u preflightu.
 
@@ -92,7 +92,7 @@ Pamćenje stanja, širine, grupa i posljednje stranice po modulu, uz provjeru pr
 
 ### D06 — Poslovni kontekst (potvrđeno)
 
-Globalni Tenant Switcher i odabir poslovne godine u zaglavlju. Tvrtke: samo ovlaštene, pretraživanje po nazivu i OIB-u, omiljene i nedavne, logo ili inicijali, pamćenje zadnje tvrtke. Godina se pamti po tvrtki, prikazuje se stvarni status iz backend izvora (ne izmišljati otvorenost/zaključenost). Promjena tvrtke zadržava aktivni modul ako je dostupan, osvježava ovlasti i stvarni API kontekst; inače bira dostupnu sigurnu početnu stranicu. Ne prenositi identifikatore dokumenata iz jednog tenanta u drugi. Nespremljene izmjene zahtijevaju upozorenje prije promjene konteksta.
+Globalni Tenant Switcher i odabir poslovne godine u zaglavlju. Tvrtke: samo ovlaštene, pretraživanje po nazivu i OIB-u, omiljene i nedavne, logo ili inicijali, pamćenje zadnje tvrtke. Godina se pamti po tvrtki, prikazuje se samo pouzdano utvrdiv status; oznaka zaključene godine nije dopuštena dok sustav to ne jamči. Promjena tvrtke zadržava aktivni modul ako je dostupan, osvježava ovlasti i stvarni API kontekst; inače bira dostupnu sigurnu početnu stranicu. Ne prenositi identifikatore dokumenata iz jednog tenanta u drugi. Nespremljene izmjene zahtijevaju upozorenje prije promjene konteksta.
 
 Godina je poslovni kontekst i zadani vremenski filter gdje ima smisla: Pregled, Dokumenti, Financije, Bankarstvo, Plaće, Porezi i Izvještaji; Imovina djelomično; Partneri i Postavke neovisni. Odabir godine ne mijenja sistemski datum, ne otvara razdoblja i ne zaobilazi postojeća računovodstvena zaključavanja. Ne pretpostaviti da sve godine počinju 1.1. ako stvarni model razdoblja dopušta drukčije. Godišnji filter ne smije proizvoljno uklanjati matične podatke ni otvorene stavke iz prethodnih razdoblja. Konačna semantika po ruti predmet je preflighta.
 
@@ -123,13 +123,46 @@ Spremati stabilne ID-jeve navigacijskih stavki, ne konkretne URL-ove s poslovnim
 
 Desktop/laptop poštuju spremljene preferencije gdje prostor dopušta. Tablet/mobitel ne prepisuju desktop stanje. Donja mobilna navigacija: Pregled, Dokumenti, Omiljeno, Traži, Više (uz filtriranje ovlasti). Više prikazuje mrežu dostupnih modula i dostupne globalne kontrole. Tvrtka i godina dostupne na svim uređajima. Dodirne mete najmanje 44×44 px, safe area, portret/landscape, zatvaranje drawera nakon navigacije, bez ovisnosti o hoveru. Postojeća PWA funkcionalnost ostaje očuvana ako postoji. Redizajn poslovnih tablica nije dio NAV-01.
 
-### D10 — Tehnička arhitektura (predloženo)
+### D10 — Tehnička arhitektura (potvrđeno)
 
 Jedan frontend Navigation Registry s tipiziranim, stabilnim ID-jevima modula, grupa i stavki, oznakama, ikonama, redoslijedom, kanonskim rutama, potrebnim capabilities, ključnim riječima, pravilima poslovne godine i mogućnošću favoriziranja. Navigation Resolver kombinira registry, stvarne backend ovlasti, dostupnost modula i korisničke preferencije. Isti rezultat koriste Top Navigation, Sidebar, Mobile Navigation, Command Palette, Favorites, Recent Pages i Breadcrumbs. Personalizirano skrivanje je odvojeno od autorizacijskog filtriranja.
 
 Predložena organizacija: `src/components/navigation/` (ApplicationShell, TopHeader, ModuleNavigation, Sidebar, SidebarGroup/Item, ResizeHandle, Drawer, MobileNavigation, TenantSwitcher, FiscalYearSwitcher, CommandPalette, Favorites, RecentPages, Breadcrumbs); `src/lib/navigation/` (registry, types, resolver, permissions, preferences, route-matcher, search); hooks prema postojećoj konvenciji. Putanje nisu obvezujuće do audita. Ponovno koristiti postojeće komponente i ukloniti redundantne tek nakon regresijske provjere.
 
 URL je autoritativan za aktivnu stranicu. Podržati postojeće deep links, detaljne rute, browser Back/Forward i postojeće query parametre bez preimenovanja poslovnih ruta. Pri promjeni tenanta spriječiti prikaz starih podataka: tenant-scoped cache, poništavanje ili ignoriranje zastarjelih zahtjeva, osvježavanje konteksta. Ako prava još nisu učitana, ne prikazivati neprovjerene stavke. Preferencije nikad ne mijenjaju autorizaciju. Ako je API ugovor proširen, uskladiti OpenAPI i generirane TypeScript tipove.
+
+
+#### Owner-approved technical decisions (2026-11-28)
+
+| ID | Decision |
+|---|---|
+| D10.1 | Cost centers and trial balance belong under Finance. |
+| D10.2 | Partners has one navigation entry; customer/supplier filters remain within the existing page. |
+| D10.3 | ADR-0036 amends conflicting navigation-only clauses of ADR-0021, ADR-0022 and applicable tax navigation documentation. Preserve business, API and domain contracts. Add precise cross-references to affected clauses after inspecting the source documents; no blanket supersession. |
+| D10.4 | Show implemented, authorized reports even when the active company has no data. |
+| D10.5 | Fiscal year affects navigation-generated links and default selections only; never restrict open items by the selected year. Preserve explicit filters and direct links. |
+| D10.6 | Approve lucide-react and locally hosted Inter assets for NAV-01.2; retain license notices and lockfile consistency. |
+| D10.7 | Introduce a dedicated navigation preferences model and migration; do not create a second authorization system. |
+| D10.8 | Add dedicated preferences endpoints, scoped to the authenticated user and authorized tenant where applicable. |
+| D10.9 | Add fiscal-year endpoints derived from existing accounting periods; no new fiscal-year domain model in NAV-01. |
+| D10.10 | Extend auth/me with company OIB for authorized memberships only. |
+| D10.11 | Do not label a fiscal year as closed unless the system can reliably establish and enforce that state. |
+| D10.12 | Use separate development Git worktrees, preserving production checkouts and existing uncommitted changes. |
+
+The preflight summary reports 65 routes; the complete local inventory is not reproduced here. Candidates without implemented routes must not be exposed. Module activation and unsaved-change handling require explicit implementation design; no entitlement or RBAC expansion is authorized. The proposed component paths and detailed endpoint schemas remain implementation-level decisions.
+
+#### Prerequisite gates (owner-approved sequence)
+
+| Gate | Scope | Status |
+|---|---|---|
+| NAV-REC-01 | Targeted frontend data-handling remediation | Pending |
+| NAV-REC-02 | Tenant-context corrections | Pending |
+| NAV-REC-03 | Frontend regression baseline and CI test/build coverage | Pending |
+| NAV-INFRA-01 | Isolated development worktrees, runnable development environment and test users | Pending |
+| D10 completion gate | Reconcile detailed preflight inventory and contracts, navigation-only cross-references, and remediation evidence; owner authorizes NAV-01.1 | Pending |
+
+Execute the gates in order. An isolated worktree is required even for the preceding remediation tasks; NAV-INFRA-01 covers the full development environment. Each task has its own scope and evidence. No production deploy or application implementation is authorized merely by accepting this ADR. Sensitive findings, affected data, exploit details and private preflight appendices must remain outside public repositories. Production exposure has not been established in the supplied summary. Accounting-period enforcement outside navigation is a separate follow-up, not a NAV-01 change.
+
 
 ## Alternatives considered
 
@@ -172,7 +205,7 @@ URL je autoritativan za aktivnu stranicu. Podržati postojeće deep links, detal
 | NAV-01.6 | app | Responsive, drawer, donja navigacija, Više, pristupačnost |
 | NAV-01.7 | app, api, docs | Integracijski testovi, CI, prijavljeni browser smoke, living docs |
 
-NAV-01.0 ne mijenja kod, bazu, ovisnosti, podatke, git stanje ili deploy; ne ispisuje tajne. Isporučuje stvarne putanje datoteka, kompletnu matricu ruta i ovlasti, plan ponovne uporabe komponenti, prijedlog persistence/API ugovora, testove, rizike i blockere. NAV-01.1 počinje nakon prihvaćanja nalaza. Razvojni paketi ostaju na `develop`; stage/prod deploy nije dio ovog ADR-a.
+NAV-01.0 ne mijenja kod, bazu, ovisnosti, podatke, git stanje ili deploy; ne ispisuje tajne. Isporučuje stvarne putanje datoteka, kompletnu matricu ruta i ovlasti, plan ponovne uporabe komponenti, prijedlog persistence/API ugovora, testove, rizike i blockere. NAV-01.0 is complete as reported; NAV-01.1 remains blocked until the approved remediation and development-environment gates are satisfied and the owner authorizes implementation. Razvojni paketi ostaju na `develop`; stage/prod deploy nije dio ovog ADR-a.
 
 ### Definition of Done
 
