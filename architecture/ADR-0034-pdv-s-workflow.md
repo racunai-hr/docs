@@ -172,3 +172,25 @@ Potvrdio vlasnik. Dopunjuje §4.3.3, §4.3.5 i §4.4; gdje se razlikuje, vrijedi
 - Sve ostale kontrole ostaju nepromijenjene, uključujući Q-01, Q-02 i Q-07, porezne činjenice, VIES odluke, prazan obrazac i XSD.
 - Uvoz već predanog XML-a (D10) nije mijenjan.
 - Verzija pravila validacije je 2; sastav snimke i mapiranje (v16) nisu mijenjani.
+
+## 10. Dopuna 2026-11-28 — PDVS-HOTFIX-03: službeni izgled PDF obrasca
+
+Nalog vlasnika. Zamjenjuje zahtjev „interni PDF prikaz” iz §4.3.4 (D07) i dopunjuje §9; gdje se razlikuje, vrijedi ovaj odjeljak.
+
+| Stavka | Odluka |
+|---|---|
+| Dokument | Gumb i izvoz „PDF obrazac”. Izgled Obrasca PDV-S kakav ispisuje ePorezna: A4 portretno, isti raspored, širine stupaca i polja (1)–(17), hrvatski format brojeva, crne linije na bijeloj podlozi |
+| Sadržaj | Samo elementi obrasca: bez logotipa, napomena, hasha, statusa i naziva dobavljača |
+| Izvor | Zamrznuta verzija; nikada aktualni agregat |
+| Podaci zaglavlja | Nova verzija zamrzava `print_header`: područni ured i ispostavu iz šifrarnika poreznih ureda te potpisnika iz odgovornih osoba |
+| Potpisnik (16) | Ispisano ime prve aktivne osobe redom: ovlaštena osoba, zakonski zastupnik, direktor. Računovođa nikada nije zamjena. Bez takve osobe polje ostaje prazno |
+| Sastavljač i kontakt (15), (17) | Iz zamrznutih podataka sastavljača: telefon/fax/e-mail, prazno kao „-” |
+| Zastupnik (6) | ERP nema tu postavku pa je polje prazno; kod uvoza se ispisuje OIB iz predanog XML-a |
+| Ranije verzije | Nemaju `print_header`. Dopunjuju se pri ispisu (ured prema zamrznutoj šifri, potpisnik iz trenutačnih postavki); zapis verzije se ne mijenja |
+| Uvezeni obrasci | Kontakt i zastupnik iz izvornog XML-a; potpisnik nije poznat i ostaje prazan |
+| Potpis i ovjera | Ne simuliraju se: nema slike potpisa, potvrde zaprimanja ni ovjere Porezne uprave |
+| Oznaka pripreme | PDF obrazac nepredane verzije nosi `_PRIPREMA` u nazivu, povučene i `_NEAKTIVNO`. Statusi u aplikaciji nisu mijenjani |
+| ZIP i validacija | ZIP sadrži isti PDF; PDF validacije ostaje zaseban dokument |
+| Nepromijenjeno | XML, sadržajni hash, porezna klasifikacija, izračuni, predani obrasci, shema baze |
+
+Obrazac na više stranica: zaglavlje (1)–(7) samo na prvoj, zaglavlje tablice na svakoj, zbrojevi i polja (15)–(17) na posljednjoj uz barem jedan redak, „Stranica: n / N” na svakoj. Predložak ima jednu stranicu, pa je prijelom odluka ove provedbe.

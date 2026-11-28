@@ -2,7 +2,7 @@
 
 ```text
 Status: Living document
-Datum: 2026-11-27
+Datum: 2026-11-28
 ADR: ../../architecture/ADR-0034-pdv-s-workflow.md
 R0: PARTIAL (Q-01, Q-02, Q-07 otvorena)
 ```
@@ -17,7 +17,7 @@ Put: **Porezi i obrasci → PDV-S**.
 2. **Porezne činjenice.** Za svaki dokument EU dobavljača računovođa potvrđuje vrstu (dobra, usluge, izvan obrasca), porezni postupak, stopu, datum isporuke i porezni datum. Sustav predlaže porezni datum (R0-03), ali ništa ne zaključuje iz države, opisa ili VIN-a. Dok činjenica nema, mjesec je blokiran stavkom `EU_TAX_FACTS_MISSING`.
 3. **Kreiraj PDV-S.** Radi bez PDV prijave. Ako mjesečno razdoblje ne postoji, stvara se samo ono. Postoji najviše jedna aktivna verzija.
 4. **Provjeri retke i izvore.** Svaki redak otvara dokumente i korekcije s pojedinačnim doprinosom.
-5. **Validiraj** (uključuje VIES), **finaliziraj**, preuzmi XML i ručno ga predaj na ePoreznoj. Priprema i predaja su odvojene (vidi §1.1).
+5. **Validiraj** (uključuje VIES), **finaliziraj**, preuzmi XML i ručno ga predaj na ePoreznoj. Priprema i predaja su odvojene (vidi §1.1). Obrazac za pregled i ispis daje **PDF obrazac** (§1.2).
 6. **Evidentiraj predaju:** portalni UUID i vrijeme zaprimanja. PDF potvrda i predani XML mogu doći kasnije; do tada je status „Predano – nedostaje dokumentacija”.
 7. **Ispravak:** nakon promjene izvora prikazuju se razlike; ispravak se izrađuje samo izričitom radnjom i uvijek je cjelovit obrazac.
 
@@ -29,6 +29,22 @@ Obrazac se može validirati, finalizirati i preuzeti (XML, PDF, XLSX, ZIP) i dok
 
 Evidentiranje predaje moguće je tek od prvog dana nakon razdoblja, s vremenom zaprimanja nakon njegova kraja. Prije predaje provjerite jesu li uključeni svi dokumenti: ako su se izvori promijenili, vratite obrazac u pripremu, osvježite, validirajte i ponovno finalizirajte.
 
+### 1.2 PDF obrazac
+
+`domains/tax/pdv_s/form_pdf.py` crta Obrazac PDV-S (ADR-0034 §10) iz zamrznute verzije, apsolutnim koordinatama na stranici 595 × 842 pt (ReportLab). Ne koristi vanjske resurse, a isti ulaz daje iste bajtove. Font je Liberation Sans 2.1.5 (SIL OFL 1.1, metrike Ariala) u `domains/tax/pdv_s/fonts/`.
+
+| Polje | Izvor |
+|---|---|
+| (1), (2) | `print_header.tax_office`: šifrarnik `TaxOffice` prema šifri iz `CompanySettings`. Nepoznata šifra: ispisuje se šifra u (2), (1) prazno |
+| (3)–(5), (7)–(14) | Snimka verzije: obveznik, razdoblje, retci, zbrojevi; valuta određuje naslov stupca (eura ili kuna) |
+| (6) | Uvezeni XML (`Zastupnik/OIB`); inače prazno |
+| (15), (17) | `prepared_by` iz snimke; kod uvoza kontakt iz izvornog XML-a |
+| (16) | `print_header.signatory` (`accounting/services/pdv_s/print_header.py`); samo ispisano ime |
+
+Dulji nazivi i adrese prelamaju se unutar polja i po potrebi smanjuju; tekst se ne odsijeca. Prva stranica prima 15 redaka uz zbrojeve, odnosno 22 bez njih.
+
+Postavke: potpisnika određuju **odgovorne osobe** tvrtke (ovlaštena osoba → zakonski zastupnik → direktor). Nakon izmjene postavki obrazac u pripremi treba osvježiti; finalizirana verzija ostaje ista.
+
 ## 2. Odluke D01–D10
 
 | Odluka | Provedba |
@@ -39,7 +55,7 @@ Evidentiranje predaje moguće je tek od prvog dana nakon razdoblja, s vremenom z
 | D04 | Godišnji pregled bez upisa; ručno kreiranje; potvrda „nema obveze” koja istječe novim izvorom; rokovi s neradnim danima |
 | D05 | Razlike po državi, PDV ID-u, vrsti i izvoru; ručni ispravak |
 | D06 | Blokirajuće greške, upozorenja, informacije; VIES s odlukom za negativan rezultat; validacija vezana uz točan sadržaj |
-| D07 | XML, interni PDF, XLSX, PDF validacije, originalni dokazi, ZIP s manifestom i hashovima |
+| D07 | XML, PDF obrazac (§1.2), XLSX, PDF validacije, originalni dokazi, ZIP s manifestom i hashovima |
 | D08 | Finalizacija zamrzava snimku, hash i XML; povrat u pripremu s auditom; `VATPeriod` se ne zaključava |
 | D09 | Dva statusa (portalni ≤ zadnje zaprimljeni; interni = zadnji predani); pokreće se nakon predaje; obrazloženja |
 | D10 | Pojedinačni uvoz uz pregled; zaštićeni parser; konflikt UUID-a i starije predaje blokira; razdoblja prije 2023. u kunama |
@@ -75,7 +91,7 @@ Temeljnice na EU kontima (samo provjera) ─────┤
 
 | Sloj | Putanja (`api/app`) |
 |---|---|
-| Čista pravila (prenosiva) | `domains/tax/facts/`, `domains/tax/pdv_s/` |
+| Čista pravila (prenosiva) | `domains/tax/facts/`, `domains/tax/pdv_s/` (uključujući `form_pdf.py`) |
 | ORM servisi | `accounting/services/pdv_s/`, `accounting/services/tax_facts/` |
 | Modeli | `accounting/models_pdv_s.py` |
 | API | `domains/tax/api/pdv_s_views.py`, `pdv_s_schema.py` |
@@ -121,6 +137,9 @@ Predane i uvezene PDV prijave nisu mijenjane. Za razdoblja čiji retci nastaju i
 - Za predaje evidentirane prije ove verzije sadržaj nije dostupan; usporedba i snimka ne rekonstruiraju se.
 - Usklađenje koristi zbrojeve PDV prijave; razrada po dobavljaču postoji samo za PDV-S.
 - Predaja na ePoreznu ostaje ručna; G2B nije dio opsega.
+- Šifrarnik poreznih ureda ima jedno mjesto po šifri, pa ono imenuje i područni ured i ispostavu. Ispostava izvan sjedišta područnog ureda traži zaseban podatak u šifrarniku.
+- Nema postavke za poreznog zastupnika ni broj faksa.
+- Verzije zamrznute prije PDVS-HOTFIX-03 uzimaju nazive ureda i potpisnika iz postavki u trenutku ispisa; njihov PDF može se promijeniti s postavkama.
 
 ## 8. Vraćanje na prethodnu verziju
 
