@@ -340,3 +340,25 @@ Odobrenje vlasnika: implementacija i deployment. Odluka: [ADR-0034 §9](../../ar
 | Preglednik s prijavom | nije provedeno |
 
 Migracija nema. WIP-01 ostaje necommitan povrh izdanja.
+
+## 10. Izdanje adr-0034-r3 — PDVS-HOTFIX-03 (2026-11-28)
+
+Odobrenje vlasnika: implementacija, testiranje i deployment. Odluka: [ADR-0034 §10](../../architecture/ADR-0034-pdv-s-workflow.md). Zamjenjuje verzije produkcije iz §9; `main` nije mijenjan.
+
+| Repozitorij | develop | Izdanje i produkcija |
+|---|---|---|
+| api | `2aa6b10` | `d348e20`, oznaka `adr-0034-r3` |
+| app | `805caa0` | `d197292`, oznaka `adr-0034-r3` |
+
+| Provjera | Rezultat |
+|---|---|
+| Backend, izdanje + WIP-01, izolirana baza | 1584 testa; 12 grešaka i 1 neuspjeh, isti popis kao na adr-0034-r2 u istom okruženju (1563 testa) |
+| PDV-S testovi | 100 od 100, uključujući 21 novi: jedan redak, više dobavljača, više stranica, dijakritici, zbrojevi, nazivi datoteka, ZIP |
+| Frontend | 466 od 467; jedan raniji neuspjeh; typecheck i build prolaze |
+| GitHub Actions | uspješno na `develop` i na izdanju |
+| Vizualna usporedba sa službenim primjerkom (lokalno, primjerak nije u repozitoriju) | 130 od 130 riječi; najveće odstupanje 0,12 pt |
+| Proba na izoliranoj kopiji podataka | svi izvozi postojeće verzije u transakciji samo za čitanje; ZIP sadrži isti PDF |
+| Nakon deploya | servisi zdravi; neprijavljeni izvoz odbijen; PDF postojeće verzije jednak probnom; zapisi PDV-S verzija nepromijenjeni |
+| Preglednik s prijavom | nije provedeno |
+
+Migracija nema. WIP-01 ostaje necommitan povrh izdanja.
