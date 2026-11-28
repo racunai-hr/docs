@@ -35,6 +35,7 @@ Katalog arhitekturnih odluka. Governance: [`ARCHITECTURE_GOVERNANCE.md`](ARCHITE
 | [ADR-0033](ADR-0033-incoming-invoice-foreign-currency.md) | Ulazni računi u stranoj valuti i prikaz u EUR | Domain | Proposed | 2026-11-27 | — |
 | [ADR-0034](ADR-0034-pdv-s-workflow.md) | Samostalni PDV-S obrazac i životni ciklus predaje | Business | Accepted | 2026-11-27 | — |
 | [ADR-0035](ADR-0035-mcp-gateway.md) | racunAI MCP Gateway Architecture | Integration | Proposed | 2026-11-27 | — |
+| [ADR-0036](ADR-0036-application-shell-navigation.md) | Application Shell & Navigation System (NAV-01) | Domain | Proposed | 2026-11-28 | — |
 
 ---
 
